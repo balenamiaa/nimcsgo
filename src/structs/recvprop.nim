@@ -42,7 +42,7 @@ type
     procVarProxy*: RecvVarProxyProcTy
     procDataTableProxy*: DataTableRecvVarProxyProcTy
     dataTable*: ptr CRecvTable
-    offset*: cint
+    offset*: cuint
     elementStride*: cint
     elementsCount*: cint
     parentPropArrayName*: cstring

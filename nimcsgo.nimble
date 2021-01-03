@@ -9,20 +9,19 @@ binDir = "output"
 bin = @["nimcsgo"]
 
 #Dependencies
-requires "nim >= 1.4.2", "winim"
+requires "nim >= 1.4.2", "winim", "minhook"
 
-
-
-type BuildMode {.pure.} = enum 
-  bmDebug
-  bmRelease
-
-template build(buildMode: BuildMode) =
-  when buildMode == bmDebug: 
-    exec "nim c --app:lib --define:debug --nomain --nimcache:output/cache/ --o:output/nimcsgo.dll src/nimcsgo.nim"
-  else:
-    exec "nim c --app:lib --define:release --nomain --nimcache:output/cache/ --o:output/nimcsgo.dll src/nimcsgo.nim"
-
-task build_release, "Build a dll in release mode": build(bmRelease)
-task build_debug, "Build a dll in debug mode": build(bmDebug)
-
+task dllDebug, "Build a dll":
+  switch("gcc.path", "C:/nim-1.4.2/dist/mingw32/bin")
+  switch("cpu", "i386")
+  switch("gc", "arc")
+  switch("define", "noRes")
+  switch("app", "lib")
+  switch("nomain")
+  switch("passL","-static-libgcc")
+  switch("nimcache", "output/cache/")
+  switch("outdir", "output/")
+  switch("d", "debug")
+  switch("debuginfo")
+  switch("linedir")
+  setCommand("c", "src/nimcsgo.nim")

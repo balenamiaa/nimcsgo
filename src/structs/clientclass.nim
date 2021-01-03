@@ -265,7 +265,7 @@ type
     clasId*: ClientClassId
 
 
-iterator children(current: var ClientClass): lent ClientClass =
+iterator children*(current: var ClientClass): lent ClientClass =
   var next: ptr ClientClass = current.next
 
   while next != nil:
