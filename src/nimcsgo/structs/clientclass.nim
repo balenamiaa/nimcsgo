@@ -260,9 +260,9 @@ type
     procCreateClientClass*: CreateClientClassProcType
     procCreateEvent*: CreateEventProcType
     networkName*: cstring
-    recvTable*: ptr CRecvTable
+    recvTable*: ptr RecvTable
     next*: ptr ClientClass
-    clasId*: ClientClassId
+    classId*: ClientClassId
 
 
 iterator children*(current: var ClientClass): lent ClientClass =

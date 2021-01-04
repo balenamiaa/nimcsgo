@@ -1,4 +1,4 @@
-import ../helpers
+import ../vtableinterface
 from ../structs import EntityIndex
 
 

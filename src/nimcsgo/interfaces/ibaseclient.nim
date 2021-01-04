@@ -1,4 +1,4 @@
-import ../helpers
+import ../vtableinterface
 import ../structs/clientclass
 
 
