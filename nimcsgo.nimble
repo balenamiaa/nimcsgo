@@ -10,25 +10,35 @@ bin = @["nimcsgo"]
 
 import os
 
-requires "nim >= 1.4.2", "winim", "minhook", "imgui"
+requires "nim >= 1.4.2", "winim", "minhook"
+
+proc inject(dllPath, exeFileName: string) = 
+  selfExec "r --backend:cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --passL:\"-static-libgcc -static-libstdc++\" " &
+           "--cpu:i386 --gc:arc -d:noRes -d:useWinAnsi -d:release src/injector/injector.nim " & dllPath & " " & exeFileName
+
+proc genModules() = selfExec "r src/modulesgen/modulesgen.nim"
 
 task build_debug, "Build the dll in debug mode":
-  selfExec "r --backend:cpp src/modulesgen/modulesgen.nim"
+  genModules()
   selfExec "cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc --app:lib " & 
-           "--nomain --passL:-static-libgcc --out:debug.dll -d:noRes -d:useWinAnsi " &
-           "-d:release -d:debug --debuginfo --linedir --nimcache:output/cache src/nimcsgo/nimcsgo.nim"
+           "--nomain --passL:\"-static-libgcc -static-libstdc++\" --out:debug.dll -d:noRes -d:useWinAnsi " &
+           "-d:debug --debuginfo --linedir --nimcache:output/cache src/nimcsgo/nimcsgo.nim"
 task run_debug, "Build the dll in debug mode and inject it":
   exec "nimble build_debug"
-  selfExec "r --backend:cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc -d:noRes -d:useWinAnsi -d:release src/injector/injector.nim " &
-           "debug.dll".absolutePath() & " csgo.exe"
+  inject("debug.dll".absolutePath(), "csgo.exe")
 task build_nimcsgo, "Build the dll in release mode":
-  selfExec("cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc --app:lib --nomain --passL:-static-libgcc --outdir:output/ -d:noRes -d:useWinAnsi -d:release src/nimcsgo/nimcsgo.nim")
+  selfExec "cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc --app:lib " &
+           "--nomain --passL:\"-static-libgcc -static-libstdc++\" --outdir:output/ -d:noRes " &
+           "-d:useWinAnsi -d:release src/nimcsgo/nimcsgo.nim"
 task run_nimcsgo, "Build the dll in release mode and inject it":
-  selfExec("cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc --app:lib --nomain --passL:-static-libgcc --outdir:output/ -d:noRes -d:useWinAnsi -d:release src/nimcsgo/nimcsgo.nim")
-  selfExec("r --backend:cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc -d:noRes -d:useWinAnsi -d:release src/injector/injector.nim " & "output/nimcsgo.dll".absolutePath() & " csgo.exe")
+  exec "nimble build_nimcsgo"
+  inject("output/nimcsgo.dll".absolutePath(), "csgo.exe")
 task build_netvarsgen, "Builds a dll for which it's to be injected into cs-go to fetch netvars to embed in the hack.":
-  selfExec("cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc --app:lib --nomain --passL:-static-libgcc --outdir:output/ -d:noRes -d:useWinAnsi -d:release src/netvarsgen/netvarsgen.nim")
+  selfExec "cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc --app: " &
+           " --nomain --passL:\"-static-libgcc -static-libstdc++\" --outdir:output/ -d:noRes " &
+           "-d:useWinAnsi -d:release src/netvarsgen/netvarsgen.nim"
 task fetch_netvars, "Inject a dll into cs-go to retrieve netvars":
-  selfExec("cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc --app:lib --nomain --passL:-static-libgcc --outdir:output/ -d:noRes -d:useWinAnsi -d:release src/netvarsgen/netvarsgen.nim")
-  selfExec("r --backend:cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --cpu:i386 --gc:arc -d:noRes -d:useWinAnsi -d:release src/injector/injector.nim " & "output/netvarsgen.dll".absolutePath() & " csgo.exe")
+  exec "nimble build_netvarsgen"
+  inject("output/netvarsgen.dll".absolutePath(), "csgo.exe")
+  
 

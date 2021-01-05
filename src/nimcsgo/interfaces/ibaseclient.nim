@@ -4,6 +4,6 @@ import ../structs/clientclass
 
 vtableInterface IBaseClient:
   idx 8: 
-    proc clientClassTail*(self: var IBaseClient): var ClientClass {.thiscall.}
+    proc clientClassTail*(self: ptr IBaseClient): ptr ClientClass {.thiscall.}
 
 genInstantiation IBaseClient

@@ -3,7 +3,7 @@ macro vtableInterface*(interfaceName, interfaceDecl: untyped) =
   result = nnkStmtList.newNimNode()
 
   template interfaceDeclImpl(interfaceName: untyped): untyped = 
-    type interfaceName* = object
+    type interfaceName* = object {.pure.}
       vtable*: ptr ptr pointer
 
   result.add(getAst(interfaceDeclImpl(interfaceName)))
@@ -40,8 +40,8 @@ macro genInstantiation*(T: untyped) =
     var Tz: pointer = nil
     template setInstance*(constraint: typedesc[Tx], pInstance: pointer) = 
       Tz = pInstance
-    template instance*(constraint: typedesc[Tx]): var Tx = 
-      cast[var Tx](Tz)
+    template instance*(constraint: typedesc[Tx]): ptr Tx = 
+      cast[ptr Tx](Tz)
   let 
     Tz = nskVar.genSym()
     Txx = $T & " hasn't been set before use in the code-base."

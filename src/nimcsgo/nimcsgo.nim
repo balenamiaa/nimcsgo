@@ -11,7 +11,7 @@ var ogPresent {.global.}: proc(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst
 var ogReset {.global.}: proc(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} = nil
 
 proc hkWndProc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = 
-  discard onWndProc(hWnd, message, wParam, lParam)
+  discard win32WndProc(hWnd, message, wParam, lParam)
   CallWindowProc(ogWndProc, hWnd, message, wParam, lParam)
 
 proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = 
@@ -19,29 +19,40 @@ proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndO
 
   if not isInitialized:
     var gameHWnd {.global.}: HWND = 0
-    proc findGameHWnd(hWnd: HWND, pid: LPARAM): BOOl {.stdcall.} = 
-      var hWndPid: HWND = 0
-      GetWindowThreadProcessId(hWnd, cast[LPDWORD](hWndPid.addr))
-
-      if hWndPid != pid:
-        return true
-      gameHWnd = hWnd
-      false
-
-    EnumWindows(findGameHWnd, GetCurrentProcessId())
+    proc findGameHWnd(hWnd: HWND, lParam: LPARAM): BOOl {.stdcall.} = 
+      var buffer: array[15, CHAR]
+      GetWindowText(hWnd, buffer.addr.cstring, 15)
+      if buffer.addr.cstring == "Counter-Strike":
+        gameHWnd = hWnd
+        return 0.BOOL
+    
+      1.BOOL
+      
+    EnumWindows(findGameHWnd, 0)
     if gameHWnd != 0:
-
       ogWndProc = cast[typeof(ogWndProc)](SetWindowLongPtr(gameHWnd, GWLP_WNDPROC, cast[LONG_PTR](hkWndProc)))
-      discard dx9Init(pDevice)
+      assert(igCreateContext() != nil, "igCreateContext failed")
+      assert(win32Init(gameHWnd), "win32init failed")
+      assert(dx9Init(pDevice), "dx9init failed")
       isInitialized = true
   else:
+
     dx9NewFrame()
+    win32NewFrame()
+    igNewFrame()
+
+    igEndFrame()
+
+    igRender()
+    dx9RenderDrawData()
+
   ogPresent(pDevice, src, dst, wndOverride, dirtyRegion)
 
 proc hkReset(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} =
   dx9InvalidateDeviceObjects()
-  discard dx9CreateDeviceObjects()
-  ogReset(pDevice, params)
+  result = ogReset(pDevice, params)
+  assert(dx9CreateDeviceObjects(), "dx9CreateDeviceObjects failed") 
+  
   
 
 
@@ -57,7 +68,6 @@ proc realEntry =
   let pPaintTraverse = cast[ptr pointer](cast[uint](IPanel.instance.vtable) + 41 * sizeof(pointer))[]
   block:
     let handle = GetModuleHandle("gameoverlayrenderer.dll")
-    let hWnd = GetActiveWindow()
     let tmp1 = cast[uint](patternScan("FF15 ?? ?? ?? ?? 8BF885DB"    , handle).get())
     let tmp2 = cast[uint](patternScan("FF15 ?? ?? ?? ?? 8BF885FF7818", handle).get())
     ogPresent = cast[typeof(ogPresent)](cast[ptr ptr uint](tmp1 + 2)[][])
@@ -74,7 +84,7 @@ proc realEntry =
     if gLocalPlayer != nil:
       for fn in gCreateMoveProcs: fn(cast[var CUserCmd](cmd))
     retValue
-  mHook(thiscall(self: var IPanel, panelId: uint, forceRePaint: bool, allowForce: bool) -> void, pPaintTraverse):
+  mHook(thiscall(self: ptr IPanel, panelId: uint, forceRePaint: bool, allowForce: bool) -> void, pPaintTraverse):
     ogProcCall(self, panelId, forceRePaint, allowForce) 
     let panelName = IPanel.instance.panelName(panelId)
     
@@ -87,4 +97,5 @@ proc Entry(hInstance: HINSTANCE) {.cdecl, exportc.} =
     realEntry()
   except:
     echo "Crashed with exception: " & getCurrentExceptionMsg()
+    sleep(10000)
      

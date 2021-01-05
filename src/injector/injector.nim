@@ -1,6 +1,5 @@
 import os, winim/lean, winim/inc/tlhelp32
 
-
 assert(paramCount() >= 2, "Invalid number of arguments")
 
 let dllPath = paramStr(1).string

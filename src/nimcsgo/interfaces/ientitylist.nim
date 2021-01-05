@@ -4,10 +4,10 @@ from ../structs import EntityIndex, Entity
 
 vtableInterface IEntityList:
   idx 6: 
-    proc highestEntityIdx*(self: var IEntityList): EntityIndex {.thiscall.}
+    proc highestEntityIdx*(self: ptr IEntityList): EntityIndex {.thiscall.}
   #idx 4: 
-  #  proc entityPtrFromHandle*(self: var IEntityList. handle: EntityHandle): pointer {.thiscall.}
+  #  proc entityPtrFromHandle*(self: ptr IEntityList. handle: EntityHandle): pointer {.thiscall.}
   idx 3:
-    proc entityFromIdx*(self: var IEntityList, index: EntityIndex): ptr Entity {.thiscall.}
+    proc entityFromIdx*(self: ptr IEntityList, index: EntityIndex): ptr Entity {.thiscall.}
 
 genInstantiation IEntityList

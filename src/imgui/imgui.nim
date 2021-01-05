@@ -24,12 +24,20 @@ proc ImGui_ImplWin32_WndProcHandler(hWnd: HWND, msg: UINT, wParam: WPARAM, lPara
 proc ImGui_ImplDX9_Init(pDevice: ptr IDirect3DDevice9): bool {.importcpp: "ImGui_ImplDX9_Init(@)", header:impldx9.}
 proc ImGui_ImplDX9_Shutdown(): void {.importcpp: "ImGui_ImplDX9_Shutdown(@)", header:impldx9.}
 proc ImGui_ImplDX9_NewFrame(): void {.importcpp: "ImGui_ImplDX9_NewFrame(@)", header:impldx9.}
-proc ImGui_ImplDX9_CreateDeviceObjects(): bool {.importcpp: "ImGui_ImplDX9_CreateDeviceObjects(@)", header:impldx9.}
 proc ImGui_ImplDX9_InvalidateDeviceObjects(): void {.importcpp: "ImGui_ImplDX9_InvalidateDeviceObjects(@)", header:impldx9.}
 
-proc onWndProc*(hWnd: HWND, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT = ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)
+proc win32Init*(hWnd: HWND):  bool {.importcpp: "ImGui_ImplWin32_Init(@)", header:implwin32.}
+proc win32WndProc*(hWnd: HWND, msg: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT = ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)
+proc win32NewFrame*(): void {.importcpp: "ImGui_ImplWin32_NewFrame(@)".}
+
 proc dx9Init*(pDevice: ptr IDirect3DDevice9): bool = ImGui_ImplDX9_Init(pDevice)
-proc dx9CreateDeviceObjects*(): bool = ImGui_ImplDX9_CreateDeviceObjects()
+proc dx9CreateDeviceObjects*(): bool {.importcpp: "ImGui_ImplDX9_CreateDeviceObjects(@)", header:impldx9.}
 proc dx9Shutdown*(): void = ImGui_ImplDX9_Shutdown()
 proc dx9NewFrame*(): void = ImGui_ImplDX9_NewFrame()
 proc dx9InvalidateDeviceObjects*(): void = ImGui_ImplDX9_InvalidateDeviceObjects()
+proc dx9RenderDrawData*(): void {.importcpp: "ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData())", header: impldx9.}
+
+proc igCreateContext*(): pointer {.importcpp: "ImGui::CreateContext(@)".}
+proc igNewFrame*(): void {.importcpp: "ImGui::NewFrame(@)".}
+proc igRender*(): void {.importcpp: "ImGui::Render(@)".}
+proc igEndFrame*(): void {.importcpp: "ImGui::EndFrame(@)".}
