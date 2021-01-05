@@ -39,8 +39,9 @@ proc Entry(hInstance: HINSTANCE) {.cdecl, exportc.} =
   file.write("""
   import tables
   var gNetvars* {.compileTime.} = initTable[string, uint]()
+  static:
   """.unindent)
 
-  for key,offset in netvars: file.write("gNetvars[\"$1\"] = $2\n" % [key, $offset])
-  file.write("gNetvars[\"CustomTable=>Dormancy\"] = 0xED\n")
+  for key,offset in netvars: file.write("  gNetvars[\"$1\"] = $2\n" % [key, $offset])
+  file.write("  gNetvars[\"CustomTable=>Dormancy\"] = 0xED\n")
   file.close()

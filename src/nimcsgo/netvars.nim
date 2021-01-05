@@ -1,6 +1,6 @@
 import tables
 var gNetvars* {.compileTime.} = initTable[string, uint]()
-static: 
+static:
   gNetvars["DT_SpriteTrail=>m_flMinFadeLength"] = 4232
   gNetvars["DT_BaseCSGrenade=>m_flThrowStrength"] = 13276
   gNetvars["DT_SpotlightEnd=>m_Radius"] = 2524

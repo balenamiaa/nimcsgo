@@ -38,17 +38,22 @@ let ntOpenFile = GetProcAddress(LoadLibrary("ntdll"), "NtOpenFile")
 assert(ntOpenFile != nil, "Couldn't get NtOpenFile address")
 
 var originalBytes: array[5, byte]
+var patchedBytes: array[5, byte]
 copyMem(originalBytes.addr, ntOpenFile, 5)
 
 var originalProtection: DWORD = 0
 VirtualProtectEx(hProcess, ntOpenFile, 5, PAGE_READWRITE, originalProtection.addr)
+ReadProcessMemory(hProcess, ntOpenFile, patchedBytes.addr, 5, nil)
 WriteProcessMemory(hProcess, ntOpenFile, originalBytes.addr, 5, nil)
 VirtualProtectEx(hProcess, ntOpenFile, 5, originalProtection, originalProtection.addr)
 
 var data: pointer = VirtualAllocEx(hProcess, nil, dllPath.len.SIZE_T + 1, MEM_RESERVE or MEM_COMMIT, PAGE_EXECUTE_READWRITE)
 WriteProcessMemory(hProcess, data, cast[pointer](dllPath.cstring), dllPath.len.SIZE_T + 1, nil)
 let hThread = CreateRemoteThread(hProcess, nil, 0, cast[LPTHREAD_START_ROUTINE](GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA")), data, 0, nil)
-echo "Wait result: " & $WaitForSingleObject(hThread, INFINITE)
+WaitForSingleObject(hThread, INFINITE)
 
+VirtualProtectEx(hProcess, ntOpenFile, 5, PAGE_READWRITE, originalProtection.addr)
+WriteProcessMemory(hProcess, ntOpenFile, patchedBytes.addr, 5, nil)
+VirtualProtectEx(hProcess, ntOpenFile, 5, originalProtection, originalProtection.addr)
 
 CloseHandle(hProcess)

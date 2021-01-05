@@ -2,6 +2,7 @@ import ../interfaces, ../structs
 import macros
 
 var gCreateMoveProcs* {.global.}: seq[proc(cmd: var CUserCmd)]
+var gPaintTraverseProcs* {.global.}: seq[proc(panelId: uint, forceRePaint: bool, allowForce: bool)]
 var gInitProcs* {.global.}: seq[proc()]
 var gLocalPlayer*: ptr Entity = nil
 
@@ -44,6 +45,25 @@ macro section*(sectionDecl, body: untyped) =
 
     containerSym = "gInitProcs".ident
     procDef[3].add("void".ident)
+  of "PaintTraverse":
+    if not(varNames.len == 3): error "Invalid number of parameters for section: PaintTraverse", sectionDecl
+    containerSym = "gPaintTraverseProcs".ident
+    procDef[3].add("void".ident)
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[0],
+      nnkVarTy.newTree("uint".ident),
+      newEmptyNode()
+    ))
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[1],
+      nnkVarTy.newTree("bool".ident),
+      newEmptyNode()
+    ))
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[2],
+      nnkVarTy.newTree("bool".ident),
+      newEmptyNode()
+    ))
   else: error("Section for " & $sectionType & " not implemented yet!", sectionDecl)
 
   getAst(implAndAddProc(procDef, procDef[0], containerSym, body))

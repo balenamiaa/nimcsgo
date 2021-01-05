@@ -26,6 +26,7 @@ proc toString(bytes: openarray[byte | char | string]): string =
     result.add(byte)
 
 proc patternToBytes(pattern: string): seq[int16] {.compileTime.} = 
+  let pattern = pattern.replace(" ", "")
   let chunkedPatterns = @pattern.distribute(pattern.len div 2)
   result = collect(newSeqOfCap(chunkedPatterns.len)):
     for chunk in chunkedPatterns: 
@@ -47,11 +48,15 @@ proc patternScan*(pattern: static[string], hModule: HMODULE): Option[pointer] =
   var pModuleTail: ptr byte = cast[ptr byte](hModule)
   let pModuleHead: ptr byte = pModuleTail + (moduleSize - 1)
   while pModuleTail <= (pModuleHead - patternLen):
+    var skip: int = 1
     block scan:
       for offset in 0..<patternLen:
-        if cast[int16](pModuleTail[offset]) != pattern[offset] and pattern[offset] != -1: break scan
+        if pattern[offset] == -1: continue
+        if cast[int16](pModuleTail[offset]) != pattern[offset]: 
+          skip = offset + 1
+          break scan
       return some(cast[pointer](pModuleTail))
-    pModuleTail += patternLen
+    pModuleTail += skip
 
 proc patternScan*(pattern: static[string], moduleName: string): Option[pointer] = patternScan(pattern, GetModuleHandleA(moduleName))
 

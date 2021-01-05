@@ -1,6 +1,48 @@
-import winim/lean, minhook, macros, strutils
-import ./interfaces, ./structs/cusercmd, ./modules
+import winim/lean, minhook, macros, strutils, options, os
+import ./interfaces, ./structs/cusercmd, ./modules, ./helpers, ../imgui/imgui
+
 {.compile: "shim.c".}
+
+
+
+
+var ogWndProc {.global.}: proc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = nil
+var ogPresent {.global.}: proc(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = nil
+var ogReset {.global.}: proc(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} = nil
+
+proc hkWndProc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = 
+  discard onWndProc(hWnd, message, wParam, lParam)
+  CallWindowProc(ogWndProc, hWnd, message, wParam, lParam)
+
+proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = 
+  var isInitialized {.global.} : bool = false
+
+  if not isInitialized:
+    var gameHWnd {.global.}: HWND = 0
+    proc findGameHWnd(hWnd: HWND, pid: LPARAM): BOOl {.stdcall.} = 
+      var hWndPid: HWND = 0
+      GetWindowThreadProcessId(hWnd, cast[LPDWORD](hWndPid.addr))
+
+      if hWndPid != pid:
+        return true
+      gameHWnd = hWnd
+      false
+
+    EnumWindows(findGameHWnd, GetCurrentProcessId())
+    if gameHWnd != 0:
+
+      ogWndProc = cast[typeof(ogWndProc)](SetWindowLongPtr(gameHWnd, GWLP_WNDPROC, cast[LONG_PTR](hkWndProc)))
+      discard dx9Init(pDevice)
+      isInitialized = true
+  else:
+    dx9NewFrame()
+  ogPresent(pDevice, src, dst, wndOverride, dirtyRegion)
+
+proc hkReset(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} =
+  dx9InvalidateDeviceObjects()
+  discard dx9CreateDeviceObjects()
+  ogReset(pDevice, params)
+  
 
 
 proc realEntry = 
@@ -12,6 +54,18 @@ proc realEntry =
   )
   let clientModeVTable = cast[ptr uint](clientMode)[]
   let pCreateMove = cast[ptr pointer](clientModeVTable + 24 * sizeof(pointer))[]
+  let pPaintTraverse = cast[ptr pointer](cast[uint](IPanel.instance.vtable) + 41 * sizeof(pointer))[]
+  block:
+    let handle = GetModuleHandle("gameoverlayrenderer.dll")
+    let hWnd = GetActiveWindow()
+    let tmp1 = cast[uint](patternScan("FF15 ?? ?? ?? ?? 8BF885DB"    , handle).get())
+    let tmp2 = cast[uint](patternScan("FF15 ?? ?? ?? ?? 8BF885FF7818", handle).get())
+    ogPresent = cast[typeof(ogPresent)](cast[ptr ptr uint](tmp1 + 2)[][])
+    ogReset   = cast[typeof(ogReset)](cast[ptr ptr uint](tmp2 + 2)[][])
+
+    cast[ptr ptr pointer](tmp1 + 2)[][] = cast[pointer](hkPresent)
+    cast[ptr ptr pointer](tmp2 + 2)[][] = cast[pointer](hkReset)
+  
   minhook.init()
 
   mHook(stdcall(inputSFrameRate: float32, cmd: ptr CUserCmd) -> bool, pCreateMove):
@@ -20,7 +74,13 @@ proc realEntry =
     if gLocalPlayer != nil:
       for fn in gCreateMoveProcs: fn(cast[var CUserCmd](cmd))
     retValue
-  
+  mHook(thiscall(self: var IPanel, panelId: uint, forceRePaint: bool, allowForce: bool) -> void, pPaintTraverse):
+    ogProcCall(self, panelId, forceRePaint, allowForce) 
+    let panelName = IPanel.instance.panelName(panelId)
+    
+    if panelName == "MatSystemTopPanel":
+      for fn in gPaintTraverseProcs: fn(panelId, forceRePaint, allowForce)
+
 
 proc Entry(hInstance: HINSTANCE) {.cdecl, exportc.} =
   try:
