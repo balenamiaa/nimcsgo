@@ -32,7 +32,7 @@ type
     padding: array[4, byte]
     commandNumber*: cint
     tickCount*: cint
-    viewAngles*: Vector3f0
+    viewAngles*: QAngle
     aimDirection*: Vector3f0
     forwardMove*: cfloat
     sideMove*: cfloat

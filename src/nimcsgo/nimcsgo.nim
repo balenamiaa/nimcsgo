@@ -1,6 +1,5 @@
 import winim/lean, minhook, macros, strutils, options, os
-import ./interfaces, ./structs/cusercmd, ./modules, ./helpers, ../imgui/imgui
-
+import ./interfaces, ./structs/cusercmd, ./modules, ./helpers, imgui, ./ui, ./structs/vector, ../nim-bgfx/bgfx/bgfx
 {.compile: "shim.c".}
 
 
@@ -11,8 +10,18 @@ var ogPresent {.global.}: proc(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst
 var ogReset {.global.}: proc(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} = nil
 
 proc hkWndProc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = 
-  discard win32WndProc(hWnd, message, wParam, lParam)
+  var guiKeyDown {.global.}: bool
+
+  if message == WM_KEYDOWN and wParam == VK_INSERT:
+    guiKeyDown = true
+  elif message == WM_KEYUP and wParam == VK_INSERT and guiKeyDown:
+    ui.guiEnabled = not ui.guiEnabled
+    guiKeyDown = false
+  
+  if ui.guiEnabled: 
+    discard win32WndProc(hWnd, message, wParam, lParam)
   CallWindowProc(ogWndProc, hWnd, message, wParam, lParam)
+  
 
 proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = 
   var isInitialized {.global.} : bool = false
@@ -34,13 +43,13 @@ proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndO
       assert(igCreateContext() != nil, "igCreateContext failed")
       assert(win32Init(gameHWnd), "win32init failed")
       assert(dx9Init(pDevice), "dx9init failed")
+      igStyleColorsCherry()
       isInitialized = true
   else:
-
     dx9NewFrame()
     win32NewFrame()
     igNewFrame()
-
+    if ui.guiEnabled: ui.renderUi()
     igEndFrame()
 
     igRender()
@@ -82,7 +91,10 @@ proc realEntry =
     let retValue = ogProcCall(inputSFrameRate, cmd) 
     gLocalPlayer = IEntityList.instance.entityFromIdx(IEngineClient.instance.idxLocalPlayer())
     if gLocalPlayer != nil:
-      for fn in gCreateMoveProcs: fn(cast[var CUserCmd](cmd))
+      for fn in gCreateMoveProcs: fn(cmd)
+
+    cmd.viewAngles.normalize()
+    cmd.viewAngles.clamp()
     retValue
   mHook(thiscall(self: ptr IPanel, panelId: uint, forceRePaint: bool, allowForce: bool) -> void, pPaintTraverse):
     ogProcCall(self, panelId, forceRePaint, allowForce) 
@@ -90,6 +102,8 @@ proc realEntry =
     
     if panelName == "MatSystemTopPanel":
       for fn in gPaintTraverseProcs: fn(panelId, forceRePaint, allowForce)
+
+  for fn in gInitProcs: fn()
 
 
 proc Entry(hInstance: HINSTANCE) {.cdecl, exportc.} =

@@ -1,5 +1,4 @@
-import ../vtableinterface
-from ../structs import EntityIndex, Entity
+import ../vtableinterface, ../structs/entity
 
 
 vtableInterface IEntityList:
@@ -9,5 +8,15 @@ vtableInterface IEntityList:
   #  proc entityPtrFromHandle*(self: ptr IEntityList. handle: EntityHandle): pointer {.thiscall.}
   idx 3:
     proc entityFromIdx*(self: ptr IEntityList, index: EntityIndex): ptr Entity {.thiscall.}
+
+    
+  {.checks: off, optimization: speed.}
+  iterator iterate*(self: ptr IEntityList): ptr Entity = 
+    var currentIdx = 1.EntityIndex
+    while currentIdx <= self.highestEntityIdx():
+      let pCurrentEntity = self.entityFromIdx(currentIdx)
+      if pCurrentEntity != nil: yield pCurrentEntity
+      currentIdx += 1.EntityIndex
+  
 
 genInstantiation IEntityList

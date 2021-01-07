@@ -69,3 +69,9 @@ proc createInterface*(moduleName: string, interfaceName: string): pointer =
 
   if result == nil:
     raise newException(LibraryError, "Failed to get interface for $# in module $#" % [interfaceName, moduleName])
+
+template `!`*[T](a: Option[T]): T =
+    if a.isSome():
+      a.unsafeGet()
+    else:
+      return

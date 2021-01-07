@@ -1,4 +1,4 @@
-import structs/vector, structs/entity, structs/cusercmd, structs/clientclass
+import structs/vector, structs/entity, structs/cusercmd, structs/clientclass, structs/studio, structs/tracestructs
 
 
 
@@ -8,7 +8,7 @@ import structs/vector, structs/entity, structs/cusercmd, structs/clientclass
 
 
 export
-  vector, entity, cusercmd, clientclass
+  vector, entity, cusercmd, clientclass, studio, tracestructs
 
   
 

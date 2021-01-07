@@ -15,29 +15,29 @@ type
 
 template implOpVec(operation: untyped, inPlaceOperation: untyped) = 
   proc operation*(a, b: Vector3f0): Vector3f0 = Vector3f0(x: operation(a.x, b.x), y: operation(a.y, b.y), z: operation(a.z, b.z))
-  proc operation*(a: Vector3f0, scalar: Number): Vector3f0 = Vector3f0(x: operation(a.x, scalar.float32), y: operation(a.y, scalar.float32), z: operation(a.z, scalar.float32))
+  proc operation*(a: Vector3f0, scalar: ToFloat32): Vector3f0 = Vector3f0(x: operation(a.x, scalar.float32()), y: operation(a.y, scalar.float32()), z: operation(a.z, scalar.float32()))
 
   proc inPlaceOperation*(self: var Vector3f0, other: Vector3f0) = 
     self.x = operation(self.x, other.x)
     self.y = operation(self.y, other.y)
     self.z = operation(self.z, other.z)
-  proc inPlaceOperation*(self: var Vector3f0, scalar: Number) = 
-    self.x = operation(self.x, scalar.float32)
-    self.y = operation(self.y, scalar.float32)
-    self.z = operation(self.z, scalar.float32)
+  proc inPlaceOperation*(self: var Vector3f0, scalar: ToFloat32) = 
+    self.x = operation(self.x, scalar.float32())
+    self.y = operation(self.y, scalar.float32())
+    self.z = operation(self.z, scalar.float32())
 
 
 template implOpAng(operation: untyped, inPlaceOperation: untyped) = 
   proc operation*(a, b: QAngle): QAngle = Vector3f0(x: operation(a.x, b.x), y: operation(a.y, b.y), z: 0.float32).QAngle
-  proc operation*(a: QAngle, scalar: Number): QAngle = Vector3f0(x: operation(a.x, scalar.float32), y: operation(a.y, scalar.float32), z: 0.float32).QAngle
+  proc operation*(a: QAngle, scalar: ToFloat32): QAngle = Vector3f0(x: operation(a.x, scalar.float32()), y: operation(a.y, scalar.float32()), z: 0.float32()).QAngle
 
   proc inPlaceOperation*(self: var QAngle, other: QAngle) = 
     self.x = operation(self.x, other.x)
     self.y = operation(self.y, other.y)
     self.z = 0
-  proc inPlaceOperation*(self: var QAngle, scalar: Number) = 
-    self.x = operation(self.x, scalar.float32)
-    self.y = operation(self.y, scalar.float32)
+  proc inPlaceOperation*(self: var QAngle, scalar: ToFloat32) = 
+    self.x = operation(self.x, scalar.float32())
+    self.y = operation(self.y, scalar.float32())
     self.z = 0
  
 
@@ -50,6 +50,11 @@ implOpAng(`-`, `-=`)
 implOpAng(`*`, `*=`)
 implOpAng(`/`, `/=`)
 
+proc initVector3f0*(x, y, z: ToFloat32): Vector3f0 = Vector3f0(x: x.float32(), y: y.float32(), z: z.float32())
+
+proc yaw*(self: QAngle): float32 = self.y
+proc pitch*(self: QAngle): float32 = self.x
+
 proc map*[T: FromFloat32, S: ToFloat32](self: Vector3f0, operation: proc(val: T): S): Vector3f0 = 
   Vector3f0(x: operation(T(self.x)).float32, y: operation(T(self.y)).float32, z: operation(T(self.z)).float32)
 proc apply*[T: FromFloat32, S: ToFloat32](self: var Vector3f0, operation: proc(val: T): S) = 
@@ -60,6 +65,7 @@ proc apply*[T: FromFloat32, S: ToFloat32](self: var Vector3f0, operation: proc(v
 proc map*[T: FromFloat32, S: ToFloat32](self: QAngle, operation: proc(val: T): S): QAngle = self.Vector3f0.map(operation).QAngle
 
 proc sum*(self: Vector3f0): float = self.x + self.y + self.z
+proc dot*(a: Vector3f0, b: Vector3f0): float = sum(a * b)
 proc lenSqr*(self: Vector3f0): float = self.map(proc(x: float32): float32 = x * x).sum
 proc len*(self: Vector3f0): float = self.lenSqr.sqrt()
 proc unit*(self: Vector3f0): Vector3f0 = self.map(proc(x: float32): float32 = x / self.len)
@@ -72,7 +78,7 @@ proc nullifiedZ*(self: Vector3f0): Vector3f0 = Vector3f0(x: self.x, y: self.y, z
 proc inRadians*(self: QAngle): QAngle = self.map(proc(x: float32): float32 = x * (PI / 180e0).float32)
 proc inDegrees*(self: QAngle): QAngle = self.map(proc(x: float32): float32 = x * (180e0 / PI).float32)
 
-proc clam*(self: var QAngle) = 
+proc clamp*(self: var QAngle) = 
   self.x = self.x.clamp(-89.0, 89.0)
   self.z = 0
 
@@ -125,7 +131,7 @@ proc `!@`*[T: ToFloat32](intermediateVec: sink Vector3f0, z: T): Vector3f0 =
 proc lookAt*(src: Vector3f0, dest: Vector3f0): QAngle = 
   let delta = dest - src
 
-  normalized inDegrees QAngle delta.z.arctan2(delta.nullifiedZ.len) !@ (
+  normalized inDegrees QAngle -delta.z.arctan2(delta.nullifiedZ.len) !@ (
     var yaw = delta.y.arctan2(delta.x)
     if yaw < 0.float32: yaw + 2.float32 * PI else: yaw 
   )
@@ -136,5 +142,5 @@ proc getFov*(curViewAng: QAngle, targetViewAng: QAngle, dist: float): float64 =
   len delta.x.abs.sin * dist !@ delta.y.abs.sin * dist 
 
 
-proc velCompensated(src: Vector3f0, relVec: Vector3f0, dist: float): Vector3f0 = src + relVec / dist
-proc angSmoothed(curViewAng: QAngle, targetViewAng: QAngle, smoothPercentage: range[0e0..1e0]): QAngle = curViewAng + (normalized targetViewAng - curViewAng) * smoothPercentage
+proc velCompensated*(src: Vector3f0, relVec: Vector3f0, dist: float): Vector3f0 = src + relVec / dist
+proc angSmoothed*(targetViewAng: QAngle, curViewAng: QAngle, smoothPercentage: range[0e0..1e0]): QAngle = curViewAng + (normalized targetViewAng - curViewAng) * smoothPercentage
