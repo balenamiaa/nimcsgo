@@ -1,6 +1,7 @@
 [submodule "src\\imgui\\imgui"]
 	path = src\\imgui\\imgui
 	url = https://github.com/ocornut/imgui
+	
 [submodule "src/nim-bgfx"]
 	path = src/nim-bgfx
-	url = https://github.com/CoryNull/nim-bgfx.git
+	url = https://github.com/balenamiaa/nim-bgfx.git
