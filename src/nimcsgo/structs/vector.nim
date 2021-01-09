@@ -50,6 +50,11 @@ implOpAng(`-`, `-=`)
 implOpAng(`*`, `*=`)
 implOpAng(`/`, `/=`)
 
+converter fromArray*(arr: array[1, float32]): Vector3f0 = Vector3f0(x: arr[0], y: 0, z: 0)
+converter fromArray*(arr: array[2, float32]): Vector3f0 = Vector3f0(x: arr[0], y: arr[1], z: 0)
+converter fromArray*(arr: array[3, float32]): Vector3f0 = Vector3f0(x: arr[0], y: arr[1], z: arr[2])
+converter fromArray*[N: static[uint]](arr: array[N, float32]): Vector3f0 = Vector3f0(x: arr[0], y: arr[1], z: arr[2])
+
 proc initVector3f0*(x, y, z: ToFloat32): Vector3f0 = Vector3f0(x: x.float32(), y: y.float32(), z: z.float32())
 
 proc yaw*(self: QAngle): float32 = self.y

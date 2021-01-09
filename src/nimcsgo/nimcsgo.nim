@@ -1,12 +1,13 @@
-import winim/lean, minhook, macros, strutils, options, os
-import ./interfaces, ./structs/cusercmd, ./modules, ./helpers, imgui, ./ui, ./structs/vector, ../nim-bgfx/bgfx/bgfx
+import winim/lean as win
+import minhook, macros, strutils, options, os
+import ./interfaces, ./structs/cusercmd, ./modules, ./helpers, imgui, ./structs/vector, ./modules/base
 {.compile: "shim.c".}
 
 
 
 
 var ogWndProc {.global.}: proc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = nil
-var ogPresent {.global.}: proc(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = nil
+var ogPresent {.global.}: proc(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = nil
 var ogReset {.global.}: proc(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} = nil
 
 proc hkWndProc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = 
@@ -15,15 +16,16 @@ proc hkWndProc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESU
   if message == WM_KEYDOWN and wParam == VK_INSERT:
     guiKeyDown = true
   elif message == WM_KEYUP and wParam == VK_INSERT and guiKeyDown:
-    ui.guiEnabled = not ui.guiEnabled
+    base.gGuiEnabled = not base.gGuiEnabled
     guiKeyDown = false
   
-  if ui.guiEnabled: 
+  if base.gGuiEnabled: 
     discard win32WndProc(hWnd, message, wParam, lParam)
   CallWindowProc(ogWndProc, hWnd, message, wParam, lParam)
   
 
-proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = 
+
+proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = 
   var isInitialized {.global.} : bool = false
 
   if not isInitialized:
@@ -43,15 +45,31 @@ proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndO
       assert(igCreateContext() != nil, "igCreateContext failed")
       assert(win32Init(gameHWnd), "win32init failed")
       assert(dx9Init(pDevice), "dx9init failed")
+      #gRenderer = initRenderer(pDevice)
       igStyleColorsCherry()
+
+      try:
+        for fn in gInitRenderProcs: fn(pDevice)
+      except:
+        #echo "Crashed with exception: " & getCurrentExceptionMsg()
+        sleep(10000)
       isInitialized = true
   else:
+    try:
+      for fn in gRenderFrameProcs: fn(pDevice)
+    except:
+      #echo "Crashed with exception: " & getCurrentExceptionMsg()
+      sleep(10000)
     dx9NewFrame()
     win32NewFrame()
     igNewFrame()
-    if ui.guiEnabled: ui.renderUi()
+    if base.gGuiEnabled:
+      try:
+        for fn in gImGuiProcs: fn() 
+      except:
+        #echo "Crashed with exception: " & getCurrentExceptionMsg()
+        sleep(10000)
     igEndFrame()
-
     igRender()
     dx9RenderDrawData()
 
@@ -59,8 +77,10 @@ proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr RECT, dst: ptr RECT, wndO
 
 proc hkReset(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} =
   dx9InvalidateDeviceObjects()
+  #gRenderer.release()
   result = ogReset(pDevice, params)
   assert(dx9CreateDeviceObjects(), "dx9CreateDeviceObjects failed") 
+  #gRenderer.acquire()
   
   
 
@@ -91,7 +111,11 @@ proc realEntry =
     let retValue = ogProcCall(inputSFrameRate, cmd) 
     gLocalPlayer = IEntityList.instance.entityFromIdx(IEngineClient.instance.idxLocalPlayer())
     if gLocalPlayer != nil:
-      for fn in gCreateMoveProcs: fn(cmd)
+      try:
+        for fn in gCreateMoveProcs: fn(cmd)
+      except:
+        #echo "Crashed with exception: " & getCurrentExceptionMsg()
+        sleep(10000)
 
     cmd.viewAngles.normalize()
     cmd.viewAngles.clamp()
@@ -101,15 +125,17 @@ proc realEntry =
     let panelName = IPanel.instance.panelName(panelId)
     
     if panelName == "MatSystemTopPanel":
-      for fn in gPaintTraverseProcs: fn(panelId, forceRePaint, allowForce)
-
-  for fn in gInitProcs: fn()
+      try:
+        for fn in gPaintTraverseProcs: fn(panelId, forceRePaint, allowForce)
+      except:
+        #echo "Crashed with exception: " & getCurrentExceptionMsg()
+        sleep(10000)
 
 
 proc Entry(hInstance: HINSTANCE) {.cdecl, exportc.} =
   try:
     realEntry()
   except:
-    echo "Crashed with exception: " & getCurrentExceptionMsg()
+    #echo "Crashed with exception: " & getCurrentExceptionMsg()
     sleep(10000)
      

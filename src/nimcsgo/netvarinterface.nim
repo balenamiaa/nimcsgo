@@ -37,3 +37,6 @@ macro netvar*(table, netvar: string, BaseClass, decl: untyped) =
       ),
     )
   )
+
+
+proc getOffset*(table, netvar: string): uint {.compileTime.} = netvars.gNetvars["$#=>$#" % [$table, $netvar]]

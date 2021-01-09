@@ -15,7 +15,7 @@ vtableInterface IEntityList:
     var currentIdx = 1.EntityIndex
     while currentIdx <= self.highestEntityIdx():
       let pCurrentEntity = self.entityFromIdx(currentIdx)
-      if pCurrentEntity != nil: yield pCurrentEntity
+      if pCurrentEntity != nil and pCurrentEntity.vtable != nil: yield pCurrentEntity
       currentIdx += 1.EntityIndex
   
 

@@ -7,8 +7,8 @@ extern void __cdecl Entry(HINSTANCE);
 
 void mainDllThread(HINSTANCE hInstance)
 {
-  AllocConsole();
-  freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+  //AllocConsole();
+  //freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
   NimMain();
   Entry(hInstance);
 }

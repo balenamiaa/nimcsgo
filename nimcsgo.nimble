@@ -12,10 +12,13 @@ import os
 
 requires "nim >= 1.4.2", "winim", "minhook", "bgfx"
 
+putEnv("Dfdfffff", "Dffffffff")
+
+let gccPath = "C:/nim-1.4.2/dist/mingw32/bin"#Set this to the diretory of that contains g++.exe for i386
 
 let defaultFlags = (
-  " --backend:cpp --gcc.cpp.path:C:/nim-1.4.2/dist/mingw32/bin --passL:\"-static-libgcc -static-libstdc++\"" &
-  " --cpu:i386 --gc:arc -d:noRes -d:useWinAnsi "
+  " --putenv:GCC_PATH=" & gccPath & " --backend:cpp --gcc.cpp.path:" & gccPath & " --passL:\"-static-libgcc -static-libstdc++\"" &
+  " --cpu:i386 --gc:arc -d:noRes -d:useWinAnsi --nimcache:output/cache "
 )
 
 
@@ -26,7 +29,7 @@ proc genModules() = selfExec "r src/modulesgen/modulesgen.nim"
 
 task build_debug, "Build the dll in debug mode":
   genModules()
-  selfExec "cpp" & defaultFlags & "--nomain --app:lib -d:debug --debuginfo --linedir -d:BGFX_STATIC_LIBSTDCPP --nimcache:output/cache --out:debug.dll src/nimcsgo/nimcsgo.nim"
+  selfExec "cpp" & defaultFlags & "--nomain --app:lib -d:debug --debuginfo:on --stackTrace:on -d:nimCallDepthLimit=10000 --lineTrace:on r--out:debug.dll src/nimcsgo/nimcsgo.nim"
 task debug_nimcsgo, "Build the dll in debug mode and inject it":
   exec "nimble build_debug"
   inject("debug.dll".absolutePath(), "csgo.exe")
@@ -35,7 +38,7 @@ task inject_debug, "Inject the dll in debug mode without building":
 
 task build_nimcsgo, "Build the dll in debug mode":
   genModules()
-  selfExec "cpp" & defaultFlags & "--nomain --app:lib -d:release -d:BGFX_STATIC_LIBSTDCPP --outdir:output src/nimcsgo/nimcsgo.nim"
+  selfExec "cpp" & defaultFlags & "--nomain --app:lib -d:release --outdir:output src/nimcsgo/nimcsgo.nim"
 task run_nimcsgo, "Build the dll in debug mode and inject it":
   exec "nimble build_nimcsgo"
   inject("output/nimcsgo.dll".absolutePath(), "csgo.exe")

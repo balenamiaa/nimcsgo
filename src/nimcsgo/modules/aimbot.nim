@@ -1,11 +1,12 @@
-import base, bitops, os, options, gara, math
+import base, bitops, os, options, gara, math, times, std/monotimes
 import winim/lean
 
-var enabled*: bool = true
+var gEnabled*: bool = true
 var smoothPercentage*: range[0.float32..0.99.float32] = 0.4
 var cfgHitboxes*: array[low(Hitboxes)..high(Hitboxes), bool]
 var cfgFovLimit: range[2.float32..360.float32] = 16
-var cfgFovLock: bool = false
+var cfgLazyMs: int64
+var cfgDistLimit: float
 var skipBullets: bool = false
 var bulletsToSkip: Natural = 0 
 cfgHitboxes[hsHead] = true
@@ -17,18 +18,25 @@ cfgHitboxes[hsUpperChest] = true
 
 var gPtrTarget: ptr Entity = nil
 var gBestHitbox: Option[Hitboxes] = none[Hitboxes]()
-var gLocked: bool = false
-var gFovLocked: bool = false
 
 proc centerText(text: string) = 
   let fontSize = igGetFontSize() * text.len.float32 / 2
   igSameLine(igGetWindowWidth() / 2 - fontSize + (fontSize / 2))
 
 section ImGui("Aimbot", nil):
-  igCheckbox("Enabled", enabled.addr)
+  igCheckbox("Enabled", gEnabled.addr)
+  igSpacing()  
+
+  igText("Lazy MS")
+  igAlignTextToFramePadding()
+  igSameLine()
+  igSliderInt("##lazyMs", cast[ptr int32](cfgLazyMs.addr), 0, 100)
   igSpacing()
 
-  igCheckbox("FoV Lock", cfgFovLock.addr)
+  igText("Distance Limit")
+  igAlignTextToFramePadding()
+  igSameLine()
+  igSliderFloat("##distanceLimit", cast[ptr float32](cfgDistLimit.addr), 0.float32, 1000.float32)
   igSpacing()
 
   igText("Lerp percentage")
@@ -99,7 +107,7 @@ section ImGui("Aimbot", nil):
 
 
 
-proc getClosestHitedge(pTarget: ptr Entity, cmd: ptr CUserCmd, bb: var tuple[min: Vector3f0, max: Vector3f0], hitbox: Hitboxes): Option[Vector3f0] = 
+proc getClosestHitedge(pTarget: ptr Entity, cmd: ptr CUserCmd, bb: var tuple[min: Vector3f0, max: Vector3f0], hitbox: Hitboxes): Vector3f0 = 
   let center = (bb.min + bb.max) / 2'f32
   let angToCenter = gLocalPlayer.eye().lookAt(center)
   let delta = angToCenter - cmd.viewAngles
@@ -112,19 +120,14 @@ proc getClosestHitedge(pTarget: ptr Entity, cmd: ptr CUserCmd, bb: var tuple[min
   if delta.pitch <= 0:
     offset.z = -offset.z
 
-  some(
-    bb.min + (bb.max - bb.min) * (offset + 0.5)
-  )
+  bb.min + (bb.max - bb.min) * (offset + 0.5)
 
 
-template reset =
-  gFovLocked = false
-  gLocked = false
-  gPtrTarget = nil
-  gBestHitbox = none[Hitboxes]()
+
   
 proc getBestEntity(cmd: ptr CUserCmd): bool =
   if gPtrTarget == nil:
+    gBestHitbox = none[Hitboxes]()
     var bestFov = high(float32)
     for pCurrentEntity in IEntityList.instance.iterate():
       if pCurrentEntity == gLocalPlayer or 
@@ -133,16 +136,30 @@ proc getBestEntity(cmd: ptr CUserCmd): bool =
         not pCurrentEntity.isPlayer() or
         pCurrentEntity.team() == gLocalPlayer.team() : continue
       
-      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) + gLocalPlayer.aimpunchAngles() * 2, gLocalPlayer.origin.`-`(pCurrentEntity.origin()).len())
+      let dist = gLocalPlayer.origin.`-`(pCurrentEntity.origin()).len()
+      if dist > cfgDistLimit: continue
+      
+      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) + gLocalPlayer.aimpunchAngles() * 2, dist)
       if currentFov < bestFov:
         gPtrTarget = pCurrentEntity
         bestFov = currentFov
         result = true
   elif gPtrTarget.dormant or gPtrTarget.lifeState() != elsAlive:
-    reset
+    gPtrTarget = nil
     result = getBestEntity(cmd)
   else:
     result = true
+
+
+var elapsedTime: Duration
+var lastTime: MonoTime = getMonoTime()
+
+template lazyUpdate(body: untyped) = 
+  if elapsedTime >= initDuration(cfgLazyMs * 10e6.int):
+    body
+    lastTime = getMonoTime()
+
+
       
 proc getBestHitbox(cmd: ptr CUserCmd, bestFov: var float32, bestBb: var tuple[min: Vector3f0, max: Vector3f0], bbCenter: var Vector3f0): bool =
   if not isSome(gBestHitbox):
@@ -153,51 +170,49 @@ proc getBestHitbox(cmd: ptr CUserCmd, bestFov: var float32, bestBb: var tuple[mi
       
       let bb = gPtrTarget.hitboxbb(currentHitbox)
       if bb.isSome():
-        bestBb = bb.unsafeGet()
-        bbCenter = bestBb.min + (bestBb.max - bestBb.min) * 0.5
-        let bbCenterAngles = gLocalPlayer.eye.lookAt(bbCenter)
+        let bb = bb.unsafeGet()
+        let localBbCenter = bb.min + (bb.max - bb.min) * 0.5
+        let bbCenterAngles = gLocalPlayer.eye.lookAt(localBbCenter)
         let currentFov = cmd.viewAngles.getFov(bbCenterAngles + gLocalPlayer.aimpunchAngles() * 2, gLocalPlayer.origin.`-`(gPtrTarget.origin()).len())
         if currentFov < bestFov:
+          bestBb = bb
+          bbCenter = localBbCenter
           gBestHitbox = some(currentHitbox)
           bestFov = currentFov
           result = true
   else:
-    let pos = gPtrTarget.hitbox(gBestHitbox.unsafeGet())
-    bestFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pos.unsafeGet()) + gLocalPlayer.aimpunchAngles() * 2, gLocalPlayer.origin.`-`(gPtrTarget.origin()).len())
-    result = true
+    lazyUpdate:
+      bestBb = gPtrTarget.hitboxbb(gBestHitbox.unsafeGet()).unsafeGet()
+      bbCenter = bestBb.min + (bestBb.max - bestBb.min) * 0.5
+      result = true
         
 
 section CreateMove(cmd):
-  if not enabled: return
+  if not gEnabled: return 
+
+  elapsedTime = getMonoTime() - lastTime
   if gLocalPlayer.life_state != elsAlive: return
 
-  var targetFov: float32
-  var targetBb: tuple[min: Vector3f0, max: Vector3f0]
-  var targetBbCenter: Vector3f0
+  var targetFov {.global.}: float32
+  var targetBb {.global.}: tuple[min: Vector3f0, max: Vector3f0]
+  var targetBbCenter {.global.}: Vector3f0
 
   if not getBestEntity(cmd): return
   if not getBestHitbox(cmd, targetFov, targetBb, targetBbCenter): return
   if GetAsyncKeyState(VK_LBUTTON).masked(1'i16 shl 15) != 0:
     if gLocalPlayer.isVisible(gPtrTarget, targetBbCenter):  
       if targetFov <= cfgFovLimit:
-        gLocked = true
-        var aimtarget = gPtrTarget.getClosestHitedge(cmd, targetBb, gBestHitbox.unsafeGet())
-        if aimtarget.isSome:
-          let dist = gLocalPlayer.origin.`-`(gPtrTarget.origin()).len()
-          let aimtarget = aimtarget.unsafeGet().velCompensated(gPtrTarget.velocity - gLocalPlayer.velocity, dist)
-          var aimtargetAngles = gLocalPlayer.eye.lookAt(aimtarget)
-          let aimpunch = gLocalPlayer.aimpunchAngles()
-          if aimpunch.yaw != 0 or aimpunch.pitch != 0: 
-            aimtargetAngles -= aimpunch * 2
-            aimtargetAngles.normalize()
-          
-          aimtargetAngles = normalized aimtargetAngles.angSmoothed(cmd.viewAngles, smoothPercentage)
-          if not(gFovLocked and cfgFovLock):
-            cmd.viewAngles = aimtargetAngles
-        else: reset
-      else: 
-        reset
-        gFovLocked = true
-    else: reset
-  else: 
-    reset
+        var aimtarget_tmp = gPtrTarget.getClosestHitedge(cmd, targetBb, gBestHitbox.unsafeGet())
+
+        let dist = gLocalPlayer.origin.`-`(gPtrTarget.origin()).len()
+        let aimtarget = aimtarget_tmp.velCompensated(gPtrTarget.velocity - gLocalPlayer.velocity, dist)
+        var aimtargetAngles = gLocalPlayer.eye.lookAt(aimtarget)
+        let aimpunch = gLocalPlayer.aimpunchAngles()
+        if aimpunch.yaw != 0 or aimpunch.pitch != 0: 
+          aimtargetAngles -= aimpunch * 2
+          aimtargetAngles.normalize()
+
+        aimtargetAngles = normalized aimtargetAngles.angSmoothed(cmd.viewAngles, 1.0 - smoothPercentage)
+        cmd.viewAngles = aimtargetAngles
+  else:
+    gPtrTarget = nil

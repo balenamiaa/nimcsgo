@@ -1,4 +1,4 @@
-import os, winim/lean, strutils
+import os, winim/lean, strutils, ../nimcsgo/renderer
 
 {.passC: "-I" & currentSourcePath.parentDir() & "\\imgui".}
 {.passC: "-I" & currentSourcePath.parentDir() & "\\imgui\\examples".}
@@ -21,7 +21,6 @@ const
 #include <windows.h>
 """.}
 
-type IDirect3DDevice9* {.importc: "IDirect3DDevice9", header: "<d3d9.h>".} = object
 type D3DPRESENT_PARAMETERS* {.importc: "D3DPRESENT_PARAMETERS", header: "<d3d9.h>".} = object
 
 {.emit:"""

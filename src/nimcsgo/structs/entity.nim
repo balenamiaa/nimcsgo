@@ -68,21 +68,25 @@ type
 
 vtableInterface EntityCollideable:
   idx 1:
-    proc mins*(self: ptr EntityCollideable): Vector3f0 {.thiscall.}
+    proc mins*(self: ptr EntityCollideable): ptr Vector3f0 {.thiscall.}
   idx 2:
-    proc maxs*(self: ptr EntityCollideable): Vector3f0 {.thiscall.}
+    proc maxs*(self: ptr EntityCollideable): ptr Vector3f0 {.thiscall.}
 vtableInterface EntityNetworkable:
   idx 2:
     proc getClientClass*(self: ptr EntityNetworkable): ptr ClientClass {.thiscall.}
   idx 10:
     proc index*(self: ptr EntityNetworkable): EntityIndex {.thiscall.}
-vtableInterface EntityAnimating:
+vtableInterface EntityRenderable:
   idx 8:
-    proc model*(self: ptr EntityAnimating): ptr EntityModel {.thiscall.}
+    proc model*(self: ptr EntityRenderable): ptr EntityModel {.thiscall.}
   idx 9:
-    proc drawModel*(self: ptr EntityAnimating, flags: int, alpha: byte): void {.thiscall.}
+    proc drawModel*(self: ptr EntityRenderable, flags: int, alpha: byte): void {.thiscall.}
   idx 13:
-    proc setupBones*(self: ptr EntityAnimating, outMatrix: ptr array[3, array[4, float32]], maxBones: uint, mask: uint, time: float32): bool {.thiscall.}
+    proc setupBones*(self: ptr EntityRenderable, outMatrix: ptr array[3, array[4, float32]], maxBones: uint, mask: uint, time: float32): bool {.thiscall.}
+  idx 17:
+    proc getRenderBounds*(self: ptr EntityRenderable, mins: var Vector3f0, maxs: var Vector3f0): void {.thiscall.}
+  idx 32:
+    proc renderableToWorldTransform*(self: ptr EntityRenderable): ptr array[3, array[4, float32]] {.thiscall.}
 
 vtableInterface Entity:
   idx 3:
@@ -92,7 +96,7 @@ vtableInterface Entity:
   idx 165:
     proc isWeapon*(self: ptr Entity): bool {.thiscall.}
 
-  proc animating*(self: ptr Entity): ptr EntityAnimating = cast[ptr EntityAnimating](cast[uint](self) + sizeof(pointer) * 1)
+  proc renderable*(self: ptr Entity): ptr EntityRenderable = cast[ptr EntityRenderable](cast[uint](self) + sizeof(pointer) * 1)
   proc networkable*(self: ptr Entity): ptr EntityNetworkable = cast[ptr EntityNetworkable](cast[uint](self) + sizeof(pointer) * 2)
 
   netvar("DT_BasePlayer", "m_iHealth", Entity): health * -> cint
@@ -116,8 +120,8 @@ vtableInterface Entity:
     type BoneMatrix = array[3, array[4, float32]]
     var boneMatrices: array[128, BoneMatrix]
 
-    if self.animating.setupBones(boneMatrices[0].addr, 128, BONE_USED_BY_HITBOX, 0'f32):
-      let studioModel = !IModelInfo.instance.studioModel(self.animating.model())
+    if self.renderable.setupBones(boneMatrices[0].addr, 128, BONE_USED_BY_HITBOX, 0'f32):
+      let studioModel = !IModelInfo.instance.studioModel(self.renderable.model())
       let hitboxSet = !studioModel.hitboxSet(0)
       let hitbox = !hitboxSet.hitbox(idx)
       let mins = hitbox.mins
@@ -142,8 +146,8 @@ vtableInterface Entity:
     type BoneMatrix = array[3, array[4, float32]]
     var boneMatrices: array[128, BoneMatrix]
 
-    if self.animating.setupBones(boneMatrices[0].addr, 128, BONE_USED_BY_HITBOX, 0'f32):
-      let studioModel = !IModelInfo.instance.studioModel(self.animating.model())
+    if self.renderable.setupBones(boneMatrices[0].addr, 128, BONE_USED_BY_HITBOX, 0'f32):
+      let studioModel = !IModelInfo.instance.studioModel(self.renderable.model())
       let hitboxSet = !studioModel.hitboxSet(0)
       let hitbox = !hitboxSet.hitbox(idx)
       let mins = hitbox.mins
@@ -166,3 +170,9 @@ vtableInterface Entity:
         )
   
   proc eye*(self: ptr Entity): Vector3f0 = self.origin + self.viewOffset
+
+
+  type CfRetTy = array[3, array[4, float32]]
+  proc coordFrame*(self: ptr Entity): CfRetTy = cast[ptr CfRetTy](cast[uint](self) + getOffset("DT_BaseEntity", "m_CollisionGroup") - 0x30)[]
+
+  
