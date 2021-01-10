@@ -5,30 +5,27 @@ type Config = tuple[
   cfgTimeToReach: float32,
   cfgRandLerpOffset: float32,
   cfgDelayMS: int,
-  cfgMaxLerp: range[0.01.float32..1.float32],
+  cfgMaxLerp: float32,
   cfgHitboxes: array[low(Hitboxes)..high(Hitboxes), bool],
   cfgFovLimit: float32,
   cfgDistLimit: float32,
   cfgRcsEnabled: bool,
-  cfgRcsScale: range[0.5.float32..2.5.float32]
+  cfgRcsScale: float32
 ]
 
 var gEnabled*: bool = true
 var gInMemConfiguration: array[low(WeaponId)..high(WeaponId), Config]
 var skipBullets: bool = false
 var bulletsToSkip: Natural = 0 
-
+let configFilePath = getConfigDir() & "nimcsgo_aimbot.json" 
 
 randomize()
 
 var gPtrCurrentWeapon: ptr Entity
 
-
 proc centerText(text: string) {.inline.} = 
   let fontSize = igGetFontSize() * text.len.float32 / 2
   igSameLine(igGetWindowWidth() / 2 - fontSize + (fontSize / 2))
-
-
 
 
 proc currentConfig(): Config = 
@@ -126,9 +123,6 @@ proc settingsForWeapon(weaponId: WeaponId) =
   igListBoxFooter()
   igSpacing()
 
-
-let configFilePath = getConfigDir() & "nimcsgo_aimbot.json" 
-
 proc saveConfig*() =
   var file = configFilePath.open(fmWrite)
   file.write($ gInMemConfiguration.toJson())
@@ -136,8 +130,6 @@ proc saveConfig*() =
 
 proc loadConfig*() = 
   if fileExists(configFilePath): fromJson(gInMemConfiguration, parseFile(configFilePath))
-
-loadConfig()
 
 section ImGui("Aimbot", nil):
   igCheckbox("Enabled", gEnabled.addr)
@@ -271,6 +263,9 @@ proc aim(cmd: ptr CUserCmd) =
   cmd.viewAngles = aimtargetAngles
 
 
+
+section InitRender(pDevice):
+  loadConfig() #TODO: Proper Initialization phase.
 
 section CreateMove(cmd):
   if not gEnabled: return 
