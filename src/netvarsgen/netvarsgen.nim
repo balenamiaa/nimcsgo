@@ -6,6 +6,8 @@ import ../nimcsgo/interfaces/ibaseclient, ../nimcsgo/helpers, ../nimcsgo/structs
 const outFile =  currentSourcePath.parentDir.parentDir & "/nimcsgo/netvars.nim" 
 
 
+
+
 proc Entry(hInstance: HINSTANCE) {.cdecl, exportc.} =
   IBaseClient.setInstance(createInterface("client.dll", "VClient018"))
   var netvars: Table[string, uint]
@@ -15,20 +17,15 @@ proc Entry(hInstance: HINSTANCE) {.cdecl, exportc.} =
 
     for idx in 0..<recvTable.nProps:
       let pProp = recvTable.pProps + idx.int
-      if pProp == nil or pProp.propName[0].isDigit or pProp.propName == "baseclass": 
+      if pProp == nil or pProp.propName[0].isDigit or pProp.propName[0] == '"' or pProp.propName == "baseclass": 
         continue
 
-      let child = pProp.dataTable
-      if pProp.propKind == ptDataTable and child != nil and child.tableName[0] == 'D':
-        if child.nProps > 0: storeProps(groupName, child, pProp.offset)
+      let children = pProp.dataTable
+      if pProp.propKind == ptDataTable and children != nil and children.tableName[0] == 'D':
+        if children.nProps > 0: storeProps(groupName, children, pProp.offset)
       
       let formatted = fmt"{groupName}=>{pProp.propName}"
-      if not(formatted in netvars) and(
-        pProp.propKind == ptInt or 
-        pProp.propKind == ptFloat or 
-        pProp.propKind == ptString or 
-        pProp.propKind == ptVec or 
-        pProp.propKind == ptVecXY): netvars[formatted] = pProp.offset + childOffset
+      if not(formatted in netvars): netvars[formatted] = pProp.offset + childOffset
 
   for clientClass in IBaseClient.instance.clientClassTail.children():
     let recvTable = clientClass.recvTable

@@ -1,8 +1,9 @@
 import ../netvarinterface, ../vtableinterface, ./vector, ./studio, ./entitymodel, ../interfaces/imodelinfo, ./clientclass, ../helpers
-import options
+import options, bitops
 
 type
   EntityIndex* = Natural
+  EntityHandle* = distinct uint
   EntityLifeState* {.size: sizeof(cuint).} = enum
     elsAlive
     elsDying
@@ -64,6 +65,133 @@ type
     ishltv*: bool
     customfiles*: array[4, cuint]
     filesdownloaded*: cuchar
+  WeaponId* = distinct cuint
+
+
+const wiNone*: WeaponId = 0.WeaponId
+const wiDEAGLE*: WeaponId = 1.WeaponId
+const wiELITE*: WeaponId = 2.WeaponId
+const wiFIVESEVEN*: WeaponId = 3.WeaponId
+const wiGLOCK*: WeaponId = 4.WeaponId
+const wiAK47*: WeaponId = 7.WeaponId
+const wiAUG*: WeaponId = 8.WeaponId
+const wiAWP*: WeaponId = 9.WeaponId
+const wiFAMAS*: WeaponId = 10.WeaponId
+const wiG3SG1*: WeaponId = 11.WeaponId
+const wiGALILAR*: WeaponId = 13.WeaponId
+const wiM249*: WeaponId = 14.WeaponId
+const wiM4A1*: WeaponId = 16.WeaponId
+const wiMAC10*: WeaponId = 17.WeaponId
+const wiP90*: WeaponId = 19.WeaponId
+const wiMP5SD*: WeaponId = 23.WeaponId
+const wiUMP45*: WeaponId = 24.WeaponId
+const wiXM1014*: WeaponId = 25.WeaponId
+const wiBIZON*: WeaponId = 26.WeaponId
+const wiMAG7*: WeaponId = 27.WeaponId
+const wiNEGEV*: WeaponId = 28.WeaponId
+const wiSAWEDOFF*: WeaponId = 29.WeaponId
+const wiTEC9*: WeaponId = 30.WeaponId
+const wiTASER*: WeaponId = 31.WeaponId
+const wiHKP2000*: WeaponId = 32.WeaponId
+const wiMP7*: WeaponId = 33.WeaponId
+const wiMP9*: WeaponId = 34.WeaponId
+const wiNOVA*: WeaponId = 35.WeaponId
+const wiP250*: WeaponId = 36.WeaponId
+const wiSHIELD*: WeaponId = 37.WeaponId
+const wiSCAR20*: WeaponId = 38.WeaponId
+const wiSG556*: WeaponId = 39.WeaponId
+const wiSSG08*: WeaponId = 40.WeaponId
+const wiKNIFEGG*: WeaponId = 41.WeaponId
+const wiKNIFE*: WeaponId = 42.WeaponId
+const wiFLASHBANG*: WeaponId = 43.WeaponId
+const wiHEGRENADE*: WeaponId = 44.WeaponId
+const wiSMOKEGRENADE*: WeaponId = 45.WeaponId
+const wiMOLOTOV*: WeaponId = 46.WeaponId
+const wiDECOY*: WeaponId = 47.WeaponId
+const wiINCGRENADE*: WeaponId = 48.WeaponId
+const wiC4*: WeaponId = 56.WeaponId
+const wiHEALTHSHOT*: WeaponId = 57.WeaponId
+const wiKNIFE_T*: WeaponId = 59.WeaponId
+const wiM4A1_SILENCER*: WeaponId = 60.WeaponId
+const wiUSP_SILENCER*: WeaponId = 61.WeaponId
+const wiCZ75A*: WeaponId = 63.WeaponId
+const wiREVOLVER*: WeaponId = 64.WeaponId
+const wiTAGRENADE*: WeaponId = 68.WeaponId
+const wiMelee*: WeaponId = 74.WeaponId
+
+proc `$`*(weaponid: WeaponId): string =
+  case weaponId:
+  of wiNone: "None"
+  of wiAK47: "Ak 47"
+  of wiAUG: "Aug"
+  of wiAWP: "Awp"
+  of wiBIZON: "Bizon"
+  of wiC4: "C4"
+  of wiCZ75A: "CZ75A"
+  of wiDEAGLE: "Deagle"
+  of wiDECOY: "Decoy Grenade"
+  of wiELITE: "Elite"
+  of wiFAMAS: "Famas"
+  of wiFIVESEVEN: "Five Seven"
+  of wiFLASHBANG: "Flasbang Grenade"
+  of wiG3SG1: "G3SG1"
+  of wiGALILAR: "GALIL AR"
+  of wiGLOCK: "Glock"
+  of wiHEALTHSHOT: "Healthshot"
+  of wiHEGRENADE: "HE Grenade"
+  of wiHKP2000: "HKP 2000"
+  of wiINCGRENADE: "Incendiary Grenade"
+  of wiKNIFE: "Knife"
+  of wiKNIFEGG: "Knife GG"
+  of wiKNIFE_T: "Knife T"
+  of wiM249: "M249"
+  of wiM4A1: "M4A1"
+  of wiM4A1_SILENCER: "M4A1 Silencer"
+  of wiMAC10: "Mac 10"
+  of wiMAG7: "Mag 7"
+  of wiMOLOTOV: "Russki Grenade"
+  of wiMP5SD: "MP5SD"
+  of wiMP7: "Mp7"
+  of wiMP9: "Mp9"
+  of wiMelee: "Melee"
+  of wiNEGEV: "Negev"
+  of wiNOVA: "Nova"
+  of wiP250: "P-250"
+  of wiP90: "P90"
+  of wiREVOLVER: "Revolver"
+  of wiSAWEDOFF: "Sawed off"
+  of wiSCAR20: "Scar 20"
+  of wiSG556: "SG 556"
+  of wiSHIELD: "Shield"
+  of wiSMOKEGRENADE: "Smoke Grenade"
+  of wiSSG08: "Scout"
+  of wiTAGRENADE: "TA Grenade"
+  of wiTASER: "Zeus"
+  of wiTEC9: "Tec9"
+  of wiUMP45: "Ump 45"
+  of wiUSP_SILENCER: "Usp Silencer"
+  of wiXM1014: "wiXM1014"
+  else: "Unknown Weapon"
+
+
+const POSSIBLE_ITEMS = [
+  wiNone, wiAK47, wiAUG, wiAWP, wiBIZON, wiC4, wiCZ75A, wiDEAGLE, wiDECOY, wiELITE, wiFAMAS, wiFIVESEVEN, wiFLASHBANG, wiG3SG1, wiGALILAR, wiGLOCK,
+  wiHEALTHSHOT, wiHEGRENADE, wiINCGRENADE, wiKNIFE, wiKNIFEGG, wiKNIFE_T, wiM249, wiM249, wiHKP2000, wiMP7, wiMP9, wiNEGEV, wiNOVA, wiP90, wiREVOLVER, 
+  wiSAWEDOFF, wiSCAR20, wiSG556, wiSHIELD, wiSMOKEGRENADE, wiSSG08, wiTAGRENADE, wiMAG7, wiMAC10, wiMOLOTOV, wiMP5SD, wiUMP45, wiXM1014, wiUSP_SILENCER,
+  wiM4A1, wiM4A1_SILENCER, wiP250, wiMelee
+]
+
+iterator items*(_: typedesc[WeaponId]): WeaponId =
+
+  for item in POSSIBLE_ITEMS:
+    yield item
+
+proc low*(_: typedesc[WeaponId]): int = wiNone.int
+proc high*(_: typedesc[WeaponId]): int = wiMelee.int
+
+proc `==`*(a, b: WeaponId): bool {.borrow.}
+
+converter entityIndexFromEntityHandle*(handle: EntityHandle): EntityIndex = (bitand(handle.uint, 0xFFF)).EntityIndex
 
 
 vtableInterface EntityCollideable:
@@ -112,6 +240,7 @@ vtableInterface Entity:
   netvar("DT_BaseEntity", "m_iTeamNum", Entity): team * -> EntityTeam
   netvar("DT_BasePlayer", "m_lifeState", Entity): lifeState * -> EntityLifeState
   netvar("DT_BasePlayer", "m_fFlags", Entity): flags * -> EntityFlag
+  netvar("DT_BaseCombatCharacter", "m_hActiveWeapon", Entity): hActiveWeapon * -> EntityHandle
 
   proc hitbox*(self: ptr Entity, idx: Hitboxes,
   offsetX: range[0.float32..1.float32] = 0.5,
@@ -174,5 +303,10 @@ vtableInterface Entity:
 
   type CfRetTy = array[3, array[4, float32]]
   proc coordFrame*(self: ptr Entity): CfRetTy = cast[ptr CfRetTy](cast[uint](self) + getOffset("DT_BaseEntity", "m_CollisionGroup") - 0x30)[]
+  proc weaponId*(self: ptr Entity): WeaponId = cast[ptr WeaponId](
+    cast[uint](self) + 
+    getOffset("DT_BaseAttributableItem", "m_AttributeManager") + 
+    getOffset("DT_BaseAttributableItem", "m_iItemDefinitionIndex"
+  ))[]
 
   

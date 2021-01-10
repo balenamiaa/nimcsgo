@@ -14,7 +14,7 @@ var enabled*: bool = true
 var boxes = newSeqOfCap[Data](64)
 
 proc getBB(pEntity: ptr Entity, top, left, bottom, right: var float32): bool {.inline.} = 
-
+  if pEntity.renderable() == nil: return  
   var min, max: Vector3f0 
   pEntity.renderable.getRenderBounds(min, max)
 
@@ -67,7 +67,8 @@ section PaintTraverse(_, _, _):
 
 
   if gLocalPlayer.isNil: return
-
+  if gLocalPlayer.life_state != elsAlive: return
+  
   for pEnt in IEntityList.instance.iterate():
     if pEnt == gLocalPlayer or 
     pEnt.dormant or 

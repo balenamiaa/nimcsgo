@@ -50,6 +50,12 @@ implOpAng(`-`, `-=`)
 implOpAng(`*`, `*=`)
 implOpAng(`/`, `/=`)
 
+
+proc `==`*(a,b: QAngle): bool {.borrow.}
+
+
+
+
 converter fromArray*(arr: array[1, float32]): Vector3f0 = Vector3f0(x: arr[0], y: 0, z: 0)
 converter fromArray*(arr: array[2, float32]): Vector3f0 = Vector3f0(x: arr[0], y: arr[1], z: 0)
 converter fromArray*(arr: array[3, float32]): Vector3f0 = Vector3f0(x: arr[0], y: arr[1], z: arr[2])
@@ -59,6 +65,8 @@ proc initVector3f0*(x, y, z: ToFloat32): Vector3f0 = Vector3f0(x: x.float32(), y
 
 proc yaw*(self: QAngle): float32 = self.y
 proc pitch*(self: QAngle): float32 = self.x
+proc yaw*(self: var QAngle): var float32 = self.y
+proc pitch*(self: var QAngle): var float32 = self.x
 
 proc map*[T: FromFloat32, S: ToFloat32](self: Vector3f0, operation: proc(val: T): S): Vector3f0 = 
   Vector3f0(x: operation(T(self.x)).float32, y: operation(T(self.y)).float32, z: operation(T(self.z)).float32)
@@ -92,12 +100,12 @@ proc normalize*(self: var QAngle) =
   if self.x > 90.float32: 
     self.x = -90.float32 + (self.x mod 90.float32)
   elif self.x < -90.float32:
-    self.x = 90.float32 - (self.x mod 90.float32)
+    self.x = 90.float32 + (self.x mod 90.float32)
 
   if self.y > 180.float32: 
     self.y = -180.float32 + (self.y mod 180.float32)
   elif self.y < -180.float32:
-    self.y = 180.float32 - (self.y mod 180.float32)
+    self.y = 180.float32 + (self.y mod 180.float32)
   
   self.z = 0
 
@@ -105,16 +113,21 @@ proc normalized*(self: QAngle): QAngle =
   result = self
   
 
-  if self.x > 90.float32: 
+  if self.x >= 90.float32: 
     result.x = -90.float32 + (self.x mod 90.float32)
   elif self.x < -90.float32:
-    result.x = 90.float32 - (self.x mod 90.float32)
+    result.x = 90.float32 + (self.x mod 90.float32)
 
-  if self.y > 180.float32: 
+  if self.y >= 180.float32: 
     result.y = -180.float32 + (self.y mod 180.float32)
   elif self.y < -180.float32:
-    result.y = 180.float32 - (self.y mod 180.float32)
+    result.y = 180.float32 + (self.y mod 180.float32)
   
+  if result.x == -90:
+    result.x = 89.89
+
+  if result.y == -180:
+    result.y = 179.89
   result.z = 0
 
 proc `$`*(self: Vector3f0): string =
@@ -132,6 +145,8 @@ proc `!@`*[T: ToFloat32](intermediateVec: sink Vector3f0, z: T): Vector3f0 =
   moved.z = z.float32
   moved
 
+proc initQAngle*(yaw, pitch, roll: ToFloat32): QAngle = QAngle(pitch.float32 !@ yaw.float32 !@ 0'f32) 
+proc initQAngle*(yaw, pitch: ToFloat32): QAngle = QAngle(pitch.float32 !@ yaw.float32 !@ 0'f32) 
 
 proc lookAt*(src: Vector3f0, dest: Vector3f0): QAngle = 
   let delta = dest - src
@@ -148,4 +163,9 @@ proc getFov*(curViewAng: QAngle, targetViewAng: QAngle, dist: float): float64 =
 
 
 proc velCompensated*(src: Vector3f0, relVec: Vector3f0, dist: float): Vector3f0 = src + relVec / dist
-proc angSmoothed*(targetViewAng: QAngle, curViewAng: QAngle, smoothPercentage: range[0e0..1e0]): QAngle = curViewAng + (normalized targetViewAng - curViewAng) * smoothPercentage
+proc lerp*(targetViewAng: QAngle, curViewAng: QAngle, t: float64): QAngle = 
+  var diff = normalized: targetViewAng - curViewAng
+
+
+  normalized: curViewAng + diff * t
+

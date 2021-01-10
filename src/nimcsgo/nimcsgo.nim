@@ -5,6 +5,11 @@ import ./interfaces, ./structs/cusercmd, ./modules, ./helpers, imgui, ./structs/
 
 
 
+proc handleException(source: string) = discard
+ # let exception = getCurrentException()
+  
+ # echo "From " & source & ":  " & exception.getStackTrace() 
+
 
 var ogWndProc {.global.}: proc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = nil
 var ogPresent {.global.}: proc(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = nil
@@ -50,26 +55,25 @@ proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RE
 
       try:
         for fn in gInitRenderProcs: fn(pDevice)
-      except:
-        #echo "Crashed with exception: " & getCurrentExceptionMsg()
-        sleep(10000)
+      except: handleException("InitRender")
       isInitialized = true
   else:
     try:
       for fn in gRenderFrameProcs: fn(pDevice)
-    except:
-      #echo "Crashed with exception: " & getCurrentExceptionMsg()
-      sleep(10000)
+    except: handleException("RenderFrame")
     dx9NewFrame()
     win32NewFrame()
     igNewFrame()
     if base.gGuiEnabled:
       try:
         for fn in gImGuiProcs: fn() 
-      except:
-        #echo "Crashed with exception: " & getCurrentExceptionMsg()
-        sleep(10000)
+      except: handleException("ImGui")
     igEndFrame()
+    {.emit:"""
+      `pDevice`->SetRenderState(D3DRS_ZENABLE, FALSE);
+      `pDevice`->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+      `pDevice`->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+    """.} #TODO: Create a proper d3dx9 wrapper instead of using emit all over the place
     igRender()
     dx9RenderDrawData()
 
@@ -113,9 +117,7 @@ proc realEntry =
     if gLocalPlayer != nil:
       try:
         for fn in gCreateMoveProcs: fn(cmd)
-      except:
-        #echo "Crashed with exception: " & getCurrentExceptionMsg()
-        sleep(10000)
+      except: handleException("CreateMove")
 
     cmd.viewAngles.normalize()
     cmd.viewAngles.clamp()
@@ -127,15 +129,11 @@ proc realEntry =
     if panelName == "MatSystemTopPanel":
       try:
         for fn in gPaintTraverseProcs: fn(panelId, forceRePaint, allowForce)
-      except:
-        #echo "Crashed with exception: " & getCurrentExceptionMsg()
-        sleep(10000)
+      except: handleException("PaintTraverse")
 
 
 proc Entry(hInstance: HINSTANCE) {.cdecl, exportc.} =
   try:
     realEntry()
-  except:
-    #echo "Crashed with exception: " & getCurrentExceptionMsg()
-    sleep(10000)
+  except: handleException("Entry")
      

@@ -1,62 +1,120 @@
-import base, bitops, os, options, gara, math, times, std/monotimes
+import base, bitops, os, options, gara, math, times, random, tables, json, std/[monotimes, jsonutils]
 import winim/lean
 
+type Config = tuple[
+  cfgTimeToReach: float32,
+  cfgRandLerpOffset: float32,
+  cfgDelayMS: int,
+  cfgMaxLerp: range[0.01.float32..1.float32],
+  cfgHitboxes: array[low(Hitboxes)..high(Hitboxes), bool],
+  cfgFovLimit: float32,
+  cfgDistLimit: float32,
+  cfgRcsEnabled: bool,
+  cfgRcsScale: range[0.5.float32..2.5.float32]
+]
+
 var gEnabled*: bool = true
-var smoothPercentage*: range[0.float32..0.99.float32] = 0.4
-var cfgHitboxes*: array[low(Hitboxes)..high(Hitboxes), bool]
-var cfgFovLimit: range[2.float32..360.float32] = 16
-var cfgLazyMs: int64
-var cfgDistLimit: float
+var gInMemConfiguration: array[low(WeaponId)..high(WeaponId), Config]
 var skipBullets: bool = false
 var bulletsToSkip: Natural = 0 
-cfgHitboxes[hsHead] = true
-cfgHitboxes[hsChest] = true
-cfgHitboxes[hsLowerChest] = true
-cfgHitboxes[hsUpperChest] = true
 
 
+randomize()
 
-var gPtrTarget: ptr Entity = nil
-var gBestHitbox: Option[Hitboxes] = none[Hitboxes]()
+var gPtrCurrentWeapon: ptr Entity
 
-proc centerText(text: string) = 
+
+proc centerText(text: string) {.inline.} = 
   let fontSize = igGetFontSize() * text.len.float32 / 2
   igSameLine(igGetWindowWidth() / 2 - fontSize + (fontSize / 2))
 
-section ImGui("Aimbot", nil):
-  igCheckbox("Enabled", gEnabled.addr)
-  igSpacing()  
 
-  igText("Lazy MS")
+
+
+proc currentConfig(): Config = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  gInMemConfiguration[gPtrCurrentWeapon.weaponId().int]
+proc getConfig(weaponId: WeaponId): var Config = gInMemConfiguration[weaponId.int]
+proc cfgTimeToReach*: float32 =
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgTimeToReach
+proc cfgRandLerpOffset*: float32 = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgRandLerpOffset
+proc cfgDelayMS*: int = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgDelayMS
+proc cfgMaxLerp*: range[0.01.float32..1.float32] = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgMaxLerp
+proc cfgHitboxes*: array[low(Hitboxes)..high(Hitboxes), bool] = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgHitboxes
+proc cfgFovLimit*: float32 = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgFovLimit
+proc cfgDistLimit*: float32 = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgDistLimit
+proc cfgRcsEnabled*: bool = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgRcsEnabled
+proc cfgRcsScale*: float32 = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgRcsScale
+
+
+proc settingsForWeapon(weaponId: WeaponId) =
+  igText("Delay")
   igAlignTextToFramePadding()
   igSameLine()
-  igSliderInt("##lazyMs", cast[ptr int32](cfgLazyMs.addr), 0, 100)
+  igSliderInt("##delay", cast[ptr int32](getConfig(weaponId).cfgDelayMS.addr), 0, 100)
+
   igSpacing()
 
   igText("Distance Limit")
   igAlignTextToFramePadding()
   igSameLine()
-  igSliderFloat("##distanceLimit", cast[ptr float32](cfgDistLimit.addr), 0.float32, 1000.float32)
+  igSliderFloat("##distanceLimit", cast[ptr float32](getConfig(weaponId).cfgDistLimit.addr), 0.float32, 1000.float32)
+
   igSpacing()
 
-  igText("Lerp percentage")
+  igText("Time To Reach")
   igAlignTextToFramePadding()
   igSameLine()
-  igSliderFloat("##Lerp percentage", cast[ptr float32](smoothPercentage.addr), 0.float32, 0.99.float32)
+  igSliderFloat("##timeToReach", getConfig(weaponId).cfgTimeToReach.addr, 0.0, 10.0)
+
+  igSpacing()
+
+  igText("Max Lerp")
+  igAlignTextToFramePadding()
+  igSameLine()
+  igSliderFloat("##maxLerp", cast[ptr float32](getConfig(weaponId).cfgMaxLerp.addr), 0.01, 1.0)
+
+  igSpacing()
+
+  igText("Random Lerp Offset")
+  igAlignTextToFramePadding()
+  igSameLine()
+  igSliderFloat("##randLerpOffsetMin", getConfig(weaponId).cfgRandLerpOffset.addr, 0.0, 1.0)
+
   igSpacing()
 
   igText("FoV Limit")
   igAlignTextToFramePadding()
   igSameLine()
-  igSliderFloat("##fovLimit", cast[ptr float32](cfgFovLimit.addr), 2.float32, 360.float32)
+  igSliderFloat("##fovLimit", cast[ptr float32](getConfig(weaponId).cfgFovLimit.addr), 2.float32, 90.float32)
+
   igSpacing()
 
-  igText("Skip Bullets")
+  igText("Rcs Enabled")
   igAlignTextToFramePadding()
   igSameLine()
-  igCheckbox("##skipBullets", skipBullets.addr)
+  igCheckbox("##rcsEnabled", getConfig(weaponId).cfgRcsEnabled.addr)
   igSameLine()
-  igSliderInt("##numOfBulletsToSkip", cast[ptr int32](bulletsToSkip.addr), 1, 10)
+  igSpacing()
+  igSliderFloat("##rcsScale", cast[ptr float32](getConfig(weaponId).cfgRcsScale.addr), 0.5.float32, 2.5.float32)
+
   igSpacing()
 
   centerText("Hitboxes to scan")
@@ -64,48 +122,69 @@ section ImGui("Aimbot", nil):
   igAlignTextToFramePadding()
   igListBoxHeader("##scanHitbox", len(low(Hitboxes)..high(Hitboxes)).int32)
   for hitbox in low(Hitboxes)..high(Hitboxes):
-    igSelectable($hitbox, cfgHitboxes[hitbox].addr)
+    igSelectable($hitbox, getConfig(weaponId).cfgHitboxes[hitbox].addr)
   igListBoxFooter()
   igSpacing()
 
-  igText("Presets")
-  igColumns(2)
-  igSeparator()
+
+let configFilePath = getConfigDir() & "nimcsgo_aimbot.json" 
+
+proc saveConfig*() =
+  var file = configFilePath.open(fmWrite)
+  file.write($ gInMemConfiguration.toJson())
+  file.close()
+
+proc loadConfig*() = 
+  if fileExists(configFilePath): fromJson(gInMemConfiguration, parseFile(configFilePath))
+
+loadConfig()
+
+section ImGui("Aimbot", nil):
+  igCheckbox("Enabled", gEnabled.addr)
   igSpacing()
-  igText("FoV Presets"); igNextColumn()
-  igText("Lerp Presets"); igNextColumn()
-  igSeparator()
-  if igButton("Ultra Low"): cfgFovLimit = 3
-  igNextColumn()
-  if igButton("Ultra Low##2"): smoothPercentage = 0.1
-  igNextColumn()
-  if igButton("Low"): cfgFovLimit = 7
-  igNextColumn()
-  if igButton("Low##2"): smoothPercentage = 0.15
-  igNextColumn()
-  if igButton("Quasi Low-Mid"): cfgFovLimit = 12
-  igNextColumn()
-  if igButton("Quasi Low-Mid##2"): smoothPercentage = 0.25
-  igNextColumn()
-  if igButton("Mid"): cfgFovLimit = 16
-  igNextColumn()
-  if igButton("Mid##2"): smoothPercentage = 0.35
-  igNextColumn()
-  if igButton("Quasi Mid-High"): cfgFovLimit = 24
-  igNextColumn()
-  if igButton("Quasi Mid-High##2"): smoothPercentage = 0.45
-  igNextColumn()
-  if igButton("High"): cfgFovLimit = 30
-  igNextColumn()
-  if igButton("High##2"): smoothPercentage = 0.55
-  igNextColumn()
-  if igButton("Ultra High"): cfgFovLimit = 45
-  igNextColumn()
-  if igButton("Ultra High##2"): smoothPercentage = 0.75
-  igColumns(1)
+
+  var selected {.global.}: Option[WeaponId]
+
+  igBeginChild("Left Pane", ImVec2(x: 150, y: 0), true)
+
+  for weapon in WeaponId:
+    if weapon == wiNone: continue
+    if igSelectable($weapon, isSome(selected) and selected.unsafeGet() == weapon):
+      selected = some(weapon)
+
+  igEndChild()
+
+  igSameLine()
+
+  igBeginGroup()
+  igBeginChild("Right Pane")
+  if selected.isSome():
+    settingsForWeapon(selected.unsafeGet())
+  igEndChild()
+
+  if igButton("Save"): saveConfig()
+  igSameLine()
+  if igButton("Load"): loadConfig()
+
+  igEndGroup()
+
+  
 
 
+type
+  TargetState* = enum
+    tsNotFound
+    tsFound
+    tsChanged
+    tsSame
 
+var gPtrTarget: ptr Entity
+var gBestHitbox: Option[Hitboxes]
+var gInitialTargetFov: float32
+var gTargetBB: tuple[min: Vector3f0, max: Vector3f0]
+var gTargetBBCenter: Vector3f0
+var gCurrentLerpValue: float32
+var gStartedTime,gPrevBBUpdateTime: MonoTime
 
 proc getClosestHitedge(pTarget: ptr Entity, cmd: ptr CUserCmd, bb: var tuple[min: Vector3f0, max: Vector3f0], hitbox: Hitboxes): Vector3f0 = 
   let center = (bb.min + bb.max) / 2'f32
@@ -122,10 +201,7 @@ proc getClosestHitedge(pTarget: ptr Entity, cmd: ptr CUserCmd, bb: var tuple[min
 
   bb.min + (bb.max - bb.min) * (offset + 0.5)
 
-
-
-  
-proc getBestEntity(cmd: ptr CUserCmd): bool =
+proc getBestEntity(cmd: ptr CUserCmd): TargetState =
   if gPtrTarget == nil:
     gBestHitbox = none[Hitboxes]()
     var bestFov = high(float32)
@@ -137,34 +213,25 @@ proc getBestEntity(cmd: ptr CUserCmd): bool =
         pCurrentEntity.team() == gLocalPlayer.team() : continue
       
       let dist = gLocalPlayer.origin.`-`(pCurrentEntity.origin()).len()
-      if dist > cfgDistLimit: continue
+      if dist <= cfgDistLimit(): continue
       
       let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) + gLocalPlayer.aimpunchAngles() * 2, dist)
       if currentFov < bestFov:
         gPtrTarget = pCurrentEntity
         bestFov = currentFov
-        result = true
+        result = tsFound
   elif gPtrTarget.dormant or gPtrTarget.lifeState() != elsAlive:
     gPtrTarget = nil
     result = getBestEntity(cmd)
+    if result != tsNotFound:
+      result = tsChanged
   else:
-    result = true
-
-
-var elapsedTime: Duration
-var lastTime: MonoTime = getMonoTime()
-
-template lazyUpdate(body: untyped) = 
-  if elapsedTime >= initDuration(cfgLazyMs * 10e6.int):
-    body
-    lastTime = getMonoTime()
-
-
+    result = tsSame
       
 proc getBestHitbox(cmd: ptr CUserCmd, bestFov: var float32, bestBb: var tuple[min: Vector3f0, max: Vector3f0], bbCenter: var Vector3f0): bool =
   if not isSome(gBestHitbox):
     bestFov = high(float32)
-    for currentHitbox, enabled in cfgHitboxes:
+    for currentHitbox, enabled in cfgHitboxes():
       let currentHitbox = Hitboxes(currentHitbox)
       if not enabled: continue
       
@@ -180,39 +247,67 @@ proc getBestHitbox(cmd: ptr CUserCmd, bestFov: var float32, bestBb: var tuple[mi
           gBestHitbox = some(currentHitbox)
           bestFov = currentFov
           result = true
-  else:
-    lazyUpdate:
-      bestBb = gPtrTarget.hitboxbb(gBestHitbox.unsafeGet()).unsafeGet()
-      bbCenter = bestBb.min + (bestBb.max - bestBb.min) * 0.5
-      result = true
-        
+  elif inNanoSeconds(getMonoTime() - gPrevBBUpdateTime) div 10e6.int >= cfgDelayMS():
+    bestBb = gPtrTarget.hitboxbb(gBestHitbox.unsafeGet()).unsafeGet()
+    bbCenter = bestBb.min + (bestBb.max - bestBb.min) * 0.5
+    result = true
+    gPrevBBUpdateTime = getMonoTime()
+
+
+proc aim(cmd: ptr CUserCmd) = 
+
+  let dist = gLocalPlayer.origin.`-`(gPtrTarget.origin()).len()
+  let aimtarget_tmp = gPtrTarget.getClosestHitedge(cmd, gTargetBB, gBestHitbox.unsafeGet())
+
+  let aimtarget = aimtarget_tmp.velCompensated(gPtrTarget.velocity - gLocalPlayer.velocity, dist)
+  var aimtargetAngles = gLocalPlayer.eye.lookAt(aimtarget)
+
+  let aimpunch = gLocalPlayer.aimpunchAngles()
+  if cfgRcsEnabled() and (aimpunch.yaw != 0 or aimpunch.pitch != 0): 
+    aimtargetAngles -= aimpunch * cfgRcsScale()
+    aimtargetAngles.normalize()
+    
+  aimtargetAngles = normalized aimtargetAngles.lerp(cmd.viewAngles, gCurrentLerpValue)
+  cmd.viewAngles = aimtargetAngles
+
+
 
 section CreateMove(cmd):
   if not gEnabled: return 
 
-  elapsedTime = getMonoTime() - lastTime
-  if gLocalPlayer.life_state != elsAlive: return
+  if gLocalPlayer.life_state != elsAlive:
+    gPtrTarget = nil
+    return
 
-  var targetFov {.global.}: float32
-  var targetBb {.global.}: tuple[min: Vector3f0, max: Vector3f0]
-  var targetBbCenter {.global.}: Vector3f0
+  gPtrCurrentWeapon = gLocalPlayer.pActiveWeapon()
+  if gPtrCurrentWeapon == nil:
+    gPtrTarget = nil
+    return
 
-  if not getBestEntity(cmd): return
-  if not getBestHitbox(cmd, targetFov, targetBb, targetBbCenter): return
+  case getBestEntity(cmd):
+  of tsFound, tsChanged:
+    gStartedTime = getMonoTime()
+  of tsSame: discard
+  of tsNotFound: return
+  #echo "Got Entity"
+  if not getBestHitbox(cmd, gInitialTargetFov, gTargetBB, gTargetBBCenter): return
+  #echo "Got Hitbox"
   if GetAsyncKeyState(VK_LBUTTON).masked(1'i16 shl 15) != 0:
-    if gLocalPlayer.isVisible(gPtrTarget, targetBbCenter):  
-      if targetFov <= cfgFovLimit:
-        var aimtarget_tmp = gPtrTarget.getClosestHitedge(cmd, targetBb, gBestHitbox.unsafeGet())
+    if gLocalPlayer.isVisible(gPtrTarget, gTargetBBCenter):  
+      if gInitialTargetFov <= cfgFovLimit():
+        #echo "In Fov"
+        if cfgTimeToReach() != 0.0:
+          let startedTimeElapsed = inNanoSeconds(getMonoTime() - gStartedTime).float32 / 10e9
+          if startedTimeElapsed< cfgTimeToReach():
+            gCurrentLerpValue = cfgMaxLerp() * (startedTimeElapsed / cfgTimeToReach())
+            gCurrentLerpValue += rand(-cfgRandLerpOffset()..cfgRandLerpOffset())
+            gCurrentLerpValue = min(max(0.0, gCurrentLerpValue), cfgMaxLerp())
+          else:
+            gCurrentLerpValue = cfgMaxLerp()
+        else:
+          gCurrentLerpValue = 1.0
 
-        let dist = gLocalPlayer.origin.`-`(gPtrTarget.origin()).len()
-        let aimtarget = aimtarget_tmp.velCompensated(gPtrTarget.velocity - gLocalPlayer.velocity, dist)
-        var aimtargetAngles = gLocalPlayer.eye.lookAt(aimtarget)
-        let aimpunch = gLocalPlayer.aimpunchAngles()
-        if aimpunch.yaw != 0 or aimpunch.pitch != 0: 
-          aimtargetAngles -= aimpunch * 2
-          aimtargetAngles.normalize()
-
-        aimtargetAngles = normalized aimtargetAngles.angSmoothed(cmd.viewAngles, 1.0 - smoothPercentage)
-        cmd.viewAngles = aimtargetAngles
+        #echo "Aiming with lerp: " $ gCurrentLerpValue
+        aim(cmd)
   else:
     gPtrTarget = nil

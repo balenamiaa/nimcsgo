@@ -29,7 +29,7 @@ proc genModules() = selfExec "r src/modulesgen/modulesgen.nim"
 
 task build_debug, "Build the dll in debug mode":
   genModules()
-  selfExec "cpp" & defaultFlags & "--nomain --app:lib -d:debug --debuginfo:on --stackTrace:on -d:nimCallDepthLimit=10000 --lineTrace:on r--out:debug.dll src/nimcsgo/nimcsgo.nim"
+  selfExec "cpp" & defaultFlags & "--nomain --app:lib -d:debug --debuginfo:on --stackTrace:on -d:nimCallDepthLimit=10000 --lineTrace:on --out:debug.dll src/nimcsgo/nimcsgo.nim"
 task debug_nimcsgo, "Build the dll in debug mode and inject it":
   exec "nimble build_debug"
   inject("debug.dll".absolutePath(), "csgo.exe")

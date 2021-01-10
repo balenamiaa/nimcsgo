@@ -16,7 +16,9 @@ vtableInterface IEntityList:
     while currentIdx <= self.highestEntityIdx():
       let pCurrentEntity = self.entityFromIdx(currentIdx)
       if pCurrentEntity != nil and pCurrentEntity.vtable != nil: yield pCurrentEntity
-      currentIdx += 1.EntityIndex
-  
+      currentIdx += 1.EntityIndex  
 
 genInstantiation IEntityList
+
+
+proc pActiveWeapon*(self: ptr Entity): ptr Entity = IEntityList.instance.entityFromIdx(self.hActiveWeapon())

@@ -8,10 +8,13 @@ static:
   gNetvars["DT_SmokeStack=>m_DirLight.m_vPos"] = 2896
   gNetvars["DT_PropVehicleDriveable=>m_bExitAnimOn"] = 10689
   gNetvars["DT_BasePlayer=>m_bCameraManXRay"] = 13181
+  gNetvars["DT_BasePlayer=>m_hViewModel"] = 0
+  gNetvars["DT_CSPlayerResource=>m_szCrosshairCodes"] = 21029
   gNetvars["DT_LightGlow=>m_nOuterMaxDist"] = 2536
   gNetvars["DT_DustTrail=>m_Color"] = 2760
   gNetvars["DT_PropVehicleChoreoGeneric=>m_hPlayer"] = 10740
   gNetvars["DT_TEBubbles=>m_vecMaxs"] = 28
+  gNetvars["DT_CSGameRulesProxy=>m_GGProgressiveWeaponKillUpgradeOrderT"] = 860
   gNetvars["DT_SmokeTrail=>m_MaxSpeed"] = 2800
   gNetvars["DT_CSPlayer=>m_nNumFastDucks"] = 41876
   gNetvars["DT_BasePlayer=>m_bShouldDrawPlayerWhileUsingViewEntity"] = 13120
@@ -27,12 +30,15 @@ static:
   gNetvars["DT_TEClientProjectile=>m_vecOrigin"] = 16
   gNetvars["DT_TEMetalSparks=>m_vecPos"] = 16
   gNetvars["DT_EnvAmbientLight=>m_vecColor"] = 2816
+  gNetvars["DT_CSPlayerResource=>m_iCompetitiveWins"] = 7048
   gNetvars["DT_CSPlayer=>m_flAutoMoveTargetTime"] = 15036
+  gNetvars["DT_SceneEntity=>m_hActorList"] = 0
   gNetvars["DT_CSPlayer=>m_iDirection"] = 41868
   gNetvars["DT_DynamicLight=>m_OuterAngle"] = 2536
   gNetvars["DT_TEPlayerDecal=>m_nHitbox"] = 60
   gNetvars["DT_SunlightShadowControl=>m_flSunDistance"] = 2824
   gNetvars["DT_BaseViewModel=>m_nSkin"] = 2588
+  gNetvars["DT_CSPlayerResource=>m_bHasDefuser"] = 6136
   gNetvars["DT_TEBubbleTrail=>m_vecMaxs"] = 28
   gNetvars["DT_FEPlayerDecal=>m_nUniqueID"] = 2520
   gNetvars["DT_TEBloodSprite=>b"] = 48
@@ -46,9 +52,11 @@ static:
   gNetvars["DT_Func_LOD=>m_nDisappearMinDist"] = 2520
   gNetvars["DT_TEDecal=>m_nEntity"] = 40
   gNetvars["DT_Team=>m_scoreOvertime"] = 2892
+  gNetvars["DT_BaseAttributableItem=>m_Attributes"] = 608
   gNetvars["DT_BasePlayer=>m_audio.soundscapeIndex"] = 12728
   gNetvars["DT_EnvDOFController=>m_flNearFocusDepth"] = 2528
   gNetvars["DT_BaseCombatWeapon=>m_iWeaponModule"] = 12876
+  gNetvars["DT_Ragdoll=>m_ragPos"] = 0
   gNetvars["DT_Plasma=>m_nFlags"] = 2532
   gNetvars["DT_EnvTonemapController=>m_flCustomAutoExposureMin"] = 2524
   gNetvars["DT_PropVehicleDriveable=>m_nRPM"] = 10636
@@ -83,10 +91,14 @@ static:
   gNetvars["DT_BasePlayer=>m_skybox3d.fog.blend"] = 12617
   gNetvars["DT_PhysicsPropMultiplayer=>m_fMass"] = 10696
   gNetvars["DT_TELargeFunnel=>m_nReversed"] = 32
+  gNetvars["DT_PlayerResource=>m_iPendingTeam"] = 4156
   gNetvars["DT_Beam=>m_fStartFrame"] = 2656
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_Damage_Total"] = 24864
   gNetvars["DT_WeaponCSBase=>m_fLastShotTime"] = 13224
+  gNetvars["DT_BaseCombatCharacter=>bcc_nonlocaldata"] = 0
   gNetvars["DT_SceneEntity=>m_nSceneStringIndex"] = 2536
   gNetvars["DT_BasePlayer=>m_uCameraManGraphs"] = 13184
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iTeamBaseIcons"] = 4572
   gNetvars["DT_TEBreakModel=>m_nModelIndex"] = 68
   gNetvars["DT_TEBubbleTrail=>m_nModelIndex"] = 44
   gNetvars["DT_RagdollManager=>m_iCurrentMaxRagdollCount"] = 2520
@@ -100,20 +112,26 @@ static:
   gNetvars["DT_FuncAreaPortalWindow=>m_flTranslucencyLimit"] = 2528
   gNetvars["DT_CFish=>m_waterLevel"] = 10732
   gNetvars["DT_Func_Dust=>m_usSolidFlags"] = 832
+  gNetvars["DT_MapVetoPickController=>m_nTeamWithFirstChoice"] = 2544
   gNetvars["DT_TEGlowSprite=>m_nModelIndex"] = 28
   gNetvars["DT_TeamplayRoundBasedRulesProxy=>m_bStopWatch"] = 228
   gNetvars["DT_EnvWind=>m_iWindSeed"] = 2528
   gNetvars["DT_BaseAnimating=>m_nMuzzleFlashParity"] = 2660
   gNetvars["DT_BaseBeam=>m_nHaloIndex"] = 20
+  gNetvars["DT_CSGameRulesProxy=>m_GGProgressiveWeaponOrderCT"] = 140
+  gNetvars["DT_Inferno=>m_fireYDelta"] = 2932
   gNetvars["DT_WeaponCSBase=>m_flRecoilIndex"] = 13124
   gNetvars["DT_SteamJet=>m_bFaceLeft"] = 2788
   gNetvars["DT_ColorCorrection=>m_vecOrigin"] = 2520
+  gNetvars["DT_CSGameRulesProxy=>m_arrProhibitedItemIndices"] = 2244
   gNetvars["DT_MaterialModifyControl=>m_bWrap"] = 3304
   gNetvars["DT_TEBeamEntPoint=>m_nEndEntity"] = 80
   gNetvars["DT_BaseAttributableItem=>m_iEntityQuality"] = 556
   gNetvars["DT_Team=>m_iClanID"] = 2904
+  gNetvars["DT_PlayerResource=>m_iKills"] = 3116
   gNetvars["DT_Func_Dust=>m_nModelIndex"] = 600
   gNetvars["DT_TEMetalSparks=>m_vecDir"] = 28
+  gNetvars["DT_EnvScreenOverlay=>m_iszOverlayNames"] = 0
   gNetvars["DT_PhysicsPropMultiplayer=>m_iPhysicsMode"] = 10692
   gNetvars["DT_VGuiScreen=>m_nAttachmentIndex"] = 2564
   gNetvars["DT_TEBreakModel=>m_fTime"] = 76
@@ -122,8 +140,10 @@ static:
   gNetvars["DT_CSRagdoll=>m_vecForce"] = 9856
   gNetvars["DT_VoteController=>m_iActiveIssueIndex"] = 2532
   gNetvars["DT_PropVehicleChoreoGeneric=>m_vehicleView.flPitchCurveLinear"] = 10904
+  gNetvars["DT_CSGameRulesProxy=>m_iMatchStats_PlayersAlive_T"] = 2728
   gNetvars["DT_EnvScreenOverlay=>m_iDesiredOverlay"] = 5116
   gNetvars["DT_ColorCorrection=>m_bEnabled"] = 2816
+  gNetvars["DT_BaseTeamObjectiveResource=>m_bInMiniRound"] = 4828
   gNetvars["DT_TEFireBullets=>m_flRecoilIndex"] = 68
   gNetvars["DT_SunlightShadowControl=>m_flFOV"] = 2828
   gNetvars["DT_SpriteTrail=>m_flEndWidth"] = 4220
@@ -143,6 +163,7 @@ static:
   gNetvars["DT_EntityDissolve=>m_flFadeOutStart"] = 2528
   gNetvars["DT_DynamicProp=>m_clrGlow"] = 10697
   gNetvars["DT_CSPlayer=>m_bIsPlayerGhost"] = 14997
+  gNetvars["DT_CSPlayerResource=>m_iCompetitiveRankType"] = 7308
   gNetvars["DT_BaseTrigger=>m_spawnflags"] = 712
   gNetvars["DT_CSPlayer=>m_unActiveQuestId"] = 45864
   gNetvars["DT_TEBeamEnts=>m_nStartEntity"] = 76
@@ -153,6 +174,7 @@ static:
   gNetvars["DT_RocketTrail=>m_MaxSpeed"] = 2800
   gNetvars["DT_BaseEntity=>m_vecMins"] = 808
   gNetvars["DT_FuncSmokeVolume=>m_vecSpecifiedSurroundingMins"] = 844
+  gNetvars["DT_CSPlayerResource=>m_iScore"] = 6528
   gNetvars["DT_PropVehicleDriveable=>m_nScannerDisabledWeapons"] = 10652
   gNetvars["DT_BasePlayer=>m_skybox3d.fog.HDRColorScale"] = 12624
   gNetvars["DT_SmokeTrail=>m_StartColor"] = 2760
@@ -173,12 +195,15 @@ static:
   gNetvars["DT_BaseCombatWeapon=>m_flNextPrimaryAttack"] = 12856
   gNetvars["DT_BaseAttributableItem=>m_nFallbackSeed"] = 12748
   gNetvars["DT_Sprite=>m_flScaleTime"] = 2568
+  gNetvars["DT_CSPlayerResource=>m_bControllingBot"] = 8156
   gNetvars["DT_CSPlayer=>m_iNumGunGameKillsWithCurrentWeapon"] = 14672
+  gNetvars["DT_PlayerResource=>m_iTeam"] = 3896
   gNetvars["DT_WeaponC4=>m_bIsPlantingViaUse"] = 13306
   gNetvars["DT_BaseEntity=>m_bAlternateSorting"] = 2364
   gNetvars["DT_BaseEntity=>m_nMinCPULevel"] = 2440
   gNetvars["DT_Beam=>m_nRenderFX"] = 602
   gNetvars["DT_EnvTonemapController=>m_bUseCustomAutoExposureMax"] = 2521
+  gNetvars["DT_BaseTeamObjectiveResource=>m_flLazyCapPerc"] = 2652
   gNetvars["DT_CSGameRulesProxy=>m_nGuardianModeSpecialWeaponNeeded"] = 2188
   gNetvars["DT_TEShatterSurface=>m_nSurfaceType"] = 80
   gNetvars["DT_SunlightShadowControl=>m_flNearZ"] = 2832
@@ -192,22 +217,27 @@ static:
   gNetvars["DT_FuncSmokeVolume=>m_RotationSpeed"] = 3032
   gNetvars["DT_BaseCombatCharacter=>m_hActiveWeapon"] = 12024
   gNetvars["DT_CSGameRulesProxy=>m_timeUntilNextPhaseStarts"] = 92
+  gNetvars["DT_ParticleSystem=>m_iControlPointParents"] = 3116
   gNetvars["DT_CSPlayer=>m_iPlayerState"] = 14636
   gNetvars["DT_World=>m_WorldMaxs"] = 2536
   gNetvars["DT_AI_BaseNPC=>m_iSpeedModRadius"] = 12060
+  gNetvars["DT_TeamplayRoundBasedRulesProxy=>m_TeamRespawnWaveTimes"] = 232
   gNetvars["DT_MaterialModifyControl=>m_nModifyMode"] = 3336
   gNetvars["DT_BumpMineProjectile=>m_nParentBoneIndex"] = 10708
   gNetvars["DT_BaseTeamObjectiveResource=>m_iStopWatchTimer"] = 2524
   gNetvars["DT_EntityParticleTrail=>m_iMaterialName"] = 2752
+  gNetvars["DT_CSPlayerResource=>m_bHostageAlive"] = 5756
   gNetvars["DT_BaseCombatWeapon=>m_iNumEmptyAttacks"] = 12880
   gNetvars["DT_PropVehicleChoreoGeneric=>m_vehicleView.bClampEyeAngles"] = 10896
   gNetvars["DT_TEFootprintDecal=>m_vecDirection"] = 28
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_Objective_Total"] = 26164
   gNetvars["DT_BaseAttributableItem=>m_iItemIDHigh"] = 576
   gNetvars["DT_BasePlayer=>m_hObserverTarget"] = 13196
   gNetvars["DT_Sun=>m_nOverlayMaterial"] = 2904
   gNetvars["DT_CSGameRulesProxy=>m_bAnyHostageReached"] = 112
   gNetvars["DT_MovieDisplay=>m_bEnabled"] = 2520
   gNetvars["DT_WeaponTablet=>m_vecPlayerPositionHistory[0]"] = 13560
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_HeadShotKills_Total"] = 25904
   gNetvars["DT_EconEntity=>m_flFallbackWear"] = 12752
   gNetvars["DT_BaseViewModel=>m_nSequence"] = 10428
   gNetvars["DT_ParticleSystem=>m_nStopType"] = 2524
@@ -218,8 +248,10 @@ static:
   gNetvars["DT_TEBloodStream=>b"] = 48
   gNetvars["DT_RopeKeyframe=>m_nSegments"] = 3240
   gNetvars["DT_BaseAnimating=>m_nSequence"] = 10428
+  gNetvars["DT_CSGameRulesProxy=>cs_gamerules_data"] = 0
   gNetvars["DT_Func_Dust=>m_LifetimeMin"] = 2540
   gNetvars["DT_EntityDissolve=>m_nDissolveType"] = 2552
+  gNetvars["DT_CSPlayerResource=>m_iHostageEntityIDs"] = 5780
   gNetvars["DT_LightGlow=>HDRColorScale"] = 0
   gNetvars["DT_ColorCorrection=>m_flFadeInDuration"] = 2540
   gNetvars["DT_CSPlayer=>m_unTotalRoundDamageDealt"] = 14684
@@ -230,12 +262,14 @@ static:
   gNetvars["DT_EconEntity=>m_iItemIDHigh"] = 576
   gNetvars["DT_CSPlayer=>m_hCarriedHostage"] = 41976
   gNetvars["DT_BaseCombatWeapon=>m_iWorldDroppedModelIndex"] = 12872
+  gNetvars["DT_BaseAttributableItem=>m_AttributeManager"] = 11648
   gNetvars["DT_FEPlayerDecal=>m_vecNormal"] = 2572
   gNetvars["DT_RopeKeyframe=>m_iStartAttachment"] = 3252
   gNetvars["DT_ColorCorrection=>m_bMaster"] = 2817
   gNetvars["DT_SmokeStack=>m_AmbientLight.m_vColor"] = 2880
   gNetvars["DT_BaseEntity=>m_vecOrigin"] = 312
   gNetvars["DT_BaseTeamObjectiveResource=>m_iTimerToShowInHUD"] = 2520
+  gNetvars["DT_PostProcessController=>m_flPostProcessParameters"] = 2520
   gNetvars["DT_BasePlayer=>m_flConstraintRadius"] = 13140
   gNetvars["DT_EnvProjectedTexture=>m_flAmbient"] = 2572
   gNetvars["DT_BaseCSGrenade=>m_bPinPulled"] = 13266
@@ -247,12 +281,15 @@ static:
   gNetvars["DT_PhysPropLootCrate=>m_iMaxHealth"] = 10744
   gNetvars["DT_BreakableSurface=>m_flPanelWidth"] = 2532
   gNetvars["DT_SmokeTrail=>m_MinSpeed"] = 2796
+  gNetvars["DT_TEEffectDispatch=>m_EffectData"] = 16
+  gNetvars["DT_BaseAnimatingOverlay=>m_AnimOverlay"] = 0
   gNetvars["DT_WeaponCSBase=>m_iOriginalTeamNumber"] = 13148
   gNetvars["DT_CSGameRulesProxy=>m_flDMBonusStartTime"] = 1108
   gNetvars["DT_EnvWind=>m_flMinGustDelay"] = 2552
   gNetvars["DT_TEExplosion=>m_fScale"] = 32
   gNetvars["DT_EnvProjectedTexture=>m_bLightWorld"] = 2539
   gNetvars["DT_BoneFollower=>m_modelIndex"] = 2520
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iCappingTeam"] = 7196
   gNetvars["DT_CSPlayer=>m_bDuckOverride"] = 41880
   gNetvars["DT_Team=>m_szTeamMatchStat"] = 2620
   gNetvars["DT_Beam=>m_fFadeLength"] = 2644
@@ -273,9 +310,11 @@ static:
   gNetvars["DT_EntityDissolve=>m_flFadeInStart"] = 2544
   gNetvars["DT_BasePlayer=>m_flDuckSpeed"] = 12208
   gNetvars["DT_BaseCombatWeapon=>m_flNextSecondaryAttack"] = 12860
+  gNetvars["DT_CSPlayer=>m_iMatchStats_KillReward"] = 42564
   gNetvars["DT_DustTrail=>m_MaxSpeed"] = 2792
   gNetvars["DT_BasePlayer=>m_audio.localSound[1]"] = 12644
   gNetvars["DT_CSGameRulesProxy=>m_flRestartRoundTime"] = 80
+  gNetvars["DT_CSPlayerResource=>m_iCompetitiveRanking"] = 6788
   gNetvars["DT_Ragdoll=>m_ragPos[0]"] = 10624
   gNetvars["DT_PointCommentaryNode=>m_flStartTime"] = 10628
   gNetvars["DT_DustTrail=>m_ParticleLifetime"] = 2776
@@ -311,6 +350,7 @@ static:
   gNetvars["DT_WeaponC4=>m_bBombPlacedAnimation"] = 13304
   gNetvars["DT_QuadraticBeam=>m_controlPosition"] = 2532
   gNetvars["DT_CSGameRulesProxy=>m_nOvertimePlaying"] = 104
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_EquipmentValue_Total"] = 25124
   gNetvars["DT_TEFizz=>m_nDensity"] = 24
   gNetvars["DT_EnvParticleScript=>m_flSequenceScale"] = 10852
   gNetvars["DT_TESpriteSpray=>m_vecDirection"] = 28
@@ -320,6 +360,7 @@ static:
   gNetvars["DT_MovieDisplay=>m_flUMin"] = 2784
   gNetvars["DT_LightGlow=>m_nVerticalSize"] = 2524
   gNetvars["DT_TEBeamSpline=>m_nPoints"] = 208
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iOwner"] = 7268
   gNetvars["DT_WeaponC4=>m_bShowC4LED"] = 13305
   gNetvars["DT_CSPlayer=>m_isCurrentGunGameLeader"] = 14729
   gNetvars["DT_BasePlayer=>m_bInDuckJump"] = 12364
@@ -339,6 +380,9 @@ static:
   gNetvars["DT_SmokeTrail=>m_EndSize"] = 2816
   gNetvars["DT_WeaponCSBaseGun=>m_iBurstShotsRemaining"] = 13268
   gNetvars["DT_SteamJet=>m_EndSize"] = 2768
+  gNetvars["DT_Drone=>m_vecTagPositions"] = 0
+  gNetvars["DT_ParticleSystem=>m_vServerControlPoints"] = 2796
+  gNetvars["DT_Drone=>m_vecTagIncrements"] = 0
   gNetvars["DT_WaterLODControl=>m_flCheapWaterStartDistance"] = 2520
   gNetvars["DT_TeamplayRoundBasedRulesProxy=>m_flMapResetTime"] = 64
   gNetvars["DT_RocketTrail=>m_bEmit"] = 2828
@@ -350,6 +394,7 @@ static:
   gNetvars["DT_DangerZone=>m_vecDangerZoneOriginStartedAt"] = 2520
   gNetvars["DT_FogController=>m_fog.startLerpTo"] = 2568
   gNetvars["DT_Sprite=>m_hAttachedToEntity"] = 2536
+  gNetvars["DT_CSGameRulesProxy=>m_iPlayerSpawnHexIndices"] = 3352
   gNetvars["DT_WeaponCSBase=>m_iRecoilIndex"] = 13120
   gNetvars["DT_TEBubbleTrail=>m_vecMins"] = 16
   gNetvars["DT_TESprite=>m_vecOrigin"] = 16
@@ -357,6 +402,7 @@ static:
   gNetvars["DT_FuncSmokeVolume=>m_Color1"] = 2756
   gNetvars["DT_BasePlayer=>m_skybox3d.fog.start"] = 12580
   gNetvars["DT_CSGameRulesProxy=>m_iNumGunGameProgressiveWeaponsT"] = 132
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_Kills_Total"] = 23304
   gNetvars["DT_CSGameRulesProxy=>m_bMapHasBombTarget"] = 113
   gNetvars["DT_WeaponTablet=>m_vecNearestMetalCratePos"] = 13480
   gNetvars["DT_BasePlayer=>m_vphysicsCollisionState"] = 12892
@@ -387,19 +433,22 @@ static:
   gNetvars["DT_CSGameRulesProxy=>m_bIsValveDS"] = 124
   gNetvars["DT_BeamSpotlight=>m_bSpotlightOn"] = 2532
   gNetvars["DT_FuncSmokeVolume=>m_nSolidType"] = 834
-  gNetvars["DT_BasePlayer=>m_iHealth"] = 256
+  gNetvars["DT_CSPlayer=>m_iMatchStats_Damage"] = 42204
   gNetvars["DT_SlideshowDisplay=>m_bEnabled"] = 2520
   gNetvars["DT_TEShatterSurface=>m_flHeight"] = 68
   gNetvars["DT_TEBloodSprite=>m_vecDirection"] = 28
+  gNetvars["DT_BasePlayer=>m_iHealth"] = 256
   gNetvars["DT_BaseAnimating=>m_bSuppressAnimSounds"] = 10570
   gNetvars["DT_BaseAttributableItem=>m_OriginalOwnerXuidHigh"] = 12740
   gNetvars["DT_PlantedC4=>m_nBombSite"] = 10628
   gNetvars["DT_EnvWind=>m_iMaxWind"] = 2536
+  gNetvars["DT_BaseTeamObjectiveResource=>m_vCPPositions"] = 0
   gNetvars["DT_Beam=>m_flHDRColorScale"] = 2524
   gNetvars["DT_BreakableSurface=>m_vCorner"] = 2552
   gNetvars["DT_Dronegun=>m_iHealth"] = 256
   gNetvars["DT_ColorCorrection=>m_maxFalloff"] = 2536
   gNetvars["DT_BaseAttributableItem=>m_OriginalOwnerXuidLow"] = 12736
+  gNetvars["DT_BaseAttributableItem=>m_NetworkedDynamicAttributesForDemos"] = 672
   gNetvars["DT_FEPlayerDecal=>m_vecStart"] = 2548
   gNetvars["DT_RopeKeyframe=>m_Slack"] = 3264
   gNetvars["DT_EnvProjectedTexture=>m_bSimpleProjection"] = 2537
@@ -428,6 +477,7 @@ static:
   gNetvars["DT_BaseBeam=>m_fWidth"] = 36
   gNetvars["DT_SlideshowDisplay=>m_bNoListRepeats"] = 2840
   gNetvars["DT_StatueProp=>m_hInitBaseAnimating"] = 10688
+  gNetvars["DT_TeamplayRoundBasedRulesProxy=>m_bTeamReady"] = 196
   gNetvars["DT_BaseEntity=>m_iPendingTeamNum"] = 248
   gNetvars["DT_CSPlayer=>m_iShotsFired"] = 41872
   gNetvars["DT_PointCamera=>m_FOV"] = 2520
@@ -436,6 +486,7 @@ static:
   gNetvars["DT_EnvWind=>m_iGustDirChange"] = 2564
   gNetvars["DT_SmokeStack=>m_bEmit"] = 2860
   gNetvars["DT_CSPlayer=>m_fMolotovDamageTime"] = 14692
+  gNetvars["DT_MapVetoPickController=>m_nMapId1"] = 3340
   gNetvars["DT_CSGameRulesProxy=>m_flTabletHexSize"] = 3856
   gNetvars["DT_BasePlayer=>m_hColorCorrectionCtrl"] = 14252
   gNetvars["DT_RocketTrail=>m_MinSpeed"] = 2796
@@ -445,33 +496,45 @@ static:
   gNetvars["DT_EnvTonemapController=>m_flTonemapPercentBrightPixels"] = 2552
   gNetvars["DT_FuncSmokeVolume=>m_vecMaxs"] = 820
   gNetvars["DT_CSPlayer=>m_nLastKillerIndex"] = 45996
+  gNetvars["DT_MapVetoPickController=>m_nMapId4"] = 4108
   gNetvars["DT_Func_Dust=>m_vecSpecifiedSurroundingMins"] = 844
   gNetvars["DT_BasePlayer=>m_hViewModel[0]"] = 13048
   gNetvars["DT_CSGameRulesProxy=>m_bRoundInProgress"] = 5313
   gNetvars["DT_Dronegun=>m_bHasTarget"] = 10648
+  gNetvars["DT_PoseController=>m_chPoseIndex"] = 2536
   gNetvars["DT_InfoMapRegion=>m_szLocToken"] = 2524
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_Assists_Total"] = 23564
   gNetvars["DT_BasePlayer=>m_flFallVelocity"] = 12308
   gNetvars["DT_Team=>m_scoreSecondHalf"] = 2888
   gNetvars["DT_BaseEntity=>m_bAnimatedEveryTick"] = 2363
   gNetvars["DT_ItemAssaultSuitUseable=>m_bIsHeavyAssaultSuit"] = 13380
+  gNetvars["DT_CSPlayer=>cslocaldata"] = 0
   gNetvars["DT_World=>m_bColdWorld"] = 2568
   gNetvars["DT_TEEffectDispatch=>m_nOtherEntIndex"] = 108
+  gNetvars["DT_BreakableSurface=>m_RawPanelBitVec"] = 2604
   gNetvars["DT_CSPlayerResource=>m_bombsiteCenterB"] = 5744
+  gNetvars["DT_WeaponTablet=>m_vecNotificationIds"] = 0
   gNetvars["DT_BaseAnimating=>m_hLightingOrigin"] = 10564
   gNetvars["DT_CSPlayer=>m_bHideTargetID"] = 47516
   gNetvars["DT_TEProjectedDecal=>m_angRotation"] = 28
+  gNetvars["DT_MapVetoPickController=>m_nMapId3"] = 3852
   gNetvars["DT_BasePlayer=>m_vecBaseVelocity"] = 288
   gNetvars["DT_CSRagdoll=>m_nModelIndex"] = 600
   gNetvars["DT_EnvDOFController=>m_bDOFEnabled"] = 2520
   gNetvars["DT_Beam=>m_fSpeed"] = 2660
   gNetvars["DT_CSPlayer=>m_iSecondaryAddon"] = 41852
+  gNetvars["DT_SlideshowDisplay=>m_chCurrentSlideLists"] = 2800
   gNetvars["DT_BaseAnimating=>m_vecForce"] = 9856
   gNetvars["DT_PlantedC4=>m_flC4Blow"] = 10640
+  gNetvars["DT_BaseAnimating=>serveranimdata"] = 0
   gNetvars["DT_CSGameRulesProxy=>m_numBestOfMaps"] = 2460
   gNetvars["DT_CSPlayer=>m_nIsAutoMounting"] = 15000
   gNetvars["DT_RopeKeyframe=>m_Width"] = 3280
   gNetvars["DT_BaseGrenade=>m_flDamage"] = 10648
+  gNetvars["DT_BaseAnimating=>m_flPoseParameter"] = 10100
   gNetvars["DT_TEBubbles=>m_fHeight"] = 40
+  gNetvars["DT_CSPlayerResource=>m_iBotDifficulty"] = 17064
+  gNetvars["DT_TeamplayRoundBasedRulesProxy=>m_flNextRespawnWave"] = 68
   gNetvars["DT_DangerZone=>m_iWave"] = 2552
   gNetvars["DT_RopeKeyframe=>m_TextureScale"] = 3268
   gNetvars["DT_TEEffectDispatch=>m_flScale"] = 76
@@ -479,6 +542,7 @@ static:
   gNetvars["DT_World=>m_WorldMins"] = 2524
   gNetvars["DT_CSGameRulesProxy=>m_fWarmupPeriodEnd"] = 36
   gNetvars["DT_CSGameRulesProxy=>m_bCTCantBuy"] = 2481
+  gNetvars["DT_CSPlayer=>m_iMatchStats_CashEarned"] = 43284
   gNetvars["DT_BaseCombatWeapon=>m_iClip2"] = 12904
   gNetvars["DT_Sun=>m_clrOverlay"] = 2872
   gNetvars["DT_CascadeLight=>m_LightColor"] = 2546
@@ -490,6 +554,7 @@ static:
   gNetvars["DT_TEMuzzleFlash=>m_flScale"] = 40
   gNetvars["DT_BaseCombatWeapon=>m_iClip1"] = 12900
   gNetvars["DT_BaseBeam=>m_fEndWidth"] = 40
+  gNetvars["DT_BaseTeamObjectiveResource=>m_flTeamCapTime"] = 3484
   gNetvars["DT_CSPlayer=>m_flDetectedByEnemySensorTime"] = 14712
   gNetvars["DT_FuncLadder=>m_vecLadderDir"] = 2520
   gNetvars["DT_BasePlayer=>m_bConstraintPastRadius"] = 13152
@@ -502,6 +567,7 @@ static:
   gNetvars["DT_CSGameRulesProxy=>m_unDMBonusWeaponLoadoutSlot"] = 1116
   gNetvars["DT_TEClientProjectile=>m_hOwner"] = 48
   gNetvars["DT_PropVehicleDriveable=>m_bUnableToFire"] = 10765
+  gNetvars["DT_EntityFreezing=>m_flFrozenPerHitbox"] = 2532
   gNetvars["DT_BeamSpotlight=>m_bHasDynamicLight"] = 2533
   gNetvars["DT_WeaponM3=>m_reloadState"] = 13268
   gNetvars["DT_CSGameRulesProxy=>m_fMatchStartTime"] = 72
@@ -515,6 +581,8 @@ static:
   gNetvars["DT_BasePlayer=>m_skybox3d.area"] = 12544
   gNetvars["DT_TEPhysicsProp=>m_angRotation[0]"] = 28
   gNetvars["DT_ColorCorrectionVolume=>m_FadeDuration"] = 2600
+  gNetvars["DT_CSPlayerResource=>m_iCashSpentThisRound"] = 19144
+  gNetvars["DT_FuncSmokeVolume=>m_Collision"] = 800
   gNetvars["DT_BaseAttributableItem=>m_iEntityLevel"] = 560
   gNetvars["DT_CSGameRulesProxy=>m_nGuardianModeWaveNumber"] = 2180
   gNetvars["DT_CSPlayer=>m_vecAutomoveTargetEnd"] = 15016
@@ -533,6 +601,7 @@ static:
   gNetvars["DT_SlideshowDisplay=>m_fMinSlideTime"] = 2824
   gNetvars["DT_MaterialModifyControl=>m_szMaterialVar"] = 2775
   gNetvars["DT_FEPlayerDecal=>m_vecEndPos"] = 2536
+  gNetvars["DT_WeaponTablet=>m_vecPlayerPositionHistory"] = 0
   gNetvars["DT_TEFireBullets=>m_iSoundType"] = 76
   gNetvars["DT_BeamSpotlight=>m_nHaloIndex"] = 2520
   gNetvars["DT_BaseCombatCharacter=>m_nRelativeDirectionOfLastInjury"] = 12032
@@ -573,9 +642,11 @@ static:
   gNetvars["DT_Ragdoll_Attached=>m_attachmentPointBoneSpace"] = 11408
   gNetvars["DT_CSRagdoll=>m_iDeathFrame"] = 10780
   gNetvars["DT_CSPlayer=>m_flStamina"] = 41864
+  gNetvars["DT_CSPlayerResource=>m_iControlledPlayer"] = 8224
   gNetvars["DT_FuncLadder=>m_vecPlayerMountPositionBottom"] = 2564
-  gNetvars["DT_EnvProjectedTexture=>m_flNearZ"] = 2576
   gNetvars["DT_TEEffectDispatch=>m_vAngles"] = 52
+  gNetvars["DT_EnvProjectedTexture=>m_flNearZ"] = 2576
+  gNetvars["DT_CSPlayer=>m_passiveItems"] = 45904
   gNetvars["DT_World=>m_flWaveHeight"] = 2520
   gNetvars["DT_MaterialModifyControl=>m_iFrameStart"] = 3296
   gNetvars["DT_BasePlayer=>m_vecVelocity[2]"] = 284
@@ -584,13 +655,15 @@ static:
   gNetvars["DT_Func_Dust=>m_vecMaxs"] = 820
   gNetvars["DT_Beam=>m_fWidth"] = 2636
   gNetvars["DT_EnvProjectedTexture=>m_flLightFOV"] = 2532
-  gNetvars["DT_BoneFollower=>m_solidIndex"] = 2524
+  gNetvars["DT_WeaponTablet=>m_vecLocalHexFlags"] = 0
   gNetvars["DT_CSGameRulesProxy=>m_bCTTimeOutActive"] = 45
+  gNetvars["DT_BoneFollower=>m_solidIndex"] = 2524
   gNetvars["DT_EnvGasCanister=>m_flFlightSpeed"] = 10740
   gNetvars["DT_EnvProjectedTexture=>m_nSpotlightTextureFrame"] = 2852
   gNetvars["DT_ColorCorrectionVolume=>m_MaxWeight"] = 2596
   gNetvars["DT_BasePlayer=>m_flFriction"] = 324
   gNetvars["DT_TEClientProjectile=>m_nLifeTime"] = 44
+  gNetvars["DT_Inferno=>m_bFireIsBurning"] = 3732
   gNetvars["DT_TEDynamicLight=>m_fTime"] = 48
   gNetvars["DT_SmokeTrail=>m_Opacity"] = 2784
   gNetvars["DT_CSPlayer=>m_fMolotovUseTime"] = 14688
@@ -600,6 +673,7 @@ static:
   gNetvars["DT_BasePlayer=>m_vecViewOffset[0]"] = 264
   gNetvars["DT_DetailController=>m_flFadeEndDist"] = 2524
   gNetvars["DT_DynamicProp=>m_bUseHitboxesForRenderBox"] = 10660
+  gNetvars["DT_TeamplayRoundBasedRulesProxy=>teamplayroundbased_gamerules_data"] = 0
   gNetvars["DT_BasePlayer=>m_bDucked"] = 12356
   gNetvars["DT_BasePlayer=>m_aimPunchAngleVel"] = 12344
   gNetvars["DT_TEDynamicLight=>g"] = 36
@@ -654,25 +728,33 @@ static:
   gNetvars["DT_TESpriteSpray=>m_vecOrigin"] = 16
   gNetvars["DT_PlayerPing=>m_hPlayer"] = 2532
   gNetvars["DT_TEDust=>m_flSize"] = 28
+  gNetvars["DT_EconEntity=>m_Attributes"] = 608
+  gNetvars["DT_BaseEntity=>AnimTimeMustBeFirst"] = 0
   gNetvars["DT_TEFireBullets=>m_vecOrigin"] = 24
+  gNetvars["DT_CSPlayer=>m_iMatchStats_HeadShotKills"] = 43044
   gNetvars["DT_BaseCombatWeapon=>m_bFlipViewModel"] = 12996
   gNetvars["DT_TEEffectDispatch=>m_nSurfaceProp"] = 92
   gNetvars["DT_CHostage=>m_jumpedThisFrame"] = 12081
   gNetvars["DT_FogController=>m_fog.duration"] = 2584
-  gNetvars["DT_BasePlayer=>m_bCameraManOverview"] = 13182
+  gNetvars["DT_Ragdoll=>m_ragAngles"] = 0
   gNetvars["DT_CFish=>m_poolOrigin"] = 10720
   gNetvars["DT_TEFireBullets=>m_iMode"] = 56
+  gNetvars["DT_BasePlayer=>m_bCameraManOverview"] = 13182
   gNetvars["DT_BaseBeam=>m_nFlags"] = 72
   gNetvars["DT_FuncRotating=>m_flSimulationTime"] = 616
   gNetvars["DT_TEBloodStream=>m_nAmount"] = 56
   gNetvars["DT_PropVehicleChoreoGeneric=>m_bForceEyesToAttachment"] = 10764
+  gNetvars["DT_Beam=>m_nAttachIndex"] = 2596
   gNetvars["DT_TEBreakModel=>m_nRandomization"] = 64
   gNetvars["DT_TriggerSoundOperator=>m_nSoundOperator"] = 2576
   gNetvars["DT_TEShatterSurface=>m_flWidth"] = 64
   gNetvars["DT_CSPlayer=>m_bIsControllingBot"] = 47609
   gNetvars["DT_RopeKeyframe=>m_fLockedPoints"] = 3272
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_EnemiesFlashed_Total"] = 26944
+  gNetvars["DT_EconEntity=>m_AttributeManager"] = 11648
   gNetvars["DT_CSPlayer=>m_flVelocityModifier"] = 41884
   gNetvars["DT_EntityFlame=>m_hEntAttached"] = 2520
+  gNetvars["DT_EconEntity=>m_NetworkedDynamicAttributesForDemos"] = 672
   gNetvars["DT_DynamicLight=>m_InnerAngle"] = 2532
   gNetvars["DT_FEPlayerDecal=>m_nTintID"] = 2596
   gNetvars["DT_ParticleSystem=>m_iEffectIndex"] = 2520
@@ -680,6 +762,7 @@ static:
   gNetvars["DT_WeaponTablet=>m_flUpgradeExpirationTime[0]"] = 13272
   gNetvars["DT_EnvGasCanister=>m_flFlightTime"] = 10736
   gNetvars["DT_SteamJet=>m_Rate"] = 2772
+  gNetvars["DT_CSGameRulesProxy=>m_nEndMatchMapGroupVoteOptions"] = 3152
   gNetvars["DT_CSPlayer=>m_szArmsModel"] = 14731
   gNetvars["DT_BasePlayer=>m_skybox3d.fog.maxdensity"] = 12592
   gNetvars["DT_FuncRotating=>m_angRotation[2]"] = 308
@@ -688,11 +771,13 @@ static:
   gNetvars["DT_CSGameRulesProxy=>m_iFirstSecondHalfRound"] = 5316
   gNetvars["DT_EnvTonemapController=>m_flTonemapRate"] = 2560
   gNetvars["DT_TEBeamFollow=>m_iEntIndex"] = 76
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_Deaths_Total"] = 23824
   gNetvars["DT_TEEffectDispatch=>m_vOrigin.z"] = 24
   gNetvars["DT_FogController=>m_fog.maxdensity"] = 2564
   gNetvars["DT_TEFizz=>m_nModelIndex"] = 20
   gNetvars["DT_TEClientProjectile=>m_nModelIndex"] = 40
   gNetvars["DT_RocketTrail=>m_EndSize"] = 2808
+  gNetvars["DT_CSPlayer=>m_bPlayerDominatingMe"] = 46293
   gNetvars["DT_ColorCorrection=>m_flMaxWeight"] = 2548
   gNetvars["DT_Beam=>m_nModelIndex"] = 600
   gNetvars["DT_BaseAnimating=>m_bClientSideRagdoll"] = 633
@@ -707,6 +792,7 @@ static:
   gNetvars["DT_EnvGasCanister=>m_vecStartAngles"] = 10724
   gNetvars["DT_TEBeamPoints=>m_vecStartPoint"] = 76
   gNetvars["DT_TEBreakModel=>m_vecVelocity"] = 52
+  gNetvars["DT_MapVetoPickController=>m_nMapId5"] = 4364
   gNetvars["DT_BaseEntity=>m_nMaxCPULevel"] = 2441
   gNetvars["DT_CSGameRulesProxy=>m_spawnStage"] = 3844
   gNetvars["DT_SmokeStack=>m_AmbientLight.m_vPos"] = 2868
@@ -719,6 +805,7 @@ static:
   gNetvars["DT_BasePlayer=>m_iCoachingTeam"] = 12112
   gNetvars["DT_CSGameRulesProxy=>m_szMatchStatTxt"] = 1644
   gNetvars["DT_BaseGrenade=>m_vecVelocity"] = 276
+  gNetvars["DT_CSPlayer=>csnonlocaldata"] = 0
   gNetvars["DT_BaseCSGrenadeProjectile=>m_nExplodeEffectTickBegin"] = 10724
   gNetvars["DT_CSGameRulesProxy=>m_flSpawnSelectionTimeEnd"] = 3836
   gNetvars["DT_Func_Dust=>m_DistMax"] = 2548
@@ -726,8 +813,9 @@ static:
   gNetvars["DT_CSGameRulesProxy=>m_bMapHasRescueZone"] = 114
   gNetvars["DT_CSGameRulesProxy=>m_bTCantBuy"] = 2480
   gNetvars["DT_BasePlayer=>m_skybox3d.fog.enable"] = 12616
-  gNetvars["DT_BasePlayer=>m_flLastDuckTime"] = 12360
+  gNetvars["DT_CSGameRulesProxy=>m_nEndMatchMapGroupVoteTypes"] = 3112
   gNetvars["DT_CSGameRulesProxy=>m_bIsDroppingItems"] = 2176
+  gNetvars["DT_BasePlayer=>m_flLastDuckTime"] = 12360
   gNetvars["DT_MaterialModifyControl=>m_iFrameEnd"] = 3300
   gNetvars["DT_CSGameRulesProxy=>m_flCMMItemDropRevealStartTime"] = 2168
   gNetvars["DT_PlantedC4=>m_bBombTicking"] = 10624
@@ -760,6 +848,7 @@ static:
   gNetvars["DT_TEMuzzleFlash=>m_nType"] = 44
   gNetvars["DT_TEShatterSurface=>m_vecOrigin"] = 16
   gNetvars["DT_Inferno=>m_nFireEffectTickBegin"] = 5044
+  gNetvars["DT_CSPlayer=>m_iWeaponPurchasesThisRound"] = 46360
   gNetvars["DT_CSPlayer=>m_vecOrigin[2]"] = 320
   gNetvars["DT_PropVehicleChoreoGeneric=>m_vehicleView.flFOV"] = 10916
   gNetvars["DT_Beam=>m_nHaloIndex"] = 2544
@@ -769,6 +858,7 @@ static:
   gNetvars["DT_ColorCorrection=>m_minFalloff"] = 2532
   gNetvars["DT_EnvProjectedTexture=>m_LightColor"] = 2548
   gNetvars["DT_CSGameRulesProxy=>m_nTournamentPredictionsPct"] = 2164
+  gNetvars["DT_CSPlayerResource=>m_iGunGameLevel"] = 18884
   gNetvars["DT_GrassBurn=>m_flGrassBurnClearTime"] = 2520
   gNetvars["DT_CSPlayer=>m_bCanControlObservedBot"] = 47610
   gNetvars["DT_PointCamera=>m_Resolution"] = 2524
@@ -797,8 +887,9 @@ static:
   gNetvars["DT_ColorCorrectionVolume=>m_lookupFilename"] = 2608
   gNetvars["DT_SmokeStack=>m_EndSize"] = 2848
   gNetvars["DT_PlantedC4=>m_flTimerLength"] = 10644
-  gNetvars["DT_SpriteTrail=>m_flStartWidthVariance"] = 4224
+  gNetvars["DT_CSPlayer=>m_EquippedLoadoutItemDefIndices"] = 45652
   gNetvars["DT_CSGameRulesProxy=>m_szTournamentEventName"] = 1124
+  gNetvars["DT_SpriteTrail=>m_flStartWidthVariance"] = 4224
   gNetvars["DT_ParticleSystem=>m_flStartTime"] = 2532
   gNetvars["DT_BaseBeam=>m_fAmplitude"] = 48
   gNetvars["DT_CSGameRulesProxy=>m_iRoundWinStatus"] = 2472
@@ -810,8 +901,10 @@ static:
   gNetvars["DT_FEPlayerDecal=>m_flCreationTime"] = 2600
   gNetvars["DT_VoteController=>m_iOnlyTeamToVote"] = 2536
   gNetvars["DT_CSPlayer=>m_iProgressBarDuration"] = 41856
-  gNetvars["DT_FogController=>m_fog.HDRColorScale"] = 2596
+  gNetvars["DT_PlayerResource=>m_bAlive"] = 4416
   gNetvars["DT_TESmoke=>m_fScale"] = 32
+  gNetvars["DT_VoteController=>m_nVoteOptionCount"] = 2540
+  gNetvars["DT_FogController=>m_fog.HDRColorScale"] = 2596
   gNetvars["DT_BasePlayer=>m_viewPunchAngle"] = 12320
   gNetvars["DT_TEPlayerDecal=>m_nEntity"] = 56
   gNetvars["DT_CHostage=>m_isRescued"] = 12080
@@ -819,6 +912,8 @@ static:
   gNetvars["DT_WorldVguiText=>m_iTextPanelWidth"] = 3360
   gNetvars["DT_ColorCorrection=>m_bExclusive"] = 2819
   gNetvars["DT_SceneEntity=>m_bIsPlayingBack"] = 2524
+  gNetvars["DT_BaseEntity=>m_bSpottedByMask"] = 2432
+  gNetvars["DT_BasePlayer=>m_iAmmo"] = 11640
   gNetvars["DT_BaseViewModel=>m_hWeapon"] = 10696
   gNetvars["DT_EconEntity=>m_iReapplyProvisionParity"] = 11672
   gNetvars["DT_CSGameRulesProxy=>m_numGlobalGiftsPeriodSeconds"] = 2208
@@ -833,8 +928,10 @@ static:
   gNetvars["DT_BasePlayer=>m_iFOVStart"] = 12776
   gNetvars["DT_Sun=>HDRColorScale"] = 0
   gNetvars["DT_WeaponTablet=>m_nContractKillGridIndex"] = 13456
+  gNetvars["DT_CSGameRulesProxy=>m_SurvivalGameRuleDecisionTypes"] = 4904
   gNetvars["DT_Beam=>m_fEndWidth"] = 2640
   gNetvars["DT_CSPlayerResource=>m_bEndMatchNextMapAllVoted"] = 27532
+  gNetvars["DT_BaseTeamObjectiveResource=>m_bTeamCanCap"] = 4508
   gNetvars["DT_InfoOverlayAccessor=>m_iTextureFrameIndex"] = 2444
   gNetvars["DT_FogController=>m_fog.colorSecondary"] = 2540
   gNetvars["DT_TEDynamicLight=>m_vecOrigin"] = 16
@@ -860,6 +957,7 @@ static:
   gNetvars["DT_CSGameRulesProxy=>m_iNumGunGameProgressiveWeaponsCT"] = 128
   gNetvars["DT_EnvProjectedTexture=>m_flFarZ"] = 2580
   gNetvars["DT_BasePlayer=>m_iDefaultFOV"] = 13100
+  gNetvars["DT_CSGameRulesProxy=>m_RetakeRules"] = 5056
   gNetvars["DT_EnvTonemapController=>m_flTonemapMinAvgLum"] = 2556
   gNetvars["DT_World=>m_flMaxOccludeeArea"] = 2552
   gNetvars["DT_TEExplosion=>m_nFrameRate"] = 36
@@ -869,9 +967,12 @@ static:
   gNetvars["DT_TEFootprintDecal=>m_nIndex"] = 56
   gNetvars["DT_EntityFreezing=>m_flFrozen"] = 2732
   gNetvars["DT_WeaponBaseItem=>m_bRedraw"] = 13276
+  gNetvars["DT_WeaponTablet=>m_vecNotificationTimestamps"] = 0
   gNetvars["DT_TEProjectedDecal=>m_flDistance"] = 40
   gNetvars["DT_BaseBeam=>m_nFrameRate"] = 28
+  gNetvars["DT_PlayerResource=>m_iHealth"] = 4484
   gNetvars["DT_SporeExplosion=>m_flParticleLifetime"] = 2760
+  gNetvars["DT_CSPlayer=>m_bPlayerDominated"] = 46228
   gNetvars["DT_BaseEntity=>m_nModelIndex"] = 600
   gNetvars["DT_TEDust=>m_vecDirection"] = 36
   gNetvars["DT_BeamSpotlight=>m_flSpotlightMaxLength"] = 2536
@@ -888,11 +989,14 @@ static:
   gNetvars["DT_BaseAttributableItem=>m_ProviderType"] = 11684
   gNetvars["DT_BeamSpotlight=>m_flSpotlightGoalWidth"] = 2540
   gNetvars["DT_CFish=>m_z"] = 10704
+  gNetvars["DT_BasePlayer=>m_Local"] = 12220
+  gNetvars["DT_CSGameRulesProxy=>m_iMatchStats_PlayersAlive_CT"] = 2608
   gNetvars["DT_BaseWeaponWorldModel=>m_hCombatWeaponParent"] = 10736
   gNetvars["DT_TEBloodSprite=>a"] = 52
   gNetvars["DT_EntityDissolve=>m_flFadeOutModelStart"] = 2536
   gNetvars["DT_BasePlayer=>m_iBonusChallenge"] = 12868
   gNetvars["DT_EconEntity=>m_nFallbackPaintKit"] = 12744
+  gNetvars["DT_PlayerResource=>m_iCoachingTeam"] = 4744
   gNetvars["DT_PhysPropLootCrate=>m_bRenderInPSPM"] = 10740
   gNetvars["DT_PropVehicleChoreoGeneric=>m_vehicleView.flYawMax"] = 10924
   gNetvars["DT_Embers=>m_nDensity"] = 2520
@@ -902,11 +1006,13 @@ static:
   gNetvars["DT_BreakableSurface=>m_nSurfaceType"] = 2568
   gNetvars["DT_Sprite=>m_flBrightnessTime"] = 2560
   gNetvars["DT_EnvScreenEffect=>m_flDuration"] = 2520
+  gNetvars["DT_CSPlayer=>m_iMatchStats_Objective"] = 43164
   gNetvars["DT_CHostage=>m_leader"] = 12064
   gNetvars["DT_BaseViewModel=>m_fEffects"] = 240
   gNetvars["DT_CSPlayer=>m_flGroundAccelLinearFracLastTime"] = 41888
   gNetvars["DT_BasePlayer=>m_nJumpTimeMsecs"] = 12304
   gNetvars["DT_DangerZoneController=>m_hTheFinalZone"] = 2744
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iTeamIcons"] = 2716
   gNetvars["DT_TEBloodStream=>r"] = 40
   gNetvars["DT_TEEffectDispatch=>m_nColor"] = 112
   gNetvars["DT_FuncMoveLinear=>m_fFlags"] = 260
@@ -914,9 +1020,13 @@ static:
   gNetvars["DT_AI_BaseNPC=>m_lifeState"] = 607
   gNetvars["DT_TEBloodSprite=>r"] = 40
   gNetvars["DT_EnvGasCanister=>m_bLaunchedFromWithinWorld"] = 10760
+  gNetvars["DT_CSGameRulesProxy=>m_arrFeaturedGiftersGifts"] = 2228
   gNetvars["DT_EnvScreenEffect=>m_nType"] = 2524
   gNetvars["DT_CSPlayer=>m_bInBuyZone"] = 14697
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_CashEarned_Total"] = 26424
   gNetvars["DT_TEBubbleTrail=>m_nCount"] = 48
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_LiveTime_Total"] = 25644
+  gNetvars["DT_CSPlayerResource=>m_nMusicID"] = 19664
   gNetvars["DT_SceneEntity=>m_flForceClientTime"] = 2532
   gNetvars["DT_CSPlayer=>m_angEyeAngles"] = 45948
   gNetvars["DT_FuncAreaPortalWindow=>m_flFadeStartDist"] = 2520
@@ -926,6 +1036,7 @@ static:
   gNetvars["DT_AI_BaseNPC=>m_bImportanRagdoll"] = 12072
   gNetvars["DT_BasePlayer=>m_hViewEntity"] = 13116
   gNetvars["DT_TESmoke=>m_nFrameRate"] = 36
+  gNetvars["DT_CSPlayerResource=>m_iLifetimeEnd"] = 7896
   gNetvars["DT_Func_Dust=>m_Color"] = 2520
   gNetvars["DT_BasePlayer=>m_flFOVTime"] = 12808
   gNetvars["DT_BaseEntity=>m_hEffectEntity"] = 2456
@@ -954,7 +1065,7 @@ static:
   gNetvars["DT_CSPlayer=>m_fImmuneToGunGameDamageTime"] = 14652
   gNetvars["DT_CChicken=>m_jumpedThisFrame"] = 10728
   gNetvars["DT_WeaponCSBase=>m_fAccuracyPenalty"] = 13104
-  gNetvars["DT_AI_BaseNPC=>m_iSpeedModSpeed"] = 12064
+  gNetvars["DT_WeaponTablet=>m_flUpgradeExpirationTime"] = 0
   gNetvars["DT_WeaponTablet=>m_nContractKillGridHighResIndex"] = 13460
   gNetvars["DT_PointCamera=>m_flFogStart"] = 2536
   gNetvars["DT_MovieDisplay=>m_szGroupName"] = 2650
@@ -963,7 +1074,9 @@ static:
   gNetvars["DT_BaseAnimating=>m_nHitboxSet"] = 2556
   gNetvars["DT_BaseAnimating=>m_ScaleType"] = 10060
   gNetvars["DT_RopeKeyframe=>moveparent"] = 328
+  gNetvars["DT_AI_BaseNPC=>m_iSpeedModSpeed"] = 12064
   gNetvars["DT_BeamSpotlight=>m_nRotationAxis"] = 2524
+  gNetvars["DT_CSGameRulesProxy=>m_iMatchStats_RoundResults"] = 2488
   gNetvars["DT_FuncConveyor=>m_flConveyorSpeed"] = 2520
   gNetvars["DT_VoteController=>m_nPotentialVotes"] = 2564
   gNetvars["DT_CSGameRulesProxy=>m_flSpawnSelectionTimeStart"] = 3832
@@ -972,21 +1085,27 @@ static:
   gNetvars["DT_TEPhysicsProp=>m_nSkin"] = 56
   gNetvars["DT_BasePlayer=>m_skybox3d.fog.end"] = 12584
   gNetvars["DT_CSPlayer=>m_bHasParachute"] = 45904
+  gNetvars["DT_MapVetoPickController=>m_nMapId0"] = 3084
   gNetvars["DT_MapVetoPickController=>m_nCurrentPhase"] = 4876
   gNetvars["DT_FuncSmokeVolume=>m_triggerBloat"] = 835
   gNetvars["DT_BasePlayer=>m_flConstraintSpeedFactor"] = 13148
-  gNetvars["DT_BasePlayer=>m_fFlags"] = 260
   gNetvars["DT_SporeTrail=>m_flEndSize"] = 2776
-  gNetvars["DT_BaseGrenade=>m_bIsLive"] = 10625
+  gNetvars["DT_BasePlayer=>m_fFlags"] = 260
+  gNetvars["DT_BaseAnimatingOverlay=>overlay_vars"] = 0
   gNetvars["DT_PlantedC4=>m_flDefuseCountDown"] = 10668
   gNetvars["DT_PointCommentaryNode=>m_bActive"] = 10624
   gNetvars["DT_BaseFlex=>m_blinktoggle"] = 11220
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iPreviousPoints"] = 3740
   gNetvars["DT_TEEffectDispatch=>m_bPositionsAreRelativeToEntity"] = 113
   gNetvars["DT_TEImpact=>m_vecOrigin"] = 16
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_UtilityDamage_Total"] = 26684
   gNetvars["DT_CSPlayer=>m_bInBombZone"] = 14696
   gNetvars["DT_BasePlayer=>m_aimPunchAngle"] = 12332
+  gNetvars["DT_BasePlayer=>localdata"] = 0
+  gNetvars["DT_BaseGrenade=>m_bIsLive"] = 10625
   gNetvars["DT_PhysicsPropMultiplayer=>m_collisionMaxs"] = 10712
   gNetvars["DT_TEShatterSurface=>m_uchBackColor[1]"] = 88
+  gNetvars["DT_CSGameRulesProxy=>m_TeamRespawnWaveTimes"] = 2848
   gNetvars["DT_Ragdoll=>m_ragAngles[0]"] = 10912
   gNetvars["DT_Team=>m_iTeamNum"] = 2920
   gNetvars["DT_DustTrail=>m_Opacity"] = 2772
@@ -996,35 +1115,48 @@ static:
   gNetvars["DT_BaseCSGrenadeProjectile=>m_vInitialVelocity"] = 10704
   gNetvars["DT_BaseCombatCharacter=>m_flTimeOfLastInjury"] = 12028
   gNetvars["DT_BaseAnimating=>m_nNewSequenceParity"] = 2628
+  gNetvars["DT_MapVetoPickController=>m_nStartingSide0"] = 4620
   gNetvars["DT_TEExplosion=>m_chMaterialType"] = 56
   gNetvars["DT_SporeExplosion=>m_flSpawnRadius"] = 2772
   gNetvars["DT_Ragdoll_Attached=>m_attachmentPointRagdollSpace"] = 11432
+  gNetvars["DT_BaseFlex=>m_flexWeight"] = 10792
   gNetvars["DT_TESprite=>m_nBrightness"] = 36
   gNetvars["DT_DangerZoneController=>m_bMissionControlledExplosions"] = 2521
+  gNetvars["DT_PoseController=>m_hProps"] = 2520
   gNetvars["DT_SporeExplosion=>m_flSpawnRate"] = 2756
   gNetvars["DT_PhysBoxMultiplayer=>m_fMass"] = 2536
   gNetvars["DT_EntityParticleTrail=>m_hConstraintEntity"] = 2776
   gNetvars["DT_CSGameRulesProxy=>m_eRoundWinReason"] = 2476
+  gNetvars["DT_CSPlayer=>csteamdata"] = 0
   gNetvars["DT_TEEnergySplash=>m_bExplosive"] = 40
   gNetvars["DT_TEFireBullets=>m_fInaccuracy"] = 64
   gNetvars["DT_SteamJet=>m_JetLength"] = 2776
   gNetvars["DT_BasePlayer=>m_PlayerFog.m_hCtrl"] = 14260
+  gNetvars["DT_PlayerResource=>m_bConnected"] = 2788
+  gNetvars["DT_CSPlayerResource=>m_isHostageFollowingSomeone"] = 5768
   gNetvars["DT_BreachChargeProjectile=>m_bShouldExplode"] = 10704
   gNetvars["DT_MapVetoPickController=>m_nPhaseDurationTicks"] = 4884
+  gNetvars["DT_ProxyToggle=>blah"] = 0
   gNetvars["DT_FuncRotating=>m_angRotation[0]"] = 300
   gNetvars["DT_EnvProjectedTexture=>m_flBrightnessScale"] = 2544
   gNetvars["DT_CSPlayer=>m_bMadeFinalGunGameProgressiveKill"] = 14662
   gNetvars["DT_WaterLODControl=>m_flCheapWaterEndDistance"] = 2524
   gNetvars["DT_PropVehicleDriveable=>m_nBoostTimeLeft"] = 10644
   gNetvars["DT_RocketTrail=>m_nAttachment"] = 2832
+  gNetvars["DT_CSPlayerResource=>m_szClan"] = 17324
   gNetvars["DT_TEExplosion=>m_nRadius"] = 60
   gNetvars["DT_EntityDissolve=>m_vDissolverOrigin"] = 2560
   gNetvars["DT_VoteController=>m_bIsYesNoVote"] = 2570
   gNetvars["DT_BasePlayer=>m_nDuckTimeMsecs"] = 12296
   gNetvars["DT_SmokeStack=>m_Rate"] = 2852
+  gNetvars["DT_CSPlayer=>m_iMatchStats_Assists"] = 42924
   gNetvars["DT_BaseEntity=>m_cellZ"] = 132
   gNetvars["DT_BaseEntity=>m_nMaxGPULevel"] = 2443
+  gNetvars["DT_TEBeamSpline=>m_vecPoints"] = 0
+  gNetvars["DT_CSPlayer=>m_iMatchStats_LiveTime"] = 42684
   gNetvars["DT_BreakableSurface=>m_nNumWide"] = 2524
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iWarnOnCap"] = 4836
+  gNetvars["DT_CSPlayerResource=>m_hostageRescueX"] = 5828
   gNetvars["DT_PropVehicleChoreoGeneric=>m_vehicleView.flRollCurveZero"] = 10908
   gNetvars["DT_BaseWeaponWorldModel=>m_nBody"] = 2592
   gNetvars["DT_AI_BaseNPC=>m_bFadeCorpse"] = 12070
@@ -1043,17 +1175,22 @@ static:
   gNetvars["DT_BaseCombatWeapon=>m_hWeaponWorldModel"] = 12884
   gNetvars["DT_CSPlayer=>m_bNightVisionOn"] = 41881
   gNetvars["DT_MapVetoPickController=>m_nTeamWinningCoinToss"] = 2540
+  gNetvars["DT_CSPlayerResource=>m_iControlledByPlayer"] = 8484
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iTeamOverlays"] = 2972
   gNetvars["DT_FogController=>m_fog.endLerpTo"] = 2572
   gNetvars["DT_TEFireBullets=>m_nItemDefIndex"] = 20
   gNetvars["DT_BasePlayer=>m_hConstraintEntity"] = 13124
   gNetvars["DT_CSGameRulesProxy=>m_flTabletHexOriginY"] = 3852
+  gNetvars["DT_CSPlayer=>m_iMatchStats_EquipmentValue"] = 42324
   gNetvars["DT_CHostage=>m_vel"] = 12068
   gNetvars["DT_Tesla=>m_SoundName"] = 2560
   gNetvars["DT_FEPlayerDecal=>m_vecRight"] = 2560
   gNetvars["DT_FuncSmokeVolume=>m_DensityRampSpeed"] = 3028
+  gNetvars["DT_EnvScreenOverlay=>m_flOverlayTimes"] = 0
   gNetvars["DT_TEShatterSurface=>m_flShardSize"] = 72
   gNetvars["DT_FogController=>m_fog.colorSecondaryLerpTo"] = 2548
   gNetvars["DT_BaseCSGrenadeProjectile=>m_vecExplodeEffectOrigin"] = 10728
+  gNetvars["DT_CSPlayerResource=>m_nCharacterDefIndex"] = 18364
   gNetvars["DT_TEBSPDecal=>m_nIndex"] = 32
   gNetvars["DT_TEFootprintDecal=>m_vecOrigin"] = 16
   gNetvars["DT_ShadowControl=>m_bDisableShadows"] = 2540
@@ -1064,6 +1201,7 @@ static:
   gNetvars["DT_CSGameRulesProxy=>m_bHasMatchStarted"] = 1104
   gNetvars["DT_MaterialModifyControl=>m_flFloatLerpEndValue"] = 3320
   gNetvars["DT_WeaponCSBase=>m_weaponMode"] = 13080
+  gNetvars["DT_EconEntity=>m_Item"] = 11712
   gNetvars["DT_BaseCombatWeapon=>m_iSecondaryReserveAmmoCount"] = 12912
   gNetvars["DT_BreakableSurface=>m_flPanelHeight"] = 2536
   gNetvars["DT_BaseTeamObjectiveResource=>m_iNumControlPoints"] = 2528
@@ -1076,7 +1214,9 @@ static:
   gNetvars["DT_TEBSPDecal=>m_nEntity"] = 28
   gNetvars["DT_WeaponTablet=>m_bTabletReceptionIsBlocked"] = 13464
   gNetvars["DT_EnvProjectedTexture=>m_flProjectionSize"] = 2872
+  gNetvars["DT_BaseTeamObjectiveResource=>m_bCPIsVisible"] = 2644
   gNetvars["DT_PointCamera=>m_flFogEnd"] = 2540
+  gNetvars["DT_CSPlayerResource=>m_iMVPs"] = 5876
   gNetvars["DT_ParticleSystem=>m_iParentAttachment"] = 748
   gNetvars["DT_TEEnergySplash=>m_vecPos"] = 16
   gNetvars["DT_TEDynamicLight=>r"] = 32
@@ -1095,12 +1235,15 @@ static:
   gNetvars["DT_PlayerPing=>m_iType"] = 2540
   gNetvars["DT_BaseEntity=>m_bSpotted"] = 2365
   gNetvars["DT_ItemDogtags=>m_KillingPlayer"] = 13380
+  gNetvars["DT_CSPlayerResource=>m_nPersonaDataPublicLevel"] = 19924
   gNetvars["DT_CHostage=>m_flRescueStartTime"] = 12088
   gNetvars["DT_BaseBeam=>m_nSpeed"] = 68
   gNetvars["DT_TEBloodSprite=>m_nSize"] = 64
+  gNetvars["DT_CSGameRulesProxy=>m_SurvivalRules"] = 3328
   gNetvars["DT_VGuiScreen=>m_fScreenFlags"] = 2572
   gNetvars["DT_FuncAreaPortalWindow=>m_flFadeDist"] = 2524
   gNetvars["DT_TESpriteSpray=>m_fNoise"] = 48
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iszWarnSound"] = 0
   gNetvars["DT_Prop_Hallucination=>m_fVisibleTime"] = 10652
   gNetvars["DT_EnvDOFController=>m_flNearBlurDepth"] = 2524
   gNetvars["DT_World=>m_bStartDark"] = 2548
@@ -1113,6 +1256,7 @@ static:
   gNetvars["DT_PoseController=>m_fInterpolationTime"] = 2548
   gNetvars["DT_SteamJet=>m_Speed"] = 2760
   gNetvars["DT_TEBubbleTrail=>m_flWaterZ"] = 40
+  gNetvars["DT_CSPlayerResource=>m_bHasHelmet"] = 6201
   gNetvars["DT_TEPlayerDecal=>m_vecRight"] = 44
   gNetvars["DT_PropVehicleDriveable=>m_vecGunCrosshair"] = 10696
   gNetvars["DT_CSPlayer=>m_cycleLatch"] = 46220
@@ -1120,17 +1264,23 @@ static:
   gNetvars["DT_EnvProjectedTexture=>m_flColorTransitionTime"] = 2568
   gNetvars["DT_BaseEntity=>m_flAnimTime"] = 608
   gNetvars["DT_Embers=>m_bEmit"] = 2532
+  gNetvars["DT_CSPlayerResource=>m_nActiveCoinRank"] = 19404
+  gNetvars["DT_CSGameRulesProxy=>m_roundData_playerPositions"] = 4384
   gNetvars["DT_BaseTeamObjectiveResource=>m_iUpdateCapHudParity"] = 2540
+  gNetvars["DT_SpatialEntity=>m_minFalloff"] = 2532
   gNetvars["DT_SceneEntity=>m_bPaused"] = 2525
   gNetvars["DT_BasePlayer=>m_flDeathTime"] = 13252
-  gNetvars["DT_SpatialEntity=>m_minFalloff"] = 2532
+  gNetvars["DT_Beam=>m_hAttachEntity"] = 2556
   gNetvars["DT_MaterialModifyControl=>m_szMaterialVarValue"] = 3030
+  gNetvars["DT_ParticleSystem=>m_hControlPointEnts"] = 2864
   gNetvars["DT_WeaponCSBase=>m_bReloadVisuallyComplete"] = 13136
+  gNetvars["DT_DangerZoneController=>m_flWaveEndTimes"] = 2724
   gNetvars["DT_PhysicsProp=>m_spawnflags"] = 712
   gNetvars["DT_EntityFreezing=>m_vFreezingOrigin"] = 2520
   gNetvars["DT_FEPlayerDecal=>m_unTraceID"] = 2528
   gNetvars["DT_BaseEntity=>movetype"] = 0
   gNetvars["DT_TEPhysicsProp=>m_vecOrigin"] = 16
+  gNetvars["DT_Inferno=>m_fireZDelta"] = 3332
   gNetvars["DT_Plasma=>m_nPlasmaModelIndex"] = 2536
   gNetvars["DT_FireSmoke=>m_nFlameFromAboveModelIndex"] = 2540
   gNetvars["DT_EconEntity=>m_hOuter"] = 11676
@@ -1138,6 +1288,7 @@ static:
   gNetvars["DT_RocketTrail=>m_Opacity"] = 2784
   gNetvars["DT_Item=>m_bShouldGlow"] = 12848
   gNetvars["DT_CSPlayer=>m_nHeavyAssaultSuitCooldownRemaining"] = 45936
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_5k_Total"] = 24604
   gNetvars["DT_Drone=>m_hMoveToThisEntity"] = 10712
   gNetvars["DT_CSPlayer=>m_iNumGunGameTRKillPoints"] = 14668
   gNetvars["DT_ShadowControl=>m_bEnableLocalLightShadows"] = 2541
@@ -1153,10 +1304,12 @@ static:
   gNetvars["DT_EnvTonemapController=>m_bUseCustomAutoExposureMin"] = 2520
   gNetvars["DT_Sprite=>m_flFrame"] = 2548
   gNetvars["DT_DustTrail=>m_MinSpeed"] = 2788
+  gNetvars["DT_CSPlayerResource=>m_iLifetimeStart"] = 7636
   gNetvars["DT_CSGameRulesProxy=>m_flCMMItemDropRevealEndTime"] = 2172
   gNetvars["DT_Func_Dust=>m_FallSpeed"] = 2552
   gNetvars["DT_RocketTrail=>m_StopEmitTime"] = 2792
   gNetvars["DT_CSGameRulesProxy=>m_bIsQuestEligible"] = 2177
+  gNetvars["DT_CSPlayer=>m_rank"] = 45880
   gNetvars["DT_Func_Dust=>m_flSizeMax"] = 2532
   gNetvars["DT_CascadeLight=>m_shadowDirection"] = 2520
   gNetvars["DT_FuncSmokeVolume=>m_MovementSpeed"] = 3036
@@ -1171,6 +1324,8 @@ static:
   gNetvars["DT_ParticleSmokeGrenade=>m_MinColor"] = 2788
   gNetvars["DT_PropVehicleDriveable=>m_hPlayer"] = 10628
   gNetvars["DT_CSGameRulesProxy=>m_flGuardianBuyUntilTime"] = 2484
+  gNetvars["DT_CSPlayerResource=>m_hostageRescueY"] = 5844
+  gNetvars["DT_BaseCombatCharacter=>bcc_localdata"] = 0
   gNetvars["DT_VGuiScreen=>m_flWidth"] = 2528
   gNetvars["DT_DustTrail=>m_SpawnRate"] = 2756
   gNetvars["DT_CSPlayer=>m_flProgressBarStartTime"] = 41860
@@ -1181,6 +1336,7 @@ static:
   gNetvars["DT_CSPlayer=>m_iMoveState"] = 14724
   gNetvars["DT_TEPlantBomb=>m_option"] = 32
   gNetvars["DT_EnvProjectedTexture=>m_bState"] = 2528
+  gNetvars["DT_BaseCombatWeapon=>LocalWeaponData"] = 0
   gNetvars["DT_TEImpact=>m_ucFlags"] = 44
   gNetvars["DT_TEBloodSprite=>m_nSprayModel"] = 60
   gNetvars["DT_BaseEntity=>m_usSolidFlags"] = 832
@@ -1191,10 +1347,13 @@ static:
   gNetvars["DT_FEPlayerDecal=>m_nEntity"] = 2588
   gNetvars["DT_TEEnergySplash=>m_vecDir"] = 28
   gNetvars["DT_CSPlayer=>m_iControlledBotEntIndex"] = 47612
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iBaseControlPoints"] = 4700
   gNetvars["DT_SceneEntity=>m_bMultiplayer"] = 2526
   gNetvars["DT_CSGameRulesProxy=>m_iNumConsecutiveCTLoses"] = 3196
   gNetvars["DT_CSPlayer=>m_iClass"] = 45940
+  gNetvars["DT_EntityParticleTrail=>m_Info"] = 2756
   gNetvars["DT_CSPlayer=>m_bIsRespawningForDMBonus"] = 14705
+  gNetvars["DT_CSPlayerResource=>m_bHasCommunicationAbuseMute"] = 20964
   gNetvars["DT_CSPlayer=>m_iGunGameProgressiveWeaponIndex"] = 14664
   gNetvars["DT_BaseEntity=>m_nMinGPULevel"] = 2442
   gNetvars["DT_TEFireBullets=>m_vecAngles[1]"] = 40
@@ -1208,6 +1367,7 @@ static:
   gNetvars["DT_LightGlow=>m_angRotation"] = 300
   gNetvars["DT_BreakableSurface=>m_nNumHigh"] = 2528
   gNetvars["DT_TeamplayRoundBasedRulesProxy=>m_bSwitchedTeamsThisRound"] = 46
+  gNetvars["DT_CSPlayerResource=>m_iTotalCashSpent"] = 18624
   gNetvars["DT_ShadowControl=>m_shadowDirection"] = 2520
   gNetvars["DT_BaseCombatWeapon=>m_iWeaponOrigin"] = 13000
   gNetvars["DT_TEDecal=>m_vecStart"] = 28
@@ -1215,6 +1375,7 @@ static:
   gNetvars["DT_BaseViewModel=>m_nModelIndex"] = 600
   gNetvars["DT_EnvScreenOverlay=>m_flOverlayTimes[0]"] = 5072
   gNetvars["DT_PhysicsProp=>m_bAwake"] = 10656
+  gNetvars["DT_BasePlayer=>m_chAreaPortalBits"] = 12256
   gNetvars["DT_BaseEntity=>m_flLastMadeNoiseTime"] = 32
   gNetvars["DT_BaseGrenade=>m_hThrower"] = 10656
   gNetvars["DT_FuncOccluder=>m_nOccluderIndex"] = 2520
@@ -1254,6 +1415,7 @@ static:
   gNetvars["DT_Func_LOD=>m_nDisappearMaxDist"] = 2524
   gNetvars["DT_BaseEntity=>m_flShadowCastDistance"] = 928
   gNetvars["DT_EnvDOFController=>m_flFarFocusDepth"] = 2532
+  gNetvars["DT_CSGameRulesProxy=>m_roundData_playerXuids"] = 3864
   gNetvars["DT_LightGlow=>m_nHorizontalSize"] = 2520
   gNetvars["DT_SmokeTrail=>m_SpawnRate"] = 2756
   gNetvars["DT_CSGameRulesProxy=>m_bBombDropped"] = 2468
@@ -1264,6 +1426,7 @@ static:
   gNetvars["DT_SunlightShadowControl=>m_shadowDirection"] = 2520
   gNetvars["DT_TEBreakModel=>m_vecSize"] = 40
   gNetvars["DT_MaterialModifyControl=>m_bFloatLerpWrap"] = 3328
+  gNetvars["DT_CSGameRulesProxy=>m_roundData_playerTeams"] = 4644
   gNetvars["DT_CSPlayer=>m_vecOrigin"] = 312
   gNetvars["DT_EconEntity=>m_iEntityQuality"] = 556
   gNetvars["DT_CSGameRulesProxy=>m_bMapHasBuyZone"] = 115
@@ -1283,11 +1446,15 @@ static:
   gNetvars["DT_SmokeStack=>m_flBaseSpread"] = 2864
   gNetvars["DT_BaseAttributableItem=>m_iReapplyProvisionParity"] = 11672
   gNetvars["DT_PropJeep=>m_bHeadlightIsOn"] = 10956
+  gNetvars["DT_BasePlayer=>pl"] = 12752
   gNetvars["DT_BasePlayer=>m_bActiveCameraMan"] = 13180
   gNetvars["DT_AI_BaseNPC=>m_iDeathPose"] = 12052
   gNetvars["DT_CSGameRulesProxy=>m_nEndMatchMapVoteWinner"] = 3192
+  gNetvars["DT_CSGameRulesProxy=>m_GGProgressiveWeaponKillUpgradeOrderCT"] = 620
+  gNetvars["DT_CSPlayerResource=>m_iArmor"] = 6268
   gNetvars["DT_TESpriteSpray=>m_nSpeed"] = 44
   gNetvars["DT_TEShatterSurface=>m_uchFrontColor[1]"] = 85
+  gNetvars["DT_PlayerResource=>m_iDeaths"] = 3636
   gNetvars["DT_SteamJet=>m_spawnflags"] = 2792
   gNetvars["DT_CSGameRulesProxy=>m_gamePhase"] = 96
   gNetvars["DT_FuncAreaPortalWindow=>m_iBackgroundModelIndex"] = 2532
@@ -1302,6 +1469,7 @@ static:
   gNetvars["DT_Sun=>m_nOverlaySize"] = 2880
   gNetvars["DT_SunlightShadowControl=>m_bEnabled"] = 2532
   gNetvars["DT_DynamicLight=>m_Exponent"] = 2528
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_KillReward_Total"] = 25384
   gNetvars["DT_BasePlayer=>m_nDuckJumpTimeMsecs"] = 12300
   gNetvars["DT_BasePlayer=>m_bPoisoned"] = 12367
   gNetvars["DT_CSGameRulesProxy=>m_iBombSite"] = 5320
@@ -1310,6 +1478,8 @@ static:
   gNetvars["DT_BaseAnimating=>m_nBody"] = 2592
   gNetvars["DT_TEEffectDispatch=>m_nDamageType"] = 100
   gNetvars["DT_EnvGasCanister=>m_flSkyboxScale"] = 10792
+  gNetvars["DT_CSPlayer=>m_iWeaponPurchasesThisMatch"] = 43644
+  gNetvars["DT_DangerZoneController=>m_DangerZones"] = 2556
   gNetvars["DT_Prop_Hallucination=>m_bEnabled"] = 10649
   gNetvars["DT_PointCamera=>m_bFogEnable"] = 2528
   gNetvars["DT_TeamplayRoundBasedRulesProxy=>m_bAwaitingReadyRestart"] = 57
@@ -1320,9 +1490,10 @@ static:
   gNetvars["DT_SpriteTrail=>m_flSkyboxScale"] = 4248
   gNetvars["DT_TEGlowSprite=>m_vecOrigin"] = 16
   gNetvars["DT_CSPlayer=>m_iAccount"] = 45924
+  gNetvars["DT_CSGameRulesProxy=>m_GGProgressiveWeaponOrderT"] = 380
   gNetvars["DT_Sprite=>m_flGlowProxySize"] = 2576
-  gNetvars["DT_BaseViewModel=>m_flPlaybackRate"] = 2584
   gNetvars["DT_CSPlayer=>m_totalHitsOnServer"] = 41896
+  gNetvars["DT_BaseViewModel=>m_flPlaybackRate"] = 2584
   gNetvars["DT_WeaponCSBase=>m_bSilencerOn"] = 13137
   gNetvars["DT_CChicken=>m_leader"] = 10732
   gNetvars["DT_TEDynamicLight=>m_fDecay"] = 52
@@ -1332,6 +1503,7 @@ static:
   gNetvars["DT_BeamSpotlight=>m_flHDRColorScale"] = 2544
   gNetvars["DT_CSPlayer=>m_hSurvivalAssassinationTarget"] = 41924
   gNetvars["DT_TESpriteSpray=>m_nCount"] = 52
+  gNetvars["DT_ParticleSystem=>m_iServerControlPointAssignments"] = 2844
   gNetvars["DT_BasePlayer=>m_hUseEntity"] = 13096
   gNetvars["DT_CSPlayer=>m_iAddonBits"] = 41844
   gNetvars["DT_WeaponXM1014=>m_reloadState"] = 13268
@@ -1353,6 +1525,7 @@ static:
   gNetvars["DT_TEBloodStream=>m_vecDirection"] = 28
   gNetvars["DT_TEEffectDispatch=>m_flMagnitude"] = 80
   gNetvars["DT_BaseAttributableItem=>m_hOuter"] = 11676
+  gNetvars["DT_BaseAttributableItem=>m_Item"] = 11712
   gNetvars["DT_DynamicProp=>m_nGlowStyle"] = 10704
   gNetvars["DT_ColorCorrectionVolume=>m_Weight"] = 2604
   gNetvars["DT_PropVehicleDriveable=>m_vecEyeExitEndpoint"] = 10752
@@ -1363,10 +1536,13 @@ static:
   gNetvars["DT_EnvDOFController=>m_flNearBlurRadius"] = 2540
   gNetvars["DT_CSPlayer=>m_bInHostageRescueZone"] = 45961
   gNetvars["DT_BasePlayer=>m_skybox3d.scale"] = 12528
+  gNetvars["DT_CSPlayerResource=>m_nPersonaDataPublicCommendsLeader"] = 20184
   gNetvars["DT_TEPhysicsProp=>m_clrRender"] = 68
   gNetvars["DT_BasePlayer=>m_skybox3d.fog.colorSecondary"] = 12568
   gNetvars["DT_FireSmoke=>m_flScale"] = 2524
+  gNetvars["DT_CSPlayerResource=>m_nPersonaDataPublicCommendsFriendly"] = 20704
   gNetvars["DT_AI_BaseNPC=>m_bIsMoving"] = 12069
+  gNetvars["DT_CSPlayer=>m_vecPlayerPatchEconIndices"] = 47472
   gNetvars["DT_BaseCombatCharacter=>m_flNextAttack"] = 11632
   gNetvars["DT_Sun=>glowDistanceScale"] = 0
   gNetvars["DT_FuncSmokeVolume=>m_Density"] = 3040
@@ -1386,6 +1562,8 @@ static:
   gNetvars["DT_EnvGasCanister=>m_vecImpactPosition"] = 10676
   gNetvars["DT_PropVehicleChoreoGeneric=>m_vecEyeExitEndpoint"] = 10752
   gNetvars["DT_Sun=>m_bOn"] = 2896
+  gNetvars["DT_BaseCombatCharacter=>m_hMyWearables"] = 12036
+  gNetvars["DT_BaseCombatCharacter=>m_hMyWeapons"] = 11768
   gNetvars["DT_EnvWind=>m_flInitialWindSpeed"] = 2632
   gNetvars["DT_TEParticleSystem=>m_vecOrigin[1]"] = 20
   gNetvars["DT_CSRagdoll=>m_bClientSideAnimation"] = 10396
@@ -1396,20 +1574,26 @@ static:
   gNetvars["DT_TEPhysicsProp=>m_vecVelocity"] = 40
   gNetvars["DT_BasePlayer=>m_audio.entIndex"] = 12736
   gNetvars["DT_BaseEntity=>m_nRenderFX"] = 602
+  gNetvars["DT_BaseTeamObjectiveResource=>m_bBlocked"] = 7260
   gNetvars["DT_DangerZoneController=>m_flFinalExpansionTime"] = 2552
   gNetvars["DT_TESmoke=>m_vecOrigin"] = 16
   gNetvars["DT_ColorCorrection=>m_flFadeOutDuration"] = 2544
   gNetvars["DT_BasePlayer=>m_ladderSurfaceProps"] = 12800
+  gNetvars["DT_CSPlayerResource=>m_hostageRescueZ"] = 5860
   gNetvars["DT_SunlightShadowControl=>m_LightColor"] = 2800
   gNetvars["DT_CSGameRulesProxy=>m_bIsQueuedMatchmaking"] = 116
   gNetvars["DT_DustTrail=>m_SpawnRadius"] = 2812
+  gNetvars["DT_BaseTeamObjectiveResource=>m_flPathDistance"] = 6908
   gNetvars["DT_ParadropChopper=>m_vecOrigin"] = 312
   gNetvars["DT_TeamplayRoundBasedRulesProxy=>m_iWinningTeam"] = 48
   gNetvars["DT_EnvGasCanister=>m_bDoImpactEffects"] = 10797
   gNetvars["DT_Embers=>m_nLifetime"] = 2524
+  gNetvars["DT_BaseEntity=>m_bSpottedBy"] = 2366
   gNetvars["DT_CSGameRulesProxy=>m_totalRoundsPlayed"] = 100
   gNetvars["DT_BreakableSurface=>m_vNormal"] = 2540
   gNetvars["DT_World=>m_iTimeOfDay"] = 2572
+  gNetvars["DT_CSGameRulesProxy=>m_arrTournamentActiveCasterAccounts"] = 2444
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_3k_Total"] = 24084
   gNetvars["DT_BasePlayer=>m_fOnTarget"] = 13092
   gNetvars["DT_FuncLadder=>m_bFakeLadder"] = 2577
   gNetvars["DT_BasePlayer=>m_vecLadderNormal"] = 12848
@@ -1417,6 +1601,7 @@ static:
   gNetvars["DT_CSPlayer=>m_bWaitForNoAttack"] = 14704
   gNetvars["DT_CSPlayer=>m_bIsScoped"] = 14632
   gNetvars["DT_BaseAnimating=>m_nSkin"] = 2588
+  gNetvars["DT_EnvWind=>m_EnvWindShared"] = 2520
   gNetvars["DT_PlantedC4=>m_hBombDefuser"] = 10676
   gNetvars["DT_CSPlayer=>m_unCurrentEquipmentValue"] = 45872
   gNetvars["DT_CSPlayerResource=>m_iPlayerVIP"] = 5728
@@ -1427,6 +1612,9 @@ static:
   gNetvars["DT_BaseEntity=>m_flUseLookAtAngle"] = 716
   gNetvars["DT_TEGaussExplosion=>m_vecDirection"] = 32
   gNetvars["DT_SpatialEntity=>m_maxFalloff"] = 2536
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iTeamInZone"] = 7228
+  gNetvars["DT_Func_Dust=>m_Collision"] = 800
+  gNetvars["DT_CSGameRulesProxy=>m_SurvivalGameRuleDecisionValues"] = 4968
   gNetvars["DT_TEExplosion=>m_vecNormal"] = 44
   gNetvars["DT_BaseGrenade=>m_DmgRadius"] = 10628
   gNetvars["DT_TEBreakModel=>m_angRotation[2]"] = 36
@@ -1438,17 +1626,26 @@ static:
   gNetvars["DT_TEEffectDispatch=>m_nAttachmentIndex"] = 88
   gNetvars["DT_EntityFlame=>m_bCheapEffect"] = 2540
   gNetvars["DT_BaseEntity=>m_iTeamNum"] = 244
+  gNetvars["DT_CSPlayerResource=>m_nPersonaDataPublicCommendsTeacher"] = 20444
+  gNetvars["DT_MapVetoPickController=>m_nAccountIDs"] = 2828
   gNetvars["DT_DustTrail=>m_StartSize"] = 2804
   gNetvars["DT_TEShowLine=>m_vecEnd"] = 28
+  gNetvars["DT_FEPlayerDecal=>m_ubSignature"] = 2605
   gNetvars["DT_BaseBeam=>m_nFadeLength"] = 44
   gNetvars["DT_InfoOverlayAccessor=>m_iOverlayID"] = 2520
+  gNetvars["DT_CSPlayer=>m_iMatchStats_Deaths"] = 42804
+  gNetvars["DT_BasePlayer=>m_chAreaBits"] = 12224
   gNetvars["DT_FootstepControl=>m_source"] = 2576
+  gNetvars["DT_CSPlayer=>m_iMatchStats_UtilityDamage"] = 43404
   gNetvars["DT_Beam=>m_vecOrigin"] = 312
   gNetvars["DT_DynamicProp=>m_bShouldGlow"] = 10696
+  gNetvars["DT_Inferno=>m_fireXDelta"] = 2532
   gNetvars["DT_BasePlayer=>m_szLastPlaceName"] = 13748
-  gNetvars["DT_BaseEntity=>m_fadeMaxDist"] = 760
   gNetvars["DT_PoseController=>m_nFModType"] = 2560
   gNetvars["DT_Plasma=>m_flScale"] = 2524
+  gNetvars["DT_BaseEntity=>m_fadeMaxDist"] = 760
+  gNetvars["DT_BaseAnimating=>m_flEncodedController"] = 2644
+  gNetvars["DT_PlayerResource=>m_iPing"] = 2856
   gNetvars["DT_EconEntity=>m_iItemDefinitionIndex"] = 554
   gNetvars["DT_EnvGasCanister=>m_flZAcceleration"] = 10752
   gNetvars["DT_FuncSmokeVolume=>m_spawnflags"] = 3048
@@ -1459,7 +1656,10 @@ static:
   gNetvars["DT_VGuiScreen=>m_nPanelName"] = 2536
   gNetvars["DT_TEBreakModel=>m_nCount"] = 72
   gNetvars["DT_SmokeTrail=>m_ParticleLifetime"] = 2788
+  gNetvars["DT_MapVetoPickController=>m_nVoteMapIdsList"] = 2800
+  gNetvars["DT_MapVetoPickController=>m_nMapId2"] = 3596
   gNetvars["DT_BasePlayer=>m_vecViewOffset[1]"] = 268
+  gNetvars["DT_BaseCombatWeapon=>LocalActiveWeaponData"] = 0
   gNetvars["DT_TEExplosion=>m_nFlags"] = 40
   gNetvars["DT_TESprite=>m_fScale"] = 32
   gNetvars["DT_LightGlow=>m_vecOrigin"] = 312
@@ -1486,12 +1686,15 @@ static:
   gNetvars["DT_BaseCombatWeapon=>m_iState"] = 12888
   gNetvars["DT_EconEntity=>m_nFallbackStatTrak"] = 12756
   gNetvars["DT_TEMuzzleFlash=>m_vecOrigin"] = 16
+  gNetvars["DT_CSPlayerResource=>m_iCompTeammateColor"] = 7376
   gNetvars["DT_TEBreakModel=>m_angRotation[0]"] = 28
   gNetvars["DT_SmokeStack=>m_Speed"] = 2840
-  gNetvars["DT_CSRagdoll=>m_iTeamNum"] = 244
+  gNetvars["DT_CSGameRulesProxy=>m_arrFeaturedGiftersAccounts"] = 2212
+  gNetvars["DT_CSPlayer=>m_iMatchStats_Kills"] = 42084
   gNetvars["DT_SporeTrail=>m_flSpawnRate"] = 2764
   gNetvars["DT_QuadraticBeam=>m_scrollRate"] = 2544
   gNetvars["DT_EnvWind=>m_flGustDuration"] = 2560
+  gNetvars["DT_CSRagdoll=>m_iTeamNum"] = 244
   gNetvars["DT_CHostage=>m_fFlags"] = 260
   gNetvars["DT_PointCommentaryNode=>m_iNodeNumber"] = 11408
   gNetvars["DT_EntityDissolve=>m_nMagnitude"] = 2572
@@ -1500,6 +1703,7 @@ static:
   gNetvars["DT_CSPlayer=>m_flAutoMoveStartTime"] = 15032
   gNetvars["DT_RopeKeyframe=>m_flScrollSpeed"] = 2572
   gNetvars["DT_SporeTrail=>m_flParticleLifetime"] = 2768
+  gNetvars["DT_PlayerResource=>m_iAssists"] = 3376
   gNetvars["DT_Embers=>m_nSpeed"] = 2528
   gNetvars["DT_SlideshowDisplay=>m_fMaxSlideTime"] = 2828
   gNetvars["DT_Team=>m_scoreFirstHalf"] = 2884
@@ -1528,6 +1732,7 @@ static:
   gNetvars["DT_Func_Dust=>m_vecSpecifiedSurroundingMaxs"] = 856
   gNetvars["DT_BRC4Target=>m_flRadius"] = 10632
   gNetvars["DT_FogController=>m_fog.colorPrimary"] = 2536
+  gNetvars["DT_CSPlayer=>m_iMatchStats_EnemiesFlashed"] = 43524
   gNetvars["DT_BaseEntity=>m_iName"] = 340
   gNetvars["DT_BaseAnimating=>m_bClientSideAnimation"] = 10396
   gNetvars["DT_TEBubbles=>m_nModelIndex"] = 44
@@ -1535,8 +1740,10 @@ static:
   gNetvars["DT_QuadraticBeam=>m_targetPosition"] = 2520
   gNetvars["DT_TEProjectedDecal=>m_vecOrigin"] = 16
   gNetvars["DT_CSPlayer=>m_bHasHeavyArmor"] = 45933
-  gNetvars["DT_BaseEntity=>m_vecMaxs"] = 820
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iTeamReqCappers"] = 3228
   gNetvars["DT_TESparks=>m_nMagnitude"] = 28
+  gNetvars["DT_BaseEntity=>m_vecMaxs"] = 820
+  gNetvars["DT_BaseEntity=>m_Collision"] = 800
   gNetvars["DT_PhysBox=>m_mass"] = 2520
   gNetvars["DT_TEBloodStream=>a"] = 52
   gNetvars["DT_FireSmoke=>m_flStartScale"] = 2520
@@ -1547,18 +1754,24 @@ static:
   gNetvars["DT_CSPlayer=>m_nDeathCamMusic"] = 46004
   gNetvars["DT_TEFireBullets=>m_weapon"] = 48
   gNetvars["DT_BaseAnimating=>m_flCycle"] = 2580
+  gNetvars["DT_CSPlayerResource=>m_iMatchStats_4k_Total"] = 24344
   gNetvars["DT_Beam=>moveparent"] = 328
+  gNetvars["DT_CSGameRulesProxy=>m_SpawnTileState"] = 3608
+  gNetvars["DT_CSGameRulesProxy=>m_flNextRespawnWave"] = 2976
   gNetvars["DT_EnvGasCanister=>m_flInitialZSpeed"] = 10748
   gNetvars["DT_EnvWind=>m_flStartTime"] = 2524
   gNetvars["DT_SlideshowDisplay=>m_szSlideshowDirectory"] = 2649
   gNetvars["DT_RopeKeyframe=>m_bConstrainBetweenEndpoints"] = 3408
+  gNetvars["DT_CSPlayer=>m_iMatchStats_MoneySaved"] = 42444
   gNetvars["DT_DustTrail=>m_bEmit"] = 2828
   gNetvars["DT_TEClientProjectile=>m_vecVelocity"] = 28
   gNetvars["DT_VGuiScreen=>m_nOverlayMaterial"] = 2568
+  gNetvars["DT_BaseTeamObjectiveResource=>m_iNumTeamMembers"] = 6940
   gNetvars["DT_Team=>m_nGGLeaderEntIndex_T"] = 2900
   gNetvars["DT_TEParticleSystem=>m_vecOrigin[2]"] = 24
   gNetvars["DT_TEKillPlayerAttachments=>m_nPlayer"] = 16
   gNetvars["DT_CSPlayerResource=>m_bombsiteCenterA"] = 5732
   gNetvars["DT_BaseEntity=>m_CollisionGroup"] = 1140
   gNetvars["DT_TEPhysicsProp=>m_angRotation[2]"] = 36
+  gNetvars["DT_CSPlayerResource=>m_nEndMatchNextMapVotes"] = 27272
   gNetvars["CustomTable=>Dormancy"] = 0xED
