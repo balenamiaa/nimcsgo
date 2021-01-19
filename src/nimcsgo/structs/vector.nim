@@ -88,6 +88,8 @@ proc nullifiedX*(self: Vector3f0): Vector3f0 = Vector3f0(x: 0.float32, y: self.y
 proc nullifiedY*(self: Vector3f0): Vector3f0 = Vector3f0(x: self.x, y: 0.float32, z: self.z)
 proc nullifiedZ*(self: Vector3f0): Vector3f0 = Vector3f0(x: self.x, y: self.y, z: 0.float32)
 
+proc nullifiedYaw*(self: QAngle): QAngle = QAngle(initVector3f0(self.x, 0, 0))
+
 proc inRadians*(self: QAngle): QAngle = self.map(proc(x: float32): float32 = x * (PI / 180e0).float32)
 proc inDegrees*(self: QAngle): QAngle = self.map(proc(x: float32): float32 = x * (180e0 / PI).float32)
 

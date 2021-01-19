@@ -2,6 +2,7 @@ import base, bitops, os, options, gara, math, times, random, tables, json, std/[
 import winim/lean
 
 type Config = tuple[
+  name: string, #useless, only for json readibility.
   cfgTimeToReach: float32,
   cfgRandLerpOffset: float32,
   cfgDelayMS: int,
@@ -14,7 +15,11 @@ type Config = tuple[
 ]
 
 var gEnabled*: bool = true
+
 var gInMemConfiguration: array[low(WeaponId)..high(WeaponId), Config]
+for idx, cfg in mpairs gInMemConfiguration:
+    cfg.name = $idx.WeaponId
+
 var skipBullets: bool = false
 var bulletsToSkip: Natural = 0 
 let configFilePath = getConfigDir() & "nimcsgo_aimbot.json" 
@@ -125,7 +130,7 @@ proc settingsForWeapon(weaponId: WeaponId) =
 
 proc saveConfig*() =
   var file = configFilePath.open(fmWrite)
-  file.write($ gInMemConfiguration.toJson())
+  file.write(pretty gInMemConfiguration.toJson())
   file.close()
 
 proc loadConfig*() = 
@@ -207,7 +212,7 @@ proc getBestEntity(cmd: ptr CUserCmd): TargetState =
       let dist = gLocalPlayer.origin.`-`(pCurrentEntity.origin()).len()
       if dist <= cfgDistLimit(): continue
       
-      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) + gLocalPlayer.viewpunchAngles() + gLocalPlayer.aimpunchAngles() * 2 * 0.45, dist)
+      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) - nullifiedYaw(gLocalPlayer.viewpunchAngles() + gLocalPlayer.aimpunchAngles() * 2 * 0.45), dist)
       if currentFov > cfgFovLimit(): continue
 
       if currentFov < bestFov:
