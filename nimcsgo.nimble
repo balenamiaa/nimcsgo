@@ -10,9 +10,7 @@ bin = @["nimcsgo"]
 
 import os
 
-requires "nim >= 1.4.2", "winim", "minhook", "bgfx"
-
-putEnv("Dfdfffff", "Dffffffff")
+requires "nim >= 1.4.2", "winim", "minhook"
 
 let gccPath = "C:/nim-1.4.2/dist/mingw32/bin"#Set this to the diretory of that contains g++.exe for i386
 

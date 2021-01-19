@@ -31,7 +31,7 @@ int CRenderer::getTextLength(ID3DXFont *font, char *string)
   font->DrawText(NULL, string, strlen(string), &pRect, DT_CALCRECT, D3DCOLOR_RGBA(0, 0, 0, 0));
   return pRect.right - pRect.left;
 }
-void drawLine(IDirect3DDevice9* pDevice, int x, int y, int x2, int y2, D3DCOLOR color)
+void CRenderer::drawLine(IDirect3DDevice9 *pDevice, int x, int y, int x2, int y2, D3DCOLOR color)
 {
   CRenderer::SD3DVertex pVertex[2] = {{x, y, 0.0f, 1.0f, color}, {x2, y2, 0.0f, 1.0f, color}};
   pDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);

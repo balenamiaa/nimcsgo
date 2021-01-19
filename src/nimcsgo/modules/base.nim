@@ -1,14 +1,23 @@
 import ../interfaces, ../structs, ../imgui, ../helpers, ../renderer
+import winim/lean as win
 import macros
 
 var gCreateMoveProcs* {.global.}: seq[proc(cmd: ptr CUserCmd): void]
 var gPaintTraverseProcs* {.global.}: seq[proc(panelId: uint, forceRePaint: bool, allowForce: bool): void]
 var gRenderFrameProcs* {.global.}: seq[proc(pDevice: ptr IDirect3DDevice9): void]
+var gPreResetFrameProcs* {.global.}: seq[proc(pDevice: ptr IDirect3DDevice9): void]
+var gPostResetFrameProcs* {.global.}: seq[proc(pDevice: ptr IDirect3DDevice9): void]
+var gDrawIndexedPrimitive* {.global.}: seq[proc(pDevice: ptr IDirect3DDevice9, `type`: D3DPRIMITIVETYPE, baseVertexIndex: cint, minVertexIndex: cuint, numVertices: cuint, startIndex: cuint, primCount: cuint)]
 var gImGuiProcs* {.global.}: seq[proc(): void]
 var gInitRenderProcs* {.global.}: seq[proc(pDevice: ptr IDirect3DDevice9): void]
 var gLocalPlayer*: ptr Entity = nil
-#var gRenderer* {.global.}: Renderer
 var gGuiEnabled* {.global.}: bool
+
+
+var ogWndProc* {.global.}: proc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = nil
+var ogPresent* {.global.}: proc(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = nil
+var ogReset* {.global.}: proc(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} = nil
+var ogDrawIndexedPrimitive* {.global.}: proc(pDevice: ptr IDirect3DDevice9, `type`: D3DPRIMITIVETYPE, baseVertexIndex: cint, minVertexIndex: cuint, numVertices: cuint, startIndex: cuint, primCount: cuint): HRESULT {.stdcall.} = nil
 
 macro section*(sectionDecl, body: untyped) = 
   let sectionType = sectionDecl[0]
@@ -91,6 +100,63 @@ macro section*(sectionDecl, body: untyped) =
     procDef[3].add(nnkIdentDefs.newTree(
       varNames[0],
       nnkPtrTy.newTree("IDirect3DDevice9".ident),
+      newEmptyNode()
+    ))
+  of "PreResetFrame":
+    if not(varNames.len == 1): error "Invalid number of parameters for section: PreResetFrame", sectionDecl
+    containerSym = "gPreResetFrameProcs".ident
+    procDef[3].add("void".ident)
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[0],
+      nnkPtrTy.newTree("IDirect3DDevice9".ident),
+      newEmptyNode()
+    ))
+  of "PostResetFrame":
+    if not(varNames.len == 1): error "Invalid number of parameters for section: PostResetFrame", sectionDecl
+    containerSym = "gPostResetFrameProcs".ident
+    procDef[3].add("void".ident)
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[0],
+      nnkPtrTy.newTree("IDirect3DDevice9".ident),
+      newEmptyNode()
+    ))
+  of "DrawIndexedPrimitive":
+    if not(varNames.len == 7): error "Invalid number of parameters for section: DrawIndexedPrimitive", sectionDecl
+    containerSym = "gDrawIndexedPrimitive".ident
+    procDef[3].add("void".ident)
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[0],
+      nnkPtrTy.newTree("IDirect3DDevice9".ident),
+      newEmptyNode()
+    ))
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[1],
+      "D3DPRIMITIVETYPE".ident,
+      newEmptyNode()
+    ))
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[2],
+      "cint".ident,
+      newEmptyNode()
+    ))
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[3],
+      "cuint".ident,
+      newEmptyNode()
+    ))
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[4],
+      "cuint".ident,
+      newEmptyNode()
+    ))
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[5],
+      "cuint".ident,
+      newEmptyNode()
+    ))
+    procDef[3].add(nnkIdentDefs.newTree(
+      varNames[6],
+      "cuint".ident,
       newEmptyNode()
     ))
   else: error("Section for " & $sectionType & " not implemented yet!", sectionDecl)

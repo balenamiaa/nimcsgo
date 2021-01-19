@@ -1,0 +1,91 @@
+import base, options
+
+{.emit:"""
+#include <d3d9.h>
+#include <d3dx9.h>
+#define CUSTOMFVF (D3DFVF_XYZRHW | D3DFVF_TEX1)
+
+IDirect3DPixelShader9* pixelshader = NULL;
+
+struct CUSTOMVERTEX {
+    FLOAT x, y, z, r, h, w;
+};
+
+void* draw_points_ret_addr;
+
+void* traverse_stack(void** ebp)
+{
+    if (ebp == nullptr)
+        return nullptr;
+ 
+    auto** next = *(void***)(ebp);
+    if (ebp[1] == draw_points_ret_addr)
+        return next[4];
+ 
+    return traverse_stack(next);
+}
+ 
+void* get_ent()
+{
+    int data = 0;
+    asm("movl %%ebp, %0"
+        : "=r"(data));
+    return traverse_stack((void**)(data));
+}
+
+""".}
+
+
+var enabled*: bool = true
+
+
+section ImGui("Chams", nil):
+  igCheckbox("Enabled", enabled.addr)
+
+section DrawIndexedPrimitive(pDevice, `type`, baseVertexIndex, minVertexIndex, numVertices, startIndex, primCount):
+  var initialized {.global.} = false;
+  if not initialized:
+    let pattern = patternScan(xorEncrypt "8B 7D FC 03 F8", xorEncrypt "studiorender.dll").get()
+    {.emit:"""
+    draw_points_ret_addr = `pattern`;
+    char szShader[256];
+    sprintf(szShader, "ps.1.1\ndef c0, %f, %f, %f, %f\nmov r0,c0", 1.0, 0.0, 0.4, 0.8);
+    ID3DXBuffer* pShaderBuf = NULL;
+ 
+    D3DXAssembleShader(szShader, sizeof(szShader), NULL, NULL, 0, &pShaderBuf, NULL);
+    pDevice->CreatePixelShader((const DWORD*)pShaderBuf->GetBufferPointer(), &pixelshader);
+ 
+    """.}
+    initialized = true
+
+  if not enabled: return 
+  if gGuiEnabled: return
+
+  if gLocalPlayer.isNil(): return
+
+  var pEnt: ptr Entity = nil
+  {.emit: "`pEnt` = get_ent();".}
+
+  if pEnt.isNil(): return
+  if pEnt.lifestate() != elsAlive: return
+  if pEnt == gLocalPlayer: return
+
+  if pEnt.team() != gLocalPlayer.team() and pEnt.team() in {etT, etCt}:
+    {.emit:"""
+    IDirect3DPixelShader9* oldShader = nullptr;
+
+    `pDevice`->GetPixelShader(&oldShader);
+
+    `pDevice`->SetPixelShader(pixelshader);
+
+    """.}
+    discard ogDrawIndexedPrimitive(pDevice, `type`, baseVertexIndex, minVertexIndex, numVertices, startIndex, primCount)
+    {.emit:"""
+    `pDevice`->SetPixelShader(oldShader);
+    """.}
+
+
+
+
+
+

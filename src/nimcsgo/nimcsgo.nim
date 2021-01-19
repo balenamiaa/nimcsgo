@@ -6,14 +6,8 @@ import ./interfaces, ./structs/cusercmd, ./modules, ./helpers, imgui, ./structs/
 
 
 proc handleException(source: string) = discard
- # let exception = getCurrentException()
-  
- # echo "From " & source & ":  " & exception.getStackTrace() 
 
 
-var ogWndProc {.global.}: proc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = nil
-var ogPresent {.global.}: proc(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = nil
-var ogReset {.global.}: proc(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} = nil
 
 proc hkWndProc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESULT {.stdcall.} = 
   var guiKeyDown {.global.}: bool
@@ -30,10 +24,23 @@ proc hkWndProc(hWnd: HWND, message: UINT, wParam: WPARAM, lParam: LPARAM): LRESU
   
 
 
+proc calcDrawIndexedPrimitivePtr(pDevice: ptr IDirect3DDevice9): pointer = 
+  cast[ptr pointer](cast[ptr uint](pDevice)[] + 82 * sizeof(pointer))[]
+
+proc hkDrawIndexedPrimitive(pDevice: ptr IDirect3DDevice9, `type`: D3DPRIMITIVETYPE, baseVertexIndex: cint, minVertexIndex: cuint, numVertices: cuint, startIndex: cuint, primCount: cuint): HRESULT {.stdcall.} = 
+  result = ogDrawIndexedPrimitive(pDevice, `type`, baseVertexIndex, minVertexIndex, numVertices, startIndex, primCount)
+  try:
+    for fn in gDrawIndexedPrimitive: fn(pDevice, `type`, baseVertexIndex, minVertexIndex, numVertices, startIndex, primCount)
+  except: handleException("DrawIndexedPrimitive")
+
 proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RECT, wndOverride: HWND, dirtyRegion: ptr RGNDATA): HRESULT {.stdcall.} = 
   var isInitialized {.global.} : bool = false
 
   if not isInitialized:
+    let pDrawIndexedPrimtive = calcDrawIndexedPrimitivePtr(pDevice)
+    ogDrawIndexedPrimitive =  minhook.hook(pDrawIndexedPrimtive, hkDrawIndexedPrimitive)
+    minhook.enableHook(pDrawIndexedPrimtive)
+
     var gameHWnd {.global.}: HWND = 0
     proc findGameHWnd(hWnd: HWND, lParam: LPARAM): BOOl {.stdcall.} = 
       var buffer: array[15, CHAR]
@@ -82,7 +89,9 @@ proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RE
 proc hkReset(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): HRESULT {.stdcall.} =
   dx9InvalidateDeviceObjects()
   #gRenderer.release()
+  for fn in gPreResetFrameProcs: fn(pDevice)
   result = ogReset(pDevice, params)
+  for fn in gPostResetFrameProcs: fn(pDevice)
   assert(dx9CreateDeviceObjects(), "dx9CreateDeviceObjects failed") 
   #gRenderer.acquire()
   
@@ -100,9 +109,9 @@ proc realEntry =
   let pCreateMove = cast[ptr pointer](clientModeVTable + 24 * sizeof(pointer))[]
   let pPaintTraverse = cast[ptr pointer](cast[uint](IPanel.instance.vtable) + 41 * sizeof(pointer))[]
   block:
-    let handle = GetModuleHandle("gameoverlayrenderer.dll")
-    let tmp1 = cast[uint](patternScan("FF15 ?? ?? ?? ?? 8BF885DB"    , handle).get())
-    let tmp2 = cast[uint](patternScan("FF15 ?? ?? ?? ?? 8BF885FF7818", handle).get())
+    let handle = GetModuleHandle(xorEncrypt "gameoverlayrenderer.dll")
+    let tmp1 = cast[uint](patternScan(xorEncrypt "FF15 ?? ?? ?? ?? 8BF885DB"    , handle).get())
+    let tmp2 = cast[uint](patternScan(xorEncrypt "FF15 ?? ?? ?? ?? 8BF885FF7818", handle).get())
     ogPresent = cast[typeof(ogPresent)](cast[ptr ptr uint](tmp1 + 2)[][])
     ogReset   = cast[typeof(ogReset)](cast[ptr ptr uint](tmp2 + 2)[][])
 

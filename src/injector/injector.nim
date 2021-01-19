@@ -51,8 +51,8 @@ WriteProcessMemory(hProcess, data, cast[pointer](dllPath.cstring), dllPath.len.S
 let hThread = CreateRemoteThread(hProcess, nil, 0, cast[LPTHREAD_START_ROUTINE](GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA")), data, 0, nil)
 WaitForSingleObject(hThread, INFINITE)
 
-VirtualProtectEx(hProcess, ntOpenFile, 5, PAGE_READWRITE, originalProtection.addr)
-WriteProcessMemory(hProcess, ntOpenFile, patchedBytes.addr, 5, nil)
-VirtualProtectEx(hProcess, ntOpenFile, 5, originalProtection, originalProtection.addr)
+#VirtualProtectEx(hProcess, ntOpenFile, 5, PAGE_READWRITE, originalProtection.addr)
+#WriteProcessMemory(hProcess, ntOpenFile, patchedBytes.addr, 5, nil)
+#VirtualProtectEx(hProcess, ntOpenFile, 5, originalProtection, originalProtection.addr)
 
 CloseHandle(hProcess)

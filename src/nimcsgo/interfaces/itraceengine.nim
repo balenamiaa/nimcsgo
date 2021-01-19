@@ -15,7 +15,7 @@ proc isVisible*(self: ptr Entity, other: ptr Entity, pos: Vector3f0): bool =
   var trace: Trace
   var ray: Ray = initRay(self.eye(), pos)
   var filter = initTraceFilterGeneric(self)
-  ITraceEngine.instance.traceRay(ray.addr, tmPlayerVisible, filter.filter.addr, trace.addr)
+  ITraceEngine.instance.traceRay(ray.addr, 0x4600400B.TraceMask, filter.filter.addr, trace.addr)
   trace.pEntity == other or trace.fraction > 0.97
 
 

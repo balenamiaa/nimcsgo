@@ -207,7 +207,9 @@ proc getBestEntity(cmd: ptr CUserCmd): TargetState =
       let dist = gLocalPlayer.origin.`-`(pCurrentEntity.origin()).len()
       if dist <= cfgDistLimit(): continue
       
-      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) + gLocalPlayer.aimpunchAngles() * 2, dist)
+      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) + gLocalPlayer.viewpunchAngles() + gLocalPlayer.aimpunchAngles() * 2 * 0.45, dist)
+      if currentFov > cfgFovLimit(): continue
+
       if currentFov < bestFov:
         gPtrTarget = pCurrentEntity
         bestFov = currentFov
@@ -219,10 +221,10 @@ proc getBestEntity(cmd: ptr CUserCmd): TargetState =
       result = tsChanged
   else:
     result = tsSame
-      
-proc getBestHitbox(cmd: ptr CUserCmd, bestFov: var float32, bestBb: var tuple[min: Vector3f0, max: Vector3f0], bbCenter: var Vector3f0): bool =
+
+proc getBestHitbox(cmd: ptr CUserCmd): bool =
   if not isSome(gBestHitbox):
-    bestFov = high(float32)
+    gInitialTargetFov = high(float32)
     for currentHitbox, enabled in cfgHitboxes():
       let currentHitbox = Hitboxes(currentHitbox)
       if not enabled: continue
@@ -230,18 +232,18 @@ proc getBestHitbox(cmd: ptr CUserCmd, bestFov: var float32, bestBb: var tuple[mi
       let bb = gPtrTarget.hitboxbb(currentHitbox)
       if bb.isSome():
         let bb = bb.unsafeGet()
-        let localBbCenter = bb.min + (bb.max - bb.min) * 0.5
-        let bbCenterAngles = gLocalPlayer.eye.lookAt(localBbCenter)
-        let currentFov = cmd.viewAngles.getFov(bbCenterAngles + gLocalPlayer.aimpunchAngles() * 2, gLocalPlayer.origin.`-`(gPtrTarget.origin()).len())
-        if currentFov < bestFov:
-          bestBb = bb
-          bbCenter = localBbCenter
+        let bbCenter = bb.min + (bb.max - bb.min) * 0.5
+        let bbCenterAngles = gLocalPlayer.eye.lookAt(bbCenter)
+        let currentFov = cmd.viewAngles.getFov(bbCenterAngles + gLocalPlayer.viewpunchAngles() + gLocalPlayer.aimpunchAngles() * 2 * 0.45, gLocalPlayer.origin.`-`(gPtrTarget.origin()).len())
+        if currentFov < gInitialTargetFov:
+          gTargetBB = bb
+          gTargetBBCenter = bbCenter
           gBestHitbox = some(currentHitbox)
-          bestFov = currentFov
+          gInitialTargetFov = currentFov
           result = true
   elif inNanoSeconds(getMonoTime() - gPrevBBUpdateTime) div 10e6.int >= cfgDelayMS():
-    bestBb = gPtrTarget.hitboxbb(gBestHitbox.unsafeGet()).unsafeGet()
-    bbCenter = bestBb.min + (bestBb.max - bestBb.min) * 0.5
+    gTargetBB = gPtrTarget.hitboxbb(gBestHitbox.unsafeGet()).unsafeGet()
+    gTargetBBCenter = gTargetBB.min + (gTargetBB.max - gTargetBB.min) * 0.5
     result = true
     gPrevBBUpdateTime = getMonoTime()
 
@@ -284,25 +286,20 @@ section CreateMove(cmd):
     gStartedTime = getMonoTime()
   of tsSame: discard
   of tsNotFound: return
-  #echo "Got Entity"
-  if not getBestHitbox(cmd, gInitialTargetFov, gTargetBB, gTargetBBCenter): return
-  #echo "Got Hitbox"
+  if not getBestHitbox(cmd): return
   if GetAsyncKeyState(VK_LBUTTON).masked(1'i16 shl 15) != 0:
     if gLocalPlayer.isVisible(gPtrTarget, gTargetBBCenter):  
-      if gInitialTargetFov <= cfgFovLimit():
-        #echo "In Fov"
-        if cfgTimeToReach() != 0.0:
-          let startedTimeElapsed = inNanoSeconds(getMonoTime() - gStartedTime).float32 / 10e9
-          if startedTimeElapsed< cfgTimeToReach():
-            gCurrentLerpValue = cfgMaxLerp() * (startedTimeElapsed / cfgTimeToReach())
-            gCurrentLerpValue += rand(-cfgRandLerpOffset()..cfgRandLerpOffset())
-            gCurrentLerpValue = min(max(0.0, gCurrentLerpValue), cfgMaxLerp())
-          else:
-            gCurrentLerpValue = cfgMaxLerp()
+      if cfgTimeToReach() != 0.0:
+        let elapsed = getMonoTime() - gStartedTime
+        let startedTimeElapsed = inSeconds(elapsed).float32 + inNanoseconds(elapsed).float32 / 10e9 + rand(-cfgRandLerpOffset()..cfgRandLerpOffset())
+        if startedTimeElapsed < cfgTimeToReach():
+          gCurrentLerpValue = cfgMaxLerp() * (startedTimeElapsed / cfgTimeToReach())
+          gCurrentLerpValue = min(max(0.0, gCurrentLerpValue), cfgMaxLerp())
         else:
-          gCurrentLerpValue = 1.0
+          gCurrentLerpValue = cfgMaxLerp()
+      else:
+        gCurrentLerpValue = 1.0
 
-        #echo "Aiming with lerp: " $ gCurrentLerpValue
-        aim(cmd)
+      aim(cmd)
   else:
     gPtrTarget = nil

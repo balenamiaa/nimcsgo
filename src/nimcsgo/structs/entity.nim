@@ -176,7 +176,7 @@ proc `$`*(weaponid: WeaponId): string =
 
 const POSSIBLE_ITEMS = [
   wiNone, wiAK47, wiAUG, wiAWP, wiBIZON, wiC4, wiCZ75A, wiDEAGLE, wiDECOY, wiELITE, wiFAMAS, wiFIVESEVEN, wiFLASHBANG, wiG3SG1, wiGALILAR, wiGLOCK,
-  wiHEALTHSHOT, wiHEGRENADE, wiINCGRENADE, wiKNIFE, wiKNIFEGG, wiKNIFE_T, wiM249, wiM249, wiHKP2000, wiMP7, wiMP9, wiNEGEV, wiNOVA, wiP90, wiREVOLVER, 
+  wiHEALTHSHOT, wiHEGRENADE, wiINCGRENADE, wiKNIFE, wiKNIFEGG, wiKNIFE_T, wiM249, wiTEC9, wiHKP2000, wiMP7, wiMP9, wiNEGEV, wiNOVA, wiP90, wiREVOLVER, 
   wiSAWEDOFF, wiSCAR20, wiSG556, wiSHIELD, wiSMOKEGRENADE, wiSSG08, wiTAGRENADE, wiMAG7, wiMAC10, wiMOLOTOV, wiMP5SD, wiUMP45, wiXM1014, wiUSP_SILENCER,
   wiM4A1, wiM4A1_SILENCER, wiP250, wiMelee
 ]
@@ -234,6 +234,8 @@ vtableInterface Entity:
   netvar("DT_BaseEntity", "m_vecOrigin", Entity): origin * -> Vector3f0
   netvar("DT_BasePlayer", "m_vecViewOffset[0]", Entity): viewOffset * -> Vector3f0
   netvar("DT_BasePlayer", "m_aimPunchAngle", Entity): aimpunchAngles * -> QAngle
+  netvar("DT_BasePlayer", "m_viewPunchAngle", Entity): viewpunchAngles * -> QAngle
+  netvar("DT_CSPlayer", "m_angEyeAngles", Entity): eyeAngles * -> QAngle
   netvar("DT_BaseCombatWeapon", "m_iClip1", Entity): remClip1 * -> cint
   netvar("CustomTable", "Dormancy", Entity): dormant * -> bool
   netvar("DT_CSPlayer", "m_iShotsFired", Entity): shotsFired * -> cint

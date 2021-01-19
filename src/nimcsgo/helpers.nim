@@ -1,4 +1,4 @@
-import macros, sequtils, strutils, sugar, options
+import macros, sequtils, strutils, sugar, options, random
 import winim/inc/[winbase, windef]
 
 template implPtrArithmetic* =
@@ -25,7 +25,7 @@ proc toString(bytes: openarray[byte | char | string]): string =
   for byte in bytes:
     result.add(byte)
 
-proc patternToBytes(pattern: string): seq[int16] {.compileTime.} = 
+proc patternToBytes(pattern: string): seq[int16] = 
   let pattern = pattern.replace(" ", "")
   let chunkedPatterns = @pattern.distribute(pattern.len div 2)
   result = collect(newSeqOfCap(chunkedPatterns.len)):
@@ -35,11 +35,11 @@ proc patternToBytes(pattern: string): seq[int16] {.compileTime.} =
       else: -1.int16
 
 {.checks: off, boundChecks: off, optimization: speed.} 
-proc patternScan*(pattern: static[string], hModule: HMODULE): Option[pointer] = 
+proc patternScan*(pattern: string, hModule: HMODULE): Option[pointer] = 
   implPtrArithmetic
 
-  const pattern = pattern.patternToBytes()
-  const patternLen = pattern.len
+  let pattern = pattern.patternToBytes()
+  let patternLen = pattern.len
 
   let dosHeaders = cast[PIMAGE_DOS_HEADER](hModule)
   let e_lfanew = dos_headers[].e_lfanew
@@ -58,7 +58,7 @@ proc patternScan*(pattern: static[string], hModule: HMODULE): Option[pointer] =
       return some(cast[pointer](pModuleTail))
     pModuleTail += skip
 
-proc patternScan*(pattern: static[string], moduleName: string): Option[pointer] = patternScan(pattern, GetModuleHandleA(moduleName))
+proc patternScan*(pattern: string, moduleName: string): Option[pointer] = patternScan(pattern, GetModuleHandleA(moduleName))
 
 proc createInterface*(moduleName: string, interfaceName: string): pointer =
   let hModule = GetModuleHandleA(moduleName)
@@ -75,3 +75,18 @@ template `!`*[T](a: Option[T]): T =
       a.unsafeGet()
     else:
       return
+
+
+var rng {.compileTime.} = initRand(0x1337DEADBEEF)
+
+
+macro xorEncrypt*(str: string): untyped = 
+  const xorKey = rng.rand(uint8.high()).uint8
+  template xorStr(str: string): untyped = 
+    var newStr = newString(str.len())
+    for idx, c in str:
+      newStr[idx] = (c.uint8 xor xorKey).char
+    newStr
+  var strLit = xorStr($str)
+  return getAst(xorStr(strLit))
+  
