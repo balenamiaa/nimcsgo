@@ -6,7 +6,7 @@ var enabled*: bool = true
 section ImGui("BunnyHop", nil):
   igCheckbox("Enabled", enabled.addr)
 
-section CreateMove(cmd):
+section PostCreateMove(cmd):
   if not(enabled) or gLocalPlayer.lifeState != elsAlive:
     return
   

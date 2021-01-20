@@ -44,9 +44,9 @@ task inject_nimcsgo, "Inject the dll in debug mode without building":
   inject("output/nimcsgo.dll".absolutePath(), "csgo.exe")
   
 task build_netvarsgen, "Builds a dll for which it's to be injected into cs-go to fetch netvars to embed in the hack.":
-  selfExec "cpp" & defaultFlags & "--nomain --app:lib -d:release --outdir:output/ src/netvarsgen/netvarsgen.nim "
+  selfExec "cpp" & " --cpu:i386 --cc:vcc -d:release --outdir:output/ src/netvarsgen/netvarsgen.nim "
 task fetch_netvars, "Inject a dll into cs-go to retrieve netvars":
   exec "nimble build_netvarsgen"
-  inject("output/netvarsgen.dll".absolutePath(), "csgo.exe")
+  exec "output/netvarsgen.exe"
   
 

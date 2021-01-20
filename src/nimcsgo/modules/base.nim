@@ -41,7 +41,7 @@ macro section*(sectionDecl, body: untyped) =
   )
 
   case $sectionType:
-  of "CreateMove":
+  of "PostCreateMove":
     if not(varNames.len == 1): error "Invalid number of parameters for section: CreateMove", sectionDecl
 
     containerSym = "gCreateMoveProcs".ident

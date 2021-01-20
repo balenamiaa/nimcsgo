@@ -60,15 +60,20 @@ proc patternScan*(pattern: string, hModule: HMODULE): Option[pointer] =
 
 proc patternScan*(pattern: string, moduleName: string): Option[pointer] = patternScan(pattern, GetModuleHandleA(moduleName))
 
-proc createInterface*(moduleName: string, interfaceName: string): pointer =
-  let hModule = GetModuleHandleA(moduleName)
+
+
+proc createInterface*(hModule: HMODULE, interfaceName: string): pointer =
 
   var createInterface: proc(name: cstring, returnCode: var cint): pointer {.cdecl.} = nil; createInterface = cast[typeof(createInterface)](GetProcAddress(hModule, "CreateInterface"))
   var trash: cint = 0
   result = createInterface(interfaceName, trash)
 
   if result == nil:
-    raise newException(LibraryError, "Failed to get interface for $# in module $#" % [interfaceName, moduleName])
+    raise newException(LibraryError, "Failed to get interface for $# in module $#" % [interfaceName, $hModule])
+
+proc createInterface*(moduleName: string, interfaceName: string): pointer =
+  let hModule = GetModuleHandleA(moduleName)
+  createInterface(hModule, interfaceName)
 
 template `!`*[T](a: Option[T]): T =
     if a.isSome():

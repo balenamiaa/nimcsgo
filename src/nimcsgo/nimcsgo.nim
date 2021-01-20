@@ -120,8 +120,8 @@ proc realEntry =
   
   minhook.init()
 
-  mHook(stdcall(inputSFrameRate: float32, cmd: ptr CUserCmd) -> bool, pCreateMove):
-    let retValue = ogProcCall(inputSFrameRate, cmd) 
+  mHook(stdcall(frameTime: float32, cmd: ptr CUserCmd) -> bool, pCreateMove):
+    let retValue = ogProcCall(frameTime, cmd) 
     gLocalPlayer = IEntityList.instance.entityFromIdx(IEngineClient.instance.idxLocalPlayer())
     if gLocalPlayer != nil:
       try:

@@ -181,14 +181,15 @@ var gInitialTargetFov: float32
 var gTargetBB: tuple[min: Vector3f0, max: Vector3f0]
 var gTargetBBCenter: Vector3f0
 var gCurrentLerpValue: float32
-var gStartedTime,gPrevBBUpdateTime: MonoTime
+var gAimStartTime: MonoTime
+var gPrevBBUpdateTime: MonoTime
 
 proc getClosestHitedge(pTarget: ptr Entity, cmd: ptr CUserCmd, bb: var tuple[min: Vector3f0, max: Vector3f0], hitbox: Hitboxes): Vector3f0 = 
   let center = (bb.min + bb.max) / 2'f32
   let angToCenter = gLocalPlayer.eye().lookAt(center)
   let delta = angToCenter - cmd.viewAngles
 
-  var offset: Vector3f0 = 0.3 * cmd.viewAngles.yaw.degToRad.sin !@ 0.3 * -cmd.viewAngles.yaw.degToRad.cos !@ 0.5
+  var offset: Vector3f0 = 0.2 * cmd.viewAngles.yaw.degToRad.sin !@ 0.2 * -cmd.viewAngles.yaw.degToRad.cos !@ 0.5
 
   if delta.yaw <= 0:
     offset.x = -offset.x
@@ -268,13 +269,14 @@ proc aim(cmd: ptr CUserCmd) =
     
   aimtargetAngles = normalized aimtargetAngles.lerp(cmd.viewAngles, gCurrentLerpValue)
   cmd.viewAngles = aimtargetAngles
+  
 
 
 
 section InitRender(pDevice):
   loadConfig() #TODO: Proper Initialization phase.
 
-section CreateMove(cmd):
+section PostCreateMove(cmd):
   if not gEnabled: return 
 
   if gLocalPlayer.life_state != elsAlive:
@@ -286,22 +288,23 @@ section CreateMove(cmd):
     gPtrTarget = nil
     return
 
+  if cfgFovLimit() == 0 or gPtrCurrentWeapon.remClip1() <= 0:
+    gPtrTarget = nil
+    return
+
   case getBestEntity(cmd):
   of tsFound, tsChanged:
-    gStartedTime = getMonoTime()
+    gAimStartTime = getMonoTime()
   of tsSame: discard
   of tsNotFound: return
   if not getBestHitbox(cmd): return
-  if GetAsyncKeyState(VK_LBUTTON).masked(1'i16 shl 15) != 0:
+  if cmd.buttons.testBit(cbInAttack.ord):
     if gLocalPlayer.isVisible(gPtrTarget, gTargetBBCenter):  
       if cfgTimeToReach() != 0.0:
-        let elapsed = getMonoTime() - gStartedTime
-        let startedTimeElapsed = inSeconds(elapsed).float32 + inNanoseconds(elapsed).float32 / 10e9 + rand(-cfgRandLerpOffset()..cfgRandLerpOffset())
-        if startedTimeElapsed < cfgTimeToReach():
-          gCurrentLerpValue = cfgMaxLerp() * (startedTimeElapsed / cfgTimeToReach())
-          gCurrentLerpValue = min(max(0.0, gCurrentLerpValue), cfgMaxLerp())
-        else:
-          gCurrentLerpValue = cfgMaxLerp()
+        let elapsed = getMonoTime() - gAimStartTime
+        let timeElapsed = inSeconds(elapsed).float + inNanoseconds(elapsed).float / 10e9 + rand(-cfgRandLerpOffset()..cfgRandLerpOffset())
+        gCurrentLerpValue = cfgMaxLerp() * (timeElapsed / cfgTimeToReach())
+        gCurrentLerpValue = min(max(0.0, gCurrentLerpValue), cfgMaxLerp())
       else:
         gCurrentLerpValue = 1.0
 

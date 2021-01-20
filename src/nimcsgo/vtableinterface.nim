@@ -13,10 +13,10 @@ macro vtableInterface*(interfaceName, interfaceDecl: untyped) =
     let idx = stmt[1]
     let name = stmt[2][0][0]
     let params = stmt[2][0][3]
-    let pragmas = stmt[2][0][4] or (error "Please specify a calling convention pragma"; newEmptyNode())
+    let pragmas = stmt[2][0][4]
     let body = block:
       var result = nnkStmtList.newNimNode()
-      let procType = nnkProcTy.newNimNode().add(params).add(pragmas)
+      let procType = nnkProcTy.newNimNode().add(params).add(nnkPragma.newTree(newIdentNode("thiscall")))
       let arguments = params[1..^1].map(proc (x: auto): auto = x[0])
 
       template vtableMethodImpl(self, vtable, procType, idx: untyped) = cast[procType](cast[ptr pointer](cast[uint](self.vtable) + sizeof(pointer) * idx)[])
