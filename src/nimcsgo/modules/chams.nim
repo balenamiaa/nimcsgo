@@ -49,7 +49,7 @@ section DrawIndexedPrimitive(pDevice, `type`, baseVertexIndex, minVertexIndex, n
     {.emit:"""
     draw_points_ret_addr = `pattern`;
     char szShader[256];
-    sprintf(szShader, "ps.1.1\ndef c0, %f, %f, %f, %f\nmov r0,c0", 1.0, 0.0, 0.4, 0.8);
+    sprintf(szShader, "ps.1.1\ndef c0, %f, %f, %f, %f\nmov r0,c0", 0.9, 0.0, 0.6, 0.5);
     ID3DXBuffer* pShaderBuf = NULL;
  
     D3DXAssembleShader(szShader, sizeof(szShader), NULL, NULL, 0, &pShaderBuf, NULL);

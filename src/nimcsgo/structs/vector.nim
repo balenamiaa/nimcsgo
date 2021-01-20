@@ -83,6 +83,11 @@ proc lenSqr*(self: Vector3f0): float = self.map(proc(x: float32): float32 = x * 
 proc len*(self: Vector3f0): float = self.lenSqr.sqrt()
 proc unit*(self: Vector3f0): Vector3f0 = self.map(proc(x: float32): float32 = x / self.len)
 
+proc sum*(self: QAngle): float = self.x + self.y
+proc lenSqr*(self: QAngle): float = self.map(proc(x: float32): float32 = x * x).sum
+proc len*(self: QAngle): float = self.lenSqr.sqrt()
+proc unit*(self: QAngle): QAngle = self.map(proc(x: float32): float32 = x / self.len)
+
 
 proc nullifiedX*(self: Vector3f0): Vector3f0 = Vector3f0(x: 0.float32, y: self.y, z: self.z)
 proc nullifiedY*(self: Vector3f0): Vector3f0 = Vector3f0(x: self.x, y: 0.float32, z: self.z)
@@ -95,6 +100,7 @@ proc inDegrees*(self: QAngle): QAngle = self.map(proc(x: float32): float32 = x *
 
 proc clamp*(self: var QAngle) = 
   self.x = self.x.clamp(-89.0, 89.0)
+  self.y = self.y.clamp(-179.99, 179.99) #normalize handles yes this, but what if it's NaN?
   self.z = 0
 
 proc normalize*(self: var QAngle) =
@@ -108,6 +114,12 @@ proc normalize*(self: var QAngle) =
     self.y = -180.float32 + (self.y mod 180.float32)
   elif self.y < -180.float32:
     self.y = 180.float32 + (self.y mod 180.float32)
+
+  if self.x == -90:
+    self.x = 89.89
+
+  if self.y == -180:
+    self.y = 179.89
   
   self.z = 0
 
@@ -166,8 +178,10 @@ proc getFov*(curViewAng: QAngle, targetViewAng: QAngle, dist: float): float64 =
 
 proc velCompensated*(src: Vector3f0, relVec: Vector3f0, dist: float): Vector3f0 = src + relVec / dist
 proc lerp*(targetViewAng: QAngle, curViewAng: QAngle, t: float64): QAngle = 
-  var diff = normalized: targetViewAng - curViewAng
+  let diff = normalized: targetViewAng - curViewAng
 
+  if diff.len() == 0: return targetViewAng
+  let unit = diff.unit()
 
-  normalized: curViewAng + diff * t
+  normalized: curViewAng + unit * min(t, unit.len())
 

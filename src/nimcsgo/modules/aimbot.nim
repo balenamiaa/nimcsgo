@@ -7,6 +7,9 @@ type Config = tuple[
   cfgRandLerpOffset: float32,
   cfgDelayMS: int,
   cfgMaxLerp: float32,
+  cfgMinLerp: float32,
+  cfgAimStepPitch: float32,
+  cfgAimStepYaw: float32,
   cfgHitboxes: array[low(Hitboxes)..high(Hitboxes), bool],
   cfgFovLimit: float32,
   cfgDistLimit: float32,
@@ -46,9 +49,9 @@ proc cfgRandLerpOffset*: float32 =
 proc cfgDelayMS*: int = 
   ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
   currentConfig().cfgDelayMS
-proc cfgMaxLerp*: range[0.01.float32..1.float32] = 
+proc cfgMaxLerp*: float32 = 
   ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
-  currentConfig().cfgMaxLerp
+  currentConfig().cfgMaxLerp / 100.0
 proc cfgHitboxes*: array[low(Hitboxes)..high(Hitboxes), bool] = 
   ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
   currentConfig().cfgHitboxes
@@ -64,6 +67,15 @@ proc cfgRcsEnabled*: bool =
 proc cfgRcsScale*: float32 = 
   ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
   currentConfig().cfgRcsScale
+proc cfgMinLerp*: float32 = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgMinLerp / 100.0
+proc cfgAimStepYaw*: float32 = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgAimStepYaw
+proc cfgAimStepPitch*: float32 = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgAimStepPitch
 
 
 proc settingsForWeapon(weaponId: WeaponId) =
@@ -88,10 +100,31 @@ proc settingsForWeapon(weaponId: WeaponId) =
 
   igSpacing()
 
+  igText("Min Lerp")
+  igAlignTextToFramePadding()
+  igSameLine()
+  igSliderFloat("##minLerp", cast[ptr float32](getConfig(weaponId).cfgMinlerp.addr), 0.0, getConfig(weaponId).cfgMaxLerp)
+
+  igSpacing()
+
   igText("Max Lerp")
   igAlignTextToFramePadding()
   igSameLine()
-  igSliderFloat("##maxLerp", cast[ptr float32](getConfig(weaponId).cfgMaxLerp.addr), 0.01, 1.0)
+  igSliderFloat("##maxLerp", cast[ptr float32](getConfig(weaponId).cfgMaxLerp.addr), 0.0, 100.0)
+
+  igSpacing()
+
+  igText("Aimstep Yaw")
+  igAlignTextToFramePadding()
+  igSameLine()
+  igSliderFloat("##aimstepYaw", cast[ptr float32](getConfig(weaponId).cfgAimStepYaw.addr), 0.0, 90.0)
+
+  igSpacing()
+
+  igText("Aimstep Pitch")
+  igAlignTextToFramePadding()
+  igSameLine()
+  igSliderFloat("##aimstepPitch", cast[ptr float32](getConfig(weaponId).cfgAimStepPitch.addr), 0.0, 45.0)
 
   igSpacing()
 
@@ -189,7 +222,7 @@ proc getClosestHitedge(pTarget: ptr Entity, cmd: ptr CUserCmd, bb: var tuple[min
   let angToCenter = gLocalPlayer.eye().lookAt(center)
   let delta = angToCenter - cmd.viewAngles
 
-  var offset: Vector3f0 = 0.2 * cmd.viewAngles.yaw.degToRad.sin !@ 0.2 * -cmd.viewAngles.yaw.degToRad.cos !@ 0.5
+  var offset: Vector3f0 = 0.1 * cmd.viewAngles.yaw.degToRad.sin !@ 0.1 * -cmd.viewAngles.yaw.degToRad.cos !@ 0.1
 
   if delta.yaw <= 0:
     offset.x = -offset.x
@@ -213,7 +246,7 @@ proc getBestEntity(cmd: ptr CUserCmd): TargetState =
       let dist = gLocalPlayer.origin.`-`(pCurrentEntity.origin()).len()
       if dist <= cfgDistLimit(): continue
       
-      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) - nullifiedYaw(gLocalPlayer.viewpunchAngles() + gLocalPlayer.aimpunchAngles() * 2 * 0.45), dist)
+      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) - gLocalPlayer.viewpunchAngles(), dist)
       if currentFov > cfgFovLimit(): continue
 
       if currentFov < bestFov:
@@ -240,7 +273,7 @@ proc getBestHitbox(cmd: ptr CUserCmd): bool =
         let bb = bb.unsafeGet()
         let bbCenter = bb.min + (bb.max - bb.min) * 0.5
         let bbCenterAngles = gLocalPlayer.eye.lookAt(bbCenter)
-        let currentFov = cmd.viewAngles.getFov(bbCenterAngles + gLocalPlayer.viewpunchAngles() + gLocalPlayer.aimpunchAngles() * 2 * 0.45, gLocalPlayer.origin.`-`(gPtrTarget.origin()).len())
+        let currentFov = cmd.viewAngles.getFov(bbCenterAngles, gLocalPlayer.origin.`-`(gPtrTarget.origin()).len())
         if currentFov < gInitialTargetFov:
           gTargetBB = bb
           gTargetBBCenter = bbCenter
@@ -266,8 +299,9 @@ proc aim(cmd: ptr CUserCmd) =
   if cfgRcsEnabled() and (aimpunch.yaw != 0 or aimpunch.pitch != 0): 
     aimtargetAngles -= aimpunch * cfgRcsScale()
     aimtargetAngles.normalize()
-    
-  aimtargetAngles = normalized aimtargetAngles.lerp(cmd.viewAngles, gCurrentLerpValue)
+  
+  if cfgTimeToReach() != 0.0:
+    aimtargetAngles = aimtargetAngles.lerp(cmd.viewAngles, gCurrentLerpValue)
   cmd.viewAngles = aimtargetAngles
   
 
@@ -298,16 +332,16 @@ section PostCreateMove(cmd):
   of tsSame: discard
   of tsNotFound: return
   if not getBestHitbox(cmd): return
-  if cmd.buttons.testBit(cbInAttack.ord):
+  if GetAsyncKeyState(VK_LBUTTON).masked(1'i16 shl 15) != 0:
     if gLocalPlayer.isVisible(gPtrTarget, gTargetBBCenter):  
       if cfgTimeToReach() != 0.0:
         let elapsed = getMonoTime() - gAimStartTime
         let timeElapsed = inSeconds(elapsed).float + inNanoseconds(elapsed).float / 10e9 + rand(-cfgRandLerpOffset()..cfgRandLerpOffset())
         gCurrentLerpValue = cfgMaxLerp() * (timeElapsed / cfgTimeToReach())
-        gCurrentLerpValue = min(max(0.0, gCurrentLerpValue), cfgMaxLerp())
-      else:
-        gCurrentLerpValue = 1.0
+        gCurrentLerpValue = min(max(cfgMinLerp(), gCurrentLerpValue), cfgMaxLerp())
 
       aim(cmd)
+    else:
+      gPtrTarget = nil
   else:
     gPtrTarget = nil
