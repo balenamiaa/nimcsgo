@@ -14,7 +14,8 @@ type Config = tuple[
   cfgFovLimit: float32,
   cfgDistLimit: float32,
   cfgRcsEnabled: bool,
-  cfgRcsScale: float32
+  cfgRcsScale: float32,
+  cfgShootCheck: bool
 ]
 
 var gEnabled*: bool = true
@@ -76,6 +77,9 @@ proc cfgAimStepPitch*: float32 =
 proc cfgTimeUnderCrosshairMs*: int = 
   ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
   currentConfig().cfgTimeUnderCrosshairMs
+proc cfgShootCheck*: bool = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgShootCheck
   
 
 
@@ -295,6 +299,11 @@ proc aim(cmd: ptr CUserCmd) =
 
   let aimtarget = aimtarget_tmp.velCompensated(gPtrTarget.velocity - gLocalPlayer.velocity, dist)
   var aimtargetAngles = gLocalPlayer.eye.lookAt(aimtarget)
+
+  let aimpunch = gLocalPlayer.aimpunchAngles()
+  if cfgRcsEnabled() and (aimpunch.yaw != 0 or aimpunch.pitch != 0): 
+    aimtargetAngles -= aimpunch * cfgRcsScale()
+    aimtargetAngles.normalize()
   
   if cfgTimeToReach() != 0.0:
     aimtargetAngles = aimtargetAngles.lerp(cmd.viewAngles, gCurrentLerpValue)
@@ -308,7 +317,8 @@ section InitRender(pDevice):
 
 
 proc aimbot(cmd: ptr CUserCmd) =
-  if gPtrCurrentWeapon.nextPrimaryAttack() > gLocalPlayer.nTickBase().float * gCsGlobalVars.interval_per_tick:
+  let nextAttack = gPtrCurrentWeapon.nextPrimaryAttack()
+  if cfgShootCheck() and nextAttack > 0 and nextAttack >= gCsGlobalVars.curTime:
     return
   
   if cfgFovLimit() == 0 or gPtrCurrentWeapon.remClip1() <= 0:
@@ -350,13 +360,14 @@ proc aimbot(cmd: ptr CUserCmd) =
   else:
     gPtrTarget = nil
 
+
 proc controlRecoil(cmd: ptr CUserCmd) =
   if not cfgRcsEnabled(): return
 
   var prevAimPunch {.global.}: QAngle
   let curAimPunch: QAngle = gLocalPlayer.aimpunchAngles()
 
-  if gLocalPlayer.shotsFired > 0:
+  if gLocalPlayer.shotsFired() > 1:
     let deltaAimpunch = curAimpunch - prevAimpunch
     cmd.viewAngles -= deltaAimpunch * cfgRcsScale()
     normalize cmd.viewAngles
