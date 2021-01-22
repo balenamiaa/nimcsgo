@@ -77,12 +77,21 @@ proc hkPresent(pDevice: ptr IDirect3DDevice9, src: ptr win.RECT, dst: ptr win.RE
       except: handleException("ImGui")
     igEndFrame()
     {.emit:"""
-      `pDevice`->SetRenderState(D3DRS_ZENABLE, FALSE);
-      `pDevice`->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-      `pDevice`->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+    DWORD oldZ, oldAlphaBlend, oldScissorTest;
+    `pDevice`->GetRenderState(D3DRS_ZENABLE, &oldZ);
+    `pDevice`->GetRenderState(D3DRS_ALPHABLENDENABLE, &oldAlphaBlend);
+    `pDevice`->GetRenderState(D3DRS_SCISSORTESTENABLE, &oldScissorTest);
+    `pDevice`->SetRenderState(D3DRS_ZENABLE, FALSE);
+    `pDevice`->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+    `pDevice`->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
     """.} #TODO: Create a proper d3dx9 wrapper instead of using emit all over the place
     igRender()
     dx9RenderDrawData()
+    {.emit:"""
+    `pDevice`->SetRenderState(D3DRS_ZENABLE, oldZ);
+    `pDevice`->SetRenderState(D3DRS_ALPHABLENDENABLE, oldAlphaBlend);
+    `pDevice`->SetRenderState(D3DRS_SCISSORTESTENABLE, oldScissorTest);
+    """.} 
 
   ogPresent(pDevice, src, dst, wndOverride, dirtyRegion)
 

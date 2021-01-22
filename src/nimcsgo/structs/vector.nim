@@ -185,3 +185,16 @@ proc lerp*(targetViewAng: QAngle, curViewAng: QAngle, t: float64): QAngle =
 
   normalized: curViewAng + unit * min(t, unit.len())
 
+
+proc forward*(self: QAngle): Vector3f0 = 
+  let self = inRadians self
+  var sp, sy, cp, cy: float
+  
+  sp = sin self.pitch()
+  sy = sin self.yaw()
+  cp = cos self.pitch()
+  cy = cos self.yaw()
+
+  result.x = cp * cy
+  result.y = cp * sy
+  result.z = -sp

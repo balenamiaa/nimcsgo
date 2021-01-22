@@ -19,6 +19,15 @@ proc isVisible*(self: ptr Entity, other: ptr Entity, pos: Vector3f0): bool =
   trace.pEntity == other or trace.fraction > 0.97
 
 
+proc isUnderCrosshair*(self: ptr Entity, viewAngles: QAngle, other: ptr Entity): bool  = 
+  var trace: Trace
+  let start = self.eye()
+  let `end` = start + viewAngles.forward() * 8192
+  var ray: Ray = initRay(start, `end`)
+  var filter = initTraceFilterGeneric(self)
+  ITraceEngine.instance.traceRay(ray.addr, 0x46004003.TraceMask, filter.filter.addr, trace.addr)
+  trace.pEntity == other
+
 
 
 

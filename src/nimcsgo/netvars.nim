@@ -1,4 +1,10 @@
 import tables
+
+
+type WeaponData* = object
+  
+
+
 var gNetvars* {.compileTime.} = initTable[string, uint]()
 static:
   gNetvars["DT_SpriteTrail=>m_flMinFadeLength"] = 4232

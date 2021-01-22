@@ -5,7 +5,7 @@ type Config = tuple[
   name: string, #useless, only for json readibility.
   cfgTimeToReach: float32,
   cfgRandLerpOffset: float32,
-  cfgDelayMS: int,
+  cfgTimeUnderCrosshairMs: int,
   cfgMaxLerp: float32,
   cfgMinLerp: float32,
   cfgAimStepPitch: float32,
@@ -46,9 +46,6 @@ proc cfgTimeToReach*: float32 =
 proc cfgRandLerpOffset*: float32 = 
   ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
   currentConfig().cfgRandLerpOffset
-proc cfgDelayMS*: int = 
-  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
-  currentConfig().cfgDelayMS
 proc cfgMaxLerp*: float32 = 
   ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
   currentConfig().cfgMaxLerp / 100.0
@@ -76,13 +73,17 @@ proc cfgAimStepYaw*: float32 =
 proc cfgAimStepPitch*: float32 = 
   ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
   currentConfig().cfgAimStepPitch
+proc cfgTimeUnderCrosshairMs*: int = 
+  ##UNSAFE, CALLER IS REPONSIBILE FOR VALIDITY OF gPtrCurrentWeapon
+  currentConfig().cfgTimeUnderCrosshairMs
+  
 
 
 proc settingsForWeapon(weaponId: WeaponId) =
-  igText("Delay")
+  igText("Time (Ms) Under Crosshair")
   igAlignTextToFramePadding()
   igSameLine()
-  igSliderInt("##delay", cast[ptr int32](getConfig(weaponId).cfgDelayMS.addr), 0, 100)
+  igSliderInt("##cfgTimeUnderCrosshairMs", cast[ptr int32](getConfig(weaponId).cfgTimeUnderCrosshairMs.addr), 0, 100)
 
   igSpacing()
 
@@ -214,8 +215,8 @@ var gInitialTargetFov: float32
 var gTargetBB: tuple[min: Vector3f0, max: Vector3f0]
 var gTargetBBCenter: Vector3f0
 var gCurrentLerpValue: float32
-var gAimStartTime: MonoTime
-var gPrevBBUpdateTime: MonoTime
+var gAimStartTime, gPrevBBUpdateTime, gUnderCrosshairStartTime: MonoTime
+var gUnderCrosshairStarted: bool
 
 proc getClosestHitedge(pTarget: ptr Entity, cmd: ptr CUserCmd, bb: var tuple[min: Vector3f0, max: Vector3f0], hitbox: Hitboxes): Vector3f0 = 
   let center = (bb.min + bb.max) / 2'f32
@@ -246,7 +247,7 @@ proc getBestEntity(cmd: ptr CUserCmd): TargetState =
       let dist = gLocalPlayer.origin.`-`(pCurrentEntity.origin()).len()
       if dist <= cfgDistLimit(): continue
       
-      let currentFov = cmd.viewAngles.getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye) - gLocalPlayer.viewpunchAngles(), dist)
+      let currentFov = (cmd.viewAngles + gLocalPlayer.aimpunchAngles() * 2.0).getFov(gLocalPlayer.eye.lookAt(pCurrentEntity.eye), dist)
       if currentFov > cfgFovLimit(): continue
 
       if currentFov < bestFov:
@@ -273,14 +274,14 @@ proc getBestHitbox(cmd: ptr CUserCmd): bool =
         let bb = bb.unsafeGet()
         let bbCenter = bb.min + (bb.max - bb.min) * 0.5
         let bbCenterAngles = gLocalPlayer.eye.lookAt(bbCenter)
-        let currentFov = cmd.viewAngles.getFov(bbCenterAngles, gLocalPlayer.origin.`-`(gPtrTarget.origin()).len())
+        let currentFov = (cmd.viewAngles + gLocalPlayer.aimpunchAngles() * 2.0).getFov(bbCenterAngles, gLocalPlayer.origin.`-`(gPtrTarget.origin()).len())
         if currentFov < gInitialTargetFov:
           gTargetBB = bb
           gTargetBBCenter = bbCenter
           gBestHitbox = some(currentHitbox)
           gInitialTargetFov = currentFov
           result = true
-  elif inNanoSeconds(getMonoTime() - gPrevBBUpdateTime) div 10e6.int >= cfgDelayMS():
+  else:
     gTargetBB = gPtrTarget.hitboxbb(gBestHitbox.unsafeGet()).unsafeGet()
     gTargetBBCenter = gTargetBB.min + (gTargetBB.max - gTargetBB.min) * 0.5
     result = true
@@ -310,18 +311,8 @@ proc aim(cmd: ptr CUserCmd) =
 section InitRender(pDevice):
   loadConfig() #TODO: Proper Initialization phase.
 
-section PostCreateMove(cmd):
-  if not gEnabled: return 
 
-  if gLocalPlayer.life_state != elsAlive:
-    gPtrTarget = nil
-    return
-
-  gPtrCurrentWeapon = gLocalPlayer.pActiveWeapon()
-  if gPtrCurrentWeapon == nil:
-    gPtrTarget = nil
-    return
-
+proc aimbot(cmd: ptr CUserCmd) = 
   if cfgFovLimit() == 0 or gPtrCurrentWeapon.remClip1() <= 0:
     gPtrTarget = nil
     return
@@ -331,6 +322,21 @@ section PostCreateMove(cmd):
     gAimStartTime = getMonoTime()
   of tsSame: discard
   of tsNotFound: return
+
+
+  if gLocalPlayer.isUnderCrosshair(cmd.viewAngles + gLocalPlayer.aimpunchAngles(), gPtrTarget):
+    if not gUnderCrosshairStarted:
+      gUnderCrosshairStartTime = getMonoTime()
+      gUnderCrosshairStarted = true
+  else:
+    gUnderCrosshairStarted = false
+
+  if gUnderCrosshairStarted:
+    let elapsed = getMonoTime() - gUnderCrosshairStartTime
+    let timeElapsed = inSeconds(elapsed) * 10e3.int + inNanoseconds(elapsed) div 10e6.int
+    if timeElapsed >= cfgTimeUnderCrosshairMs():
+      return
+
   if not getBestHitbox(cmd): return
   if GetAsyncKeyState(VK_LBUTTON).masked(1'i16 shl 15) != 0:
     if gLocalPlayer.isVisible(gPtrTarget, gTargetBBCenter):  
@@ -345,3 +351,29 @@ section PostCreateMove(cmd):
       gPtrTarget = nil
   else:
     gPtrTarget = nil
+
+proc controlRecoil(cmd: ptr CUserCmd) =
+  if not cfgRcsEnabled(): return
+
+  var prevAimPunch {.global.}: QAngle
+  let curAimPunch: QAngle = gLocalPlayer.aimpunchAngles()
+
+  if gLocalPlayer.shotsFired > 0:
+    let deltaAimpunch = curAimpunch - prevAimpunch
+    cmd.viewAngles -= deltaAimpunch * cfgRcsScale()
+    normalize cmd.viewAngles
+  prevAimPunch = curAimPunch
+
+section PostCreateMove(cmd):
+  if not gEnabled: return 
+  if gLocalPlayer.life_state != elsAlive:
+    gPtrTarget = nil
+    return
+
+  gPtrCurrentWeapon = gLocalPlayer.pActiveWeapon()
+  if gPtrCurrentWeapon == nil:
+    gPtrTarget = nil
+    return
+
+  aimbot(cmd)
+  controlRecoil(cmd)
