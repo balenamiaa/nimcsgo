@@ -295,11 +295,6 @@ proc aim(cmd: ptr CUserCmd) =
 
   let aimtarget = aimtarget_tmp.velCompensated(gPtrTarget.velocity - gLocalPlayer.velocity, dist)
   var aimtargetAngles = gLocalPlayer.eye.lookAt(aimtarget)
-
-  let aimpunch = gLocalPlayer.aimpunchAngles()
-  if cfgRcsEnabled() and (aimpunch.yaw != 0 or aimpunch.pitch != 0): 
-    aimtargetAngles -= aimpunch * cfgRcsScale()
-    aimtargetAngles.normalize()
   
   if cfgTimeToReach() != 0.0:
     aimtargetAngles = aimtargetAngles.lerp(cmd.viewAngles, gCurrentLerpValue)
