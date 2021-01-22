@@ -229,6 +229,7 @@ vtableInterface Entity:
 
   netvar("DT_BasePlayer", "m_iHealth", Entity): health * -> cint
   netvar("DT_BaseCombatWeapon", "m_flNextPrimaryAttack", Entity): nextPrimaryAttack * -> float32
+  netvar("DT_BasePlayer", "m_nTickBase", Entity): nTickBase * -> cint
   netvar("DT_BaseCombatCharacter", "m_flNextAttack", Entity): nextAttack * -> float32
   netvar("DT_BasePlayer", "m_vecVelocity[0]", Entity): velocity * -> Vector3f0
   netvar("DT_BaseEntity", "m_vecOrigin", Entity): origin * -> Vector3f0

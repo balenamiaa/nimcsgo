@@ -11,8 +11,8 @@ proc initialize*() =
   
   block:
     let pppGlobalVars = (
-      let tmp = cast[uint](IBaseClient.instance.vtable) + 10 * sizeof(pointer);
-      let tmp2 = cast[ptr ptr uint](cast[ptr uint](tmp)[] + 5);
+      let tmp = cast[uint](IBaseClient.instance.vtable) + 11 * sizeof(pointer);
+      let tmp2 = cast[ptr ptr uint](cast[ptr uint](tmp)[] + 10);
       tmp2
     )
     gCsGlobalVars = cast[ptr ptr ptr GlobalVars](pppGlobalVars)[][]

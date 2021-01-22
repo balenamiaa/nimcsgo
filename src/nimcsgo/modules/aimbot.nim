@@ -312,7 +312,10 @@ section InitRender(pDevice):
   loadConfig() #TODO: Proper Initialization phase.
 
 
-proc aimbot(cmd: ptr CUserCmd) = 
+proc aimbot(cmd: ptr CUserCmd) =
+  if gPtrCurrentWeapon.nextPrimaryAttack() > gLocalPlayer.nTickBase().float * gCsGlobalVars.interval_per_tick:
+    return
+  
   if cfgFovLimit() == 0 or gPtrCurrentWeapon.remClip1() <= 0:
     gPtrTarget = nil
     return
