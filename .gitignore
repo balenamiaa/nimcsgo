@@ -1,6 +1,5 @@
 output
 .vscode
 *.dll
-testresults
 *.exe
 nimcache
