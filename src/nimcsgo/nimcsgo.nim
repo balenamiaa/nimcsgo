@@ -1,8 +1,50 @@
 import winim/lean as win
-import minhook, macros, strutils, options, os
+import minhook, macros, strutils, options, os, bitops
 import ./interfaces, ./structs/cusercmd, ./modules, ./helpers, imgui, ./structs/vector, ./modules/base
 {.compile: "shim.c".}
 
+
+
+proc enginePrediction(): auto = 
+  type EnginePrediction = object
+    begin: proc(cmd: ptr CUserCmd): void
+    finish: proc(): void
+
+  var 
+    oldCurTime {.global.}: float32
+    oldFrameTime {.global.}: float32
+    playerData {.global.}: PlayerMoveData
+    ppPredictionRandomSeedAddress {.global.}: ptr ptr cint
+
+  proc begin(cmd: ptr CUserCmd): void = 
+    if ppPredictionRandomSeedAddress.isNil:
+      ppPredictionRandomSeedAddress = cast[ptr ptr cint](cast[uint](patternScan("8B 0D ?? ?? ?? ?? BA ?? ?? ?? ?? E8 ?? ?? ?? ?? 83 C4 04", "client.dll").get()) + 2)
+    ppPredictionRandomSeedAddress[][] = cmd.randomSeed and 0x7FFFFFFF
+    oldCurTime = gCsGlobalVars.curTime
+    oldFrameTime = gCsGlobalVars.frameTime
+    gCsGlobalVars.curTime = gLocalPlayer.nTickBase().float * gCsGlobalVars.interval_per_tick
+    gCsGlobalVars.frameTime = gCsGlobalVars.interval_per_tick
+    IGameMovement.instance.beginTrackPredictionErrors(gLocalPlayer)
+
+    zeroMem(playerData.addr, sizeof(PlayerMoveData))
+    IMoveHelper.instance.setHost(gLocalPlayer)
+    IPlayerPrediction.instance.beginMove(gLocalPlayer, cmd, IMoveHelper.instance, playerData.addr)
+    IGameMovement.instance.processMovement(gLocalPlayer, playerData.addr)
+    IPlayerPrediction.instance.finishMove(gLocalPlayer, cmd, playerData.addr)
+
+  proc finish(): void = 
+    IGameMovement.instance.finishTrackPredictionErrors(gLocalPlayer)
+    IMoveHelper.instance.setHost(nil)
+
+    ppPredictionRandomSeedAddress[][] = -1
+
+    gCsGlobalVars.curTime = oldCurTime
+    gCsGlobalVars.frameTime = oldFrameTime
+
+  EnginePrediction(
+    begin: begin,
+    finish: finish
+  )
 
 
 proc handleException(source: string) = discard
@@ -109,14 +151,17 @@ proc hkReset(pDevice: ptr IDirect3DDevice9, params: ptr D3DPRESENT_PARAMETERS): 
 
 proc realEntry = 
   initialize()
+
   let clientMode = (
-    let tmp = cast[uint](IBaseClient.instance.vtable) + 10 * sizeof(pointer);
+    let tmp = cast[uint](IBaseClient.instance.mvtable) + 10 * sizeof(pointer);
     let tmp2 = cast[ptr ptr uint](cast[ptr uint](tmp)[] + 5);
     tmp2[][]
   )
   let clientModeVTable = cast[ptr uint](clientMode)[]
   let pCreateMove = cast[ptr pointer](clientModeVTable + 24 * sizeof(pointer))[]
+
   let pPaintTraverse = cast[ptr pointer](cast[uint](IPanel.instance.vtable) + 41 * sizeof(pointer))[]
+
   block:
     let handle = GetModuleHandle(xorEncrypt "gameoverlayrenderer.dll")
     let tmp1 = cast[uint](patternScan(xorEncrypt "FF15 ?? ?? ?? ?? 8BF885DB"    , handle).get())
@@ -127,15 +172,28 @@ proc realEntry =
     cast[ptr ptr pointer](tmp1 + 2)[][] = cast[pointer](hkPresent)
     cast[ptr ptr pointer](tmp2 + 2)[][] = cast[pointer](hkReset)
   
+  let pApplyMouse: pointer = unsafeGet patternScan(xorEncrypt "55 8B EC 51 56 57 8B F9 8B 4D 08 83 F9 FF 75 05 89 7D 08 EB 0B 69 D1 DC 00 00 00 03 D7 89 55 08", xorEncrypt "client.dll")
+  
   minhook.init()
 
+  mHook(thiscall(self: pointer, nSlot: cint, viewangles: var QAngle, cmd: ptr CUserCmd, mouse_x: cfloat, mouse_y: cfloat) -> void, pApplyMouse):
+    var (hkMouseX, hkMouseY) = (mouse_x, mouse_y)
+    for fn in gPreApplyMouseProcs: fn(nSlot, viewangles, cmd, hkMouseX, hkMouseY)
+    ogProcCall(self, nSlot, viewangles, cmd, hkMouseX, hkMouseY) 
+
   mHook(stdcall(frameTime: float32, cmd: ptr CUserCmd) -> bool, pCreateMove):
+    let engine {.global.} = enginePrediction()
+
     let retValue = ogProcCall(frameTime, cmd) 
     gLocalPlayer = IEntityList.instance.entityFromIdx(IEngineClient.instance.idxLocalPlayer())
+
     if gLocalPlayer != nil:
+
+      engine.begin(cmd)    
       try:
         for fn in gCreateMoveProcs: fn(cmd)
       except: handleException("CreateMove")
+      engine.finish()
 
     cmd.viewAngles.normalize()
     cmd.viewAngles.clamp()

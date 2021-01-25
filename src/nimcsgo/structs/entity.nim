@@ -173,12 +173,74 @@ proc `$`*(weaponid: WeaponId): string =
   of wiXM1014: "wiXM1014"
   else: "Unknown Weapon"
 
+proc fromStr*(str: string): WeaponId =
+  case str:
+  of "None": wiNone
+  of "Ak 47": wiAK47
+  of "Aug": wiAUG
+  of "Awp": wiAWP
+  of "Bizon": wiBIZON
+  of "C4": wiC4
+  of "CZ75A": wiCZ75A
+  of "Deagle": wiDEAGLE
+  of "Decoy Grenade": wiDECOY
+  of "Elite": wiELITE
+  of "Famas": wiFAMAS
+  of "Five Seven": wiFIVESEVEN
+  of "Flasbang Grenade": wiFLASHBANG
+  of "G3SG1": wiG3SG1
+  of "GALIL AR": wiGALILAR
+  of "Glock": wiGLOCK
+  of "Healthshot": wiHEALTHSHOT
+  of "HE Grenade": wiHEGRENADE
+  of "HKP 2000": wiHKP2000
+  of "Incendiary Grenade": wiINCGRENADE
+  of "Knife": wiKNIFE
+  of "Knife GG": wiKNIFEGG
+  of "Knife T": wiKNIFE_T
+  of "M249": wiM249
+  of "M4A1": wiM4A1
+  of "M4A1 Silencer": wiM4A1_SILENCER
+  of "Mac 10": wiMAC10
+  of "Mag 7": wiMAG7
+  of "Russki Grenade": wiMOLOTOV
+  of "MP5SD": wiMP5SD
+  of "Mp7": wiMP7
+  of "Mp9": wiMP9
+  of "Melee": wiMelee
+  of "Negev": wiNEGEV
+  of "Nova": wiNOVA
+  of "P-250": wiP250
+  of "P90": wiP90
+  of "Revolver": wiREVOLVER
+  of "Sawed off": wiSAWEDOFF
+  of "Scar 20": wiSCAR20
+  of "SG 556": wiSG556
+  of "Shield": wiSHIELD
+  of "Smoke Grenade": wiSMOKEGRENADE
+  of "Scout": wiSSG08
+  of "TA Grenade": wiTAGRENADE
+  of "Zeus": wiTASER
+  of "Tec9": wiTEC9
+  of "Ump 45": wiUMP45
+  of "Usp Silencer": wiUSP_SILENCER
+  of "wiXM1014": wiXM1014
+  else: wiNone
+
 
 const POSSIBLE_ITEMS = [
-  wiNone, wiAK47, wiAUG, wiAWP, wiBIZON, wiC4, wiCZ75A, wiDEAGLE, wiDECOY, wiELITE, wiFAMAS, wiFIVESEVEN, wiFLASHBANG, wiG3SG1, wiGALILAR, wiGLOCK,
+  wiAK47, wiAUG, wiAWP, wiBIZON, wiC4, wiCZ75A, wiDEAGLE, wiDECOY, wiELITE, wiFAMAS, wiFIVESEVEN, wiFLASHBANG, wiG3SG1, wiGALILAR, wiGLOCK,
   wiHEALTHSHOT, wiHEGRENADE, wiINCGRENADE, wiKNIFE, wiKNIFEGG, wiKNIFE_T, wiM249, wiTEC9, wiHKP2000, wiMP7, wiMP9, wiNEGEV, wiNOVA, wiP90, wiREVOLVER, 
   wiSAWEDOFF, wiSCAR20, wiSG556, wiSHIELD, wiSMOKEGRENADE, wiSSG08, wiTAGRENADE, wiMAG7, wiMAC10, wiMOLOTOV, wiMP5SD, wiUMP45, wiXM1014, wiUSP_SILENCER,
-  wiM4A1, wiM4A1_SILENCER, wiP250, wiMelee
+  wiM4A1, wiM4A1_SILENCER, wiP250, wiMelee, wiNone
+]
+
+const ACTUAL_USED_WEAPONS* = [
+  wiAK47, wiAUG, wiAWP, wiBIZON, wiCZ75A, wiDEAGLE, wiELITE, wiFAMAS, wiFIVESEVEN, wiG3SG1, wiGALILAR, wiGLOCK,
+  wiM249, wiTEC9, wiHKP2000, wiMP7, wiMP9, wiNEGEV, wiNOVA, wiP90, wiREVOLVER, wiSAWEDOFF, wiSCAR20, wiSG556,
+  wiSSG08, wiMAG7, wiMAC10, wiMP5SD, wiUMP45, wiXM1014, wiUSP_SILENCER, wiM4A1, wiM4A1_SILENCER, wiP250,
+  wiKNIFE, wiKNIFEGG, wiKNIFE_T, wiMelee
+
 ]
 
 iterator items*(_: typedesc[WeaponId]): WeaponId =

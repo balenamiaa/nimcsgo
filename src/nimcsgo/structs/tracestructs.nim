@@ -1,4 +1,4 @@
-import ./entity, ./vector
+import ./entity, ./vector, ../vtableinterface
 import bitops, macros
 type
   TraceMask* = distinct uint
@@ -44,12 +44,19 @@ type
     ttEntitiesOnly
     ttEverythingFilterProps
   TraceFilterConcept* {.explain.} = concept p
-    p is ptr
     p.shouldHitEntity(ptr Entity, uint) is bool
     p.getTraceType() is TraceType
-  TraceFilterGeneric* = object
-    vtable: uint
-    pSkipEntity: ptr Entity
+
+
+vtable:
+  type TraceFilterGeneric* = object
+    pSkipEntity*: ptr Entity
+
+  methods:
+    proc shouldHitEntity*(pEntity: ptr Entity, contentsMask: uint): bool = pEntity != self.pSkipEntity
+    proc getTraceType*(): TraceType = ttEverything
+
+
 
 converter fromVectorAligned(xyz: Vector3f0): VectorAligned = VectorAligned(
     xyz: xyz, w: 0'f32)
@@ -108,19 +115,4 @@ proc initRay*(start, `end`: Vector3f0): Ray =
   result.isSwept = result.delta.Vector3f0.lenSqr() != 0e0
   result.isRay = true
 
-proc shouldHitEntity*(self: ptr TraceFilterGeneric, pEntity: ptr Entity,
-    contentsMask: uint): bool = pEntity != self.pSkipEntity
-proc getTraceType*(self: ptr TraceFilterGeneric): TraceType = ttEverything
 
-proc initTraceFilterGeneric*(pSkipEntity: ptr Entity): tuple[
-    filter: TraceFilterGeneric, reference: seq[pointer]] =
-  proc shouldHitEntityWrapper(self: ptr TraceFilterGeneric, pEntity: ptr Entity,
-      contentsMask: uint): bool {.thiscall.} =
-    shouldHitEntity(self, pEntity, contentsMask)
-
-  proc getTraceTypeWrapper(self: ptr TraceFilterGeneric): TraceType {.thiscall.} =
-    getTraceType(self)
-
-  var vtable = @[cast[pointer](shouldHitEntityWrapper), cast[pointer](getTraceTypeWrapper)]
-  (TraceFilterGeneric(vtable: cast[uint](addr vtable[0]),
-      pSkipEntity: pSkipEntity), vtable)

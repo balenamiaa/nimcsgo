@@ -177,7 +177,9 @@ proc getFov*(curViewAng: QAngle, targetViewAng: QAngle, dist: float): float64 =
 
 
 proc velCompensated*(src: Vector3f0, relVec: Vector3f0, dist: float): Vector3f0 = src + relVec / dist
-proc lerp*(targetViewAng: QAngle, curViewAng: QAngle, t: float64): QAngle = 
+proc lerp*(targetViewAng: QAngle, curViewAng: QAngle, dist, t: float64): QAngle = 
+  #let fov = curViewAng.getFov(targetViewAng, dist)
+
   let diff = normalized: targetViewAng - curViewAng
 
   if diff.len() == 0: return targetViewAng
